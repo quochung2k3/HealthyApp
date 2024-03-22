@@ -4,6 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backgroudlogin"
     tools:context=".Profile">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="280dp"
+        android:layout_height="148dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="500dp"
+        android:src="@tools:sample/avatars"
+        app:srcCompat="@drawable/backgroundapp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
