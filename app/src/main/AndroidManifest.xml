@@ -25,10 +25,10 @@
             android:name=".Notification"
             android:exported="false"/>
         <activity
-            android:name=".Profile"
+            android:name=".SignInActivity"
             android:exported="false"/>
         <activity
-            android:name=".SignInActivity"
+            android:name=".Profile"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
