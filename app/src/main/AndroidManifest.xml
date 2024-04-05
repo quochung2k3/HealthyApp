@@ -13,19 +13,7 @@
         android:theme="@style/Theme.HealthyApp"
         tools:targetApi="31">
         <activity
-            android:name=".PostDetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TempHomeActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".SignInActivity"
+            android:name=".ListMessActivity"
             android:exported="false" />
         <activity
             android:name=".SignUpActivity"
@@ -34,8 +22,20 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ListMessActivity"
-            android:exported="true"></activity>
+            android:name=".Profile"
+            android:exported="false"/>
+        <activity
+            android:name=".SignInActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".Notification"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
