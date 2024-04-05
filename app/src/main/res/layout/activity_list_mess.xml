@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListMessActivity">
+    tools:context=".ListMessActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="15dp">
 
     <EditText
         android:id="@+id/edtUsername"
@@ -12,14 +14,14 @@
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="564dp"
+        android:layout_marginBottom="492dp"
         android:background="@drawable/edit_text"
+        android:drawableStart="@drawable/baseline_search_24"
+        android:drawablePadding="12dp"
         android:ems="10"
         android:hint="Search"
         android:inputType="text"
-        android:drawableStart="@drawable/baseline_search_24"
         android:paddingLeft="12dp"
-        android:drawablePadding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.473"
@@ -29,8 +31,8 @@
         android:id="@+id/imageView3"
         android:layout_width="219dp"
         android:layout_height="82dp"
-        android:layout_marginEnd="164dp"
-        android:layout_marginBottom="632dp"
+        android:layout_marginEnd="176dp"
+        android:layout_marginBottom="560dp"
         android:background="@drawable/backgroundapp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -39,7 +41,7 @@
         android:id="@+id/lvMess"
         android:layout_width="409dp"
         android:layout_height="481dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
