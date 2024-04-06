@@ -19,7 +19,7 @@
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Notification"
             android:exported="false" />
         <activity
             android:name=".Profile"
@@ -28,7 +28,7 @@
             android:name=".SignInActivity"
             android:exported="false"/>
         <activity
-            android:name=".Notification"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
