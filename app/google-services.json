@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "878143481204",
+    "project_id": "healthyapp-bfba9",
+    "storage_bucket": "healthyapp-bfba9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:878143481204:android:280ffbee7edbe3815ff821",
+        "android_client_info": {
+          "package_name": "com.example.healthyapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY35Ls8IwL_O1nxrZiz630QNWFY08ZhGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
