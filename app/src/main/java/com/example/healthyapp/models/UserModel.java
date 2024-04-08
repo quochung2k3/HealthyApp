@@ -9,14 +9,16 @@ public class UserModel {
     private String email;
     private String password;
     private Timestamp created_date;
+    private Timestamp modified_date;
 
-    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date) {
+    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
         this.created_date = created_date;
+        this.modified_date = modified_date;
     }
 
     public UserModel() {
@@ -69,5 +71,13 @@ public class UserModel {
 
     public void setCreated_date(Timestamp created_date) {
         this.created_date = created_date;
+    }
+
+    public Timestamp getModified_date() {
+        return modified_date;
+    }
+
+    public void setModified_date(Timestamp modified_date) {
+        this.modified_date = modified_date;
     }
 }

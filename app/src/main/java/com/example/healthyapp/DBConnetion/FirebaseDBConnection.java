@@ -10,7 +10,7 @@ public class FirebaseDBConnection {
     private static FirebaseDBConnection instance;
 
 
-    public static final String MESSAGE = "message";
+    public static final String MESSAGE = "Message";
     public static final String FLAIR = "Flair";
     public static final String COMMENT = "Comment";
     public static final String LIKE_COMMENT = "Like_Comment";
