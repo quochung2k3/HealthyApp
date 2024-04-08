@@ -1,8 +1,6 @@
 package com.example.healthyapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
