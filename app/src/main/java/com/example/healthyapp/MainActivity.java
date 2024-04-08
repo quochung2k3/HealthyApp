@@ -1,15 +1,16 @@
 package com.example.healthyapp;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Bundle;
-
 import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.fragments.MessFragment;
+import com.example.healthyapp.fragments.NotificationFragment;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.message) {
                 replaceFragment(new MessFragment());
+            }
+            if (item.getItemId() == R.id.notification) {
+                replaceFragment(new NotificationFragment());
             }
             return true;
         });
