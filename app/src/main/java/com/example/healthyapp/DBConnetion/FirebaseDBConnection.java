@@ -11,6 +11,13 @@ public class FirebaseDBConnection {
 
 
     public static final String MESSAGE = "message";
+    public static final String FLAIR = "Flair";
+    public static final String COMMENT = "Comment";
+    public static final String LIKE_COMMENT = "Like_Comment";
+    public static final String LIKE_POST = "Like_Post";
+    public static final String POST = "Post";
+    public static final String POST_IMAGE = "Post_Image";
+    public static final String USER = "User";
 
     // singelton
     private FirebaseDBConnection() {
@@ -49,7 +56,7 @@ public class FirebaseDBConnection {
         // Tạo một tham chiếu đến nút con có tên là childName
         DatabaseReference childReference = databaseReference.child(childName);
         // Thêm dữ liệu mới vào nút con
-        childReference.setValue(data);
+        childReference.push().setValue(data);
     }
     public void setData(DatabaseReference childRef, Object data, DatabaseReference.CompletionListener listener) {
         childRef.setValue(data, listener);
