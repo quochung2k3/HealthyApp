@@ -3,14 +3,14 @@ package com.example.healthyapp.models;
 import java.sql.Timestamp;
 
 public class MessageModel {
-    private int id;
-    private int sender_id;
-    private int receiver_id;
+    private String id;
+    private String sender_id;
+    private String receiver_id;
     private String content;
     private Timestamp created_date;
     private boolean is_deleted;
 
-    public MessageModel(int id, int sender_id, int receiver_id, String content, Timestamp created_date, boolean is_deleted) {
+    public MessageModel(String id, String sender_id, String receiver_id, String content, Timestamp created_date, boolean is_deleted) {
         this.id = id;
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
@@ -23,27 +23,27 @@ public class MessageModel {
 
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getSender_id() {
+    public String getSender_id() {
         return sender_id;
     }
 
-    public void setSender_id(int sender_id) {
+    public void setSender_id(String sender_id) {
         this.sender_id = sender_id;
     }
 
-    public int getReceiver_id() {
+    public String getReceiver_id() {
         return receiver_id;
     }
 
-    public void setReceiver_id(int receiver_id) {
+    public void setReceiver_id(String receiver_id) {
         this.receiver_id = receiver_id;
     }
 

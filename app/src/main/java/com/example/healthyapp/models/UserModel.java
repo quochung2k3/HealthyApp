@@ -3,14 +3,14 @@ package com.example.healthyapp.models;
 import java.sql.Timestamp;
 
 public class UserModel {
-    private int id;
+    private String id;
     private String first_name;
     private String last_name;
     private String email;
     private String password;
     private Timestamp created_date;
 
-    public UserModel(int id, String first_name, String last_name, String email, String password, Timestamp created_date) {
+    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -23,11 +23,11 @@ public class UserModel {
 
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

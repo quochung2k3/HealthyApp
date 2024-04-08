@@ -1,11 +1,11 @@
 package com.example.healthyapp.models;
 
 public class PostImageModel {
-    private int id;
-    private int post_id;
+    private String id;
+    private String post_id;
     private String image_link;
 
-    public PostImageModel(int id, int post_id, String image_link) {
+    public PostImageModel(String id, String post_id, String image_link) {
         this.id = id;
         this.post_id = post_id;
         this.image_link = image_link;
@@ -15,19 +15,19 @@ public class PostImageModel {
 
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getPost_id() {
+    public String getPost_id() {
         return post_id;
     }
 
-    public void setPost_id(int post_id) {
+    public void setPost_id(String post_id) {
         this.post_id = post_id;
     }
 

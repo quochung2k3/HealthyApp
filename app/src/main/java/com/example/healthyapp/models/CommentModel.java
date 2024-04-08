@@ -3,18 +3,18 @@ package com.example.healthyapp.models;
 import java.sql.Timestamp;
 
 public class CommentModel {
-    private int id;
+    private String id;
     private String content;
     private int likes;
-    private int parent_id;
-    private int user_id;
-    private int post_id;
+    private String parent_id;
+    private String user_id;
+    private String post_id;
     private String image_link;
     private Timestamp created_date;
     private boolean is_deleted;
     private Timestamp modified_date;
 
-    public CommentModel(int id, String content, int likes, int parent_id, int user_id, int post_id, String image_link, Timestamp created_date, boolean is_deleted, Timestamp modified_date) {
+    public CommentModel(String id, String content, int likes, String parent_id, String user_id, String post_id, String image_link, Timestamp created_date, boolean is_deleted, Timestamp modified_date) {
         this.id = id;
         this.content = content;
         this.likes = likes;
@@ -31,11 +31,11 @@ public class CommentModel {
 
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -55,27 +55,27 @@ public class CommentModel {
         this.likes = likes;
     }
 
-    public int getParent_id() {
+    public String getParent_id() {
         return parent_id;
     }
 
-    public void setParent_id(int parent_id) {
+    public void setParent_id(String parent_id) {
         this.parent_id = parent_id;
     }
 
-    public int getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 
-    public int getPost_id() {
+    public String getPost_id() {
         return post_id;
     }
 
-    public void setPost_id(int post_id) {
+    public void setPost_id(String post_id) {
         this.post_id = post_id;
     }
 
