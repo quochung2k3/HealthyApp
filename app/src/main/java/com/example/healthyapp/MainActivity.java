@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
@@ -109,6 +110,10 @@ public class MainActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.message) {
                 replaceFragment(new MessFragment());
+            }
+            if (item.getItemId() == R.id.fab) {
+                Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
+                startActivity(intent);
             }
             return true;
         });
