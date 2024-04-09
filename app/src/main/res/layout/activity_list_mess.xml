@@ -14,7 +14,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="492dp"
+        android:layout_marginBottom="570dp"
         android:background="@drawable/edit_text"
         android:drawableStart="@drawable/baseline_search_24"
         android:drawablePadding="12dp"
@@ -29,10 +29,10 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="219dp"
+        android:layout_width="214dp"
         android:layout_height="82dp"
         android:layout_marginEnd="176dp"
-        android:layout_marginBottom="560dp"
+        android:layout_marginBottom="645dp"
         android:background="@drawable/backgroundapp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -40,7 +40,7 @@
     <ListView
         android:id="@+id/lvMess"
         android:layout_width="409dp"
-        android:layout_height="481dp"
+        android:layout_height="545dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

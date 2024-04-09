@@ -51,7 +51,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/edtPasswordConfirm"
+        android:id="@+id/edtFirstname"
         android:layout_width="330dp"
         android:layout_height="53dp"
         android:layout_marginStart="36dp"
@@ -59,7 +59,24 @@
         android:layout_marginBottom="224dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint="Password"
+        android:hint="First name"
+        android:inputType="text"
+        android:paddingLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edtLastname"
+        android:layout_width="330dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="144dp"
+        android:background="@drawable/edit_text"
+        android:ems="10"
+        android:hint="Last name"
         android:inputType="text"
         android:paddingLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -68,12 +85,12 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnSignUp"
         android:layout_width="330dp"
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="148dp"
+        android:layout_marginBottom="68dp"
         android:backgroundTint="#C750A5"
         android:text="Sign Up"
         app:layout_constraintBottom_toBottomOf="parent"
