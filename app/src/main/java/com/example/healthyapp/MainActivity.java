@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
+
         // Tạo kết nối Firebase
         FirebaseDBConnection connection = FirebaseDBConnection.getInstance();
 
@@ -98,6 +100,8 @@ public class MainActivity extends AppCompatActivity {
         userModel.setCreated_date(null);
         userModel.setModified_date(null);
         connection.setData(FirebaseDBConnection.USER, userModel);
+
+         */
 
         // Frame Layout
         binding = ActivityMainBinding.inflate(getLayoutInflater());

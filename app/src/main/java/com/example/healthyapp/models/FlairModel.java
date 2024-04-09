@@ -1,5 +1,7 @@
 package com.example.healthyapp.models;
 
+import androidx.annotation.NonNull;
+
 public class FlairModel {
     private String id;
     private String name;
@@ -7,6 +9,12 @@ public class FlairModel {
     public FlairModel(String id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
     }
 
     public FlairModel() {

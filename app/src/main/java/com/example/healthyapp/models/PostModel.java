@@ -25,6 +25,16 @@ public class PostModel {
         this.is_deleted = is_deleted;
     }
 
+    public PostModel(String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Timestamp created_date) {
+        this.title = title;
+        this.content = content;
+        this.likes = likes;
+        this.anonymous = anonymous;
+        this.user_id = user_id;
+        this.flair_id = flair_id;
+        this.created_date = created_date;
+    }
+
     public PostModel() {
 
     }
