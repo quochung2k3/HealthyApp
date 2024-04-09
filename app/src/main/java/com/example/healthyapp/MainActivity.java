@@ -11,6 +11,7 @@ import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
+import com.example.healthyapp.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.notification) {
                 replaceFragment(new NotificationFragment());
+            }
+            if (item.getItemId() == R.id.info) {
+                replaceFragment(new ProfileFragment());
             }
             return true;
         });
