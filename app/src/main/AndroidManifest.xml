@@ -12,9 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HealthyApp"
         tools:targetApi="31">
-        <activity
-            android:name=".ListMessActivity"
-            android:exported="false" />
+
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
