@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.models.FlairModel;
 import com.example.healthyapp.models.PostModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -58,8 +60,11 @@ public class AddPostActivity extends AppCompatActivity {
             boolean anonymous = swAnonymous.isChecked();
             String flairId = flairs.get(spFlair.getSelectedItemPosition()).getId();
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            String uid = user.getUid();
+
             // Add post to database
-            PostModel post = new PostModel(title, content, 0, anonymous, "1", flairId, timestamp);
+            PostModel post = new PostModel(title, content, 0, anonymous, uid, flairId, timestamp);
             db.setData(FirebaseDBConnection.POST, post);
             finish();
         });
