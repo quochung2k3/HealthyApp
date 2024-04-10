@@ -60,7 +60,7 @@
             android:id="@+id/avatar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:background="@drawable/common_google_signin_btn_icon_dark"/>
+            android:background="@drawable/avatar_hung"/>
 
         <TextView
             android:id="@+id/txtUsername"

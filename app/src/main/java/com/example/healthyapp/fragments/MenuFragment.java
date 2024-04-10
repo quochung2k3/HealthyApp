@@ -39,7 +39,7 @@ public class MenuFragment extends Fragment {
         ArrayList<ListMenuModel> listMenu = new ArrayList<>();
         listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Update Info"));
         listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Saved"));
-        listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Update Password"));
+        listMenu.add(new ListMenuModel(R.drawable.baseline_admin_panel_settings_24, "Update Password"));
         ListMenuAdapter listMenuAdapter = new ListMenuAdapter(getActivity(), listMenu);
         lvMenu.setAdapter(listMenuAdapter);
         lvMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -1,5 +1,6 @@
 package com.example.healthyapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,15 +35,27 @@ public class ResetPassActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(ResetPassActivity.this, "Đã gởi đến địa chỉ email của bạn", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(ResetPassActivity.this, SignInActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                    showAnnouncementDialog("Đã gởi link reset pass đến địa chỉ email của bạn");
                                 }
                             }
                         });
             }
         });
+    }
+
+    private void showAnnouncementDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thông báo");
+        builder.setMessage(message);
+        builder.setPositiveButton("Đến trang đăng nhập", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent intent = new Intent(ResetPassActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void Mapping() {
