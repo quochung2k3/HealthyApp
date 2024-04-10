@@ -1,12 +1,10 @@
 package com.example.healthyapp.adapter;
 
-import static java.security.AccessController.getContext;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,10 +35,24 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     @Override
     public void onBindViewHolder(@NonNull UserPostViewHolder holder, int position) {
         UserPostModel userPostModel = userPostList.get(position);
-        holder.imgUserPost.setImageResource(userPostModel.getImg());
+//        holder.imgUserPost.setImageResource(userPostModel.getAvatar());
+        if (userPostModel.getAvatar().isEmpty()) {
+            holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
+        } else {
+            holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
+            // TODO: set image from url
+        }
         holder.txtUserName.setText(userPostModel.getUserName());
         holder.txtPostTitle.setText(userPostModel.getPostTitle());
-        holder.imgPost.setImageResource(userPostModel.getPostImg());
+//        holder.imgPost.setImageResource(userPostModel.getPostImg());
+        if (userPostModel.getPostImg().isEmpty()) {
+            // hide image view
+            holder.imgPost.setVisibility(View.GONE);
+        } else {
+            holder.imgPost.setImageResource(R.drawable.backgroundapp);
+            // TODO: set image from url
+        }
+        holder.btnLike.setText(String.valueOf(userPostModel.getLikes()));
     }
 
     @Override
@@ -50,7 +62,8 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     public static class UserPostViewHolder extends RecyclerView.ViewHolder {
         ImageView imgUserPost, imgPost;
-        TextView txtUserName, txtPostTitle, txtPostContent;
+        TextView txtUserName, txtPostTitle;
+        Button btnLike;
 
         public UserPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,6 +71,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             imgPost = itemView.findViewById(R.id.ivPostImage);
             txtUserName = itemView.findViewById(R.id.txtUsername);
             txtPostTitle = itemView.findViewById(R.id.txtPostTitle);
+            btnLike = itemView.findViewById(R.id.btnLike);
 
         }
     }

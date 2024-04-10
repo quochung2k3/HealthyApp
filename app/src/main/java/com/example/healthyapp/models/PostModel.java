@@ -1,6 +1,8 @@
 package com.example.healthyapp.models;
 
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
 
 public class PostModel {
     private String id;
@@ -10,10 +12,10 @@ public class PostModel {
     private boolean anonymous;
     private String user_id;
     private String flair_id;
-    private Timestamp created_date;
+    private Date created_date;
     private boolean is_deleted;
 
-    public PostModel(String id, String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Timestamp created_date, boolean is_deleted) {
+    public PostModel(String id, String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Date created_date, boolean is_deleted) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -25,7 +27,7 @@ public class PostModel {
         this.is_deleted = is_deleted;
     }
 
-    public PostModel(String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Timestamp created_date) {
+    public PostModel(String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Date created_date) {
         this.title = title;
         this.content = content;
         this.likes = likes;
@@ -95,11 +97,11 @@ public class PostModel {
         this.flair_id = flair_id;
     }
 
-    public Timestamp getCreated_date() {
+    public Date getCreated_date() {
         return created_date;
     }
 
-    public void setCreated_date(Timestamp created_date) {
+    public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
 

@@ -21,9 +21,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.Timestamp;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AddPostActivity extends AppCompatActivity {
@@ -59,12 +60,11 @@ public class AddPostActivity extends AppCompatActivity {
             }
             boolean anonymous = swAnonymous.isChecked();
             String flairId = flairs.get(spFlair.getSelectedItemPosition()).getId();
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String uid = user.getUid();
 
             // Add post to database
-            PostModel post = new PostModel(title, content, 0, anonymous, uid, flairId, timestamp);
+            PostModel post = new PostModel(title, content, 0, anonymous, uid, flairId, new Date());
             db.setData(FirebaseDBConnection.POST, post);
             finish();
         });

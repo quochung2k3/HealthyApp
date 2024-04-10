@@ -1,6 +1,6 @@
 package com.example.healthyapp.models;
 
-import java.sql.Timestamp;
+import com.google.firebase.Timestamp;
 
 public class UserModel {
     private String id;

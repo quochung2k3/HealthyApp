@@ -19,8 +19,8 @@ public class TempHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_home);
         // add dummy data
-        userPostList.add(new UserPostModel(R.drawable.backgroundapp, "User 1", "Post 1", R.drawable.backgroundapp));
-        userPostList.add(new UserPostModel(R.drawable.backgroundapp, "User 2", "Post 2", R.drawable.backgroundapp));
+//        userPostList.add(new UserPostModel(R.drawable.backgroundapp, "User 1", "Post 1", R.drawable.backgroundapp));
+//        userPostList.add(new UserPostModel(R.drawable.backgroundapp, "User 2", "Post 2", R.drawable.backgroundapp));
 
         rvUserPost = findViewById(R.id.rvUserPost);
 
