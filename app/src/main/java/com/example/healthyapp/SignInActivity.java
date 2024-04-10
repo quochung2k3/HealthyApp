@@ -16,7 +16,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SignInActivity extends AppCompatActivity {
-    Button btnSignIn, btnSignUp;
+    Button btnSignIn, btnSignUp, btnResetPass;
     EditText edtEmail, edtPass;
     FirebaseAuth mAuth;
     @Override
@@ -35,6 +35,14 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        btnResetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignInActivity.this, ResetPassActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -63,6 +71,7 @@ public class SignInActivity extends AppCompatActivity {
     private void Mapping() {
         btnSignIn = (Button) findViewById(R.id.btnLogin);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
+        btnResetPass = (Button) findViewById(R.id.btnResetPass);
         edtEmail = (EditText) findViewById(R.id.edtUsername);
         edtPass = (EditText) findViewById(R.id.edtPassword);
     }
