@@ -1,6 +1,10 @@
 package com.example.healthyapp;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.os.Bundle;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,8 +14,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
+import com.example.healthyapp.adapter.ListMenuAdapter;
 import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
+import com.example.healthyapp.fragments.MenuFragment;
 import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
 import com.example.healthyapp.fragments.ProfileFragment;
@@ -19,10 +25,13 @@ import com.example.healthyapp.models.CommentModel;
 import com.example.healthyapp.models.FlairModel;
 import com.example.healthyapp.models.LikeCommentModel;
 import com.example.healthyapp.models.LikePostModel;
+import com.example.healthyapp.models.ListMenuModel;
 import com.example.healthyapp.models.MessageModel;
 import com.example.healthyapp.models.PostImageModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -178,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
 //        userModel.setCreated_date(null);
 //        userModel.setModified_date(null);
 //        connection.setData(FirebaseDBConnection.USER, userModel);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         replaceFragment(new HomeFragment());
@@ -197,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.notification) {
                 replaceFragment(new NotificationFragment());
             }
-            if (item.getItemId() == R.id.info) {
-                replaceFragment(new ProfileFragment());
+            if (item.getItemId() == R.id.menu) {
+                replaceFragment(new MenuFragment());
             }
             return true;
         });

@@ -4,18 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/backgroudlogin"
     tools:context=".SignUpActivity"
-    android:background="@drawable/backgroudlogin">
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="281dp"
-        android:layout_height="148dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginBottom="468dp"
-        android:background="@drawable/backgroundapp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="3dp">
 
     <EditText
         android:id="@+id/edtUsername"
@@ -23,7 +15,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="388dp"
+        android:layout_marginBottom="452dp"
         android:background="@drawable/edit_text"
         android:ems="10"
         android:hint="Username"
@@ -34,29 +26,12 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/edtPassword"
-        android:layout_width="330dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginBottom="308dp"
-        android:background="@drawable/edit_text"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="text"
-        android:paddingLeft="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
         android:id="@+id/edtFirstname"
         android:layout_width="330dp"
         android:layout_height="53dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="224dp"
+        android:layout_marginBottom="304dp"
         android:background="@drawable/edit_text"
         android:ems="10"
         android:hint="First name"
@@ -64,7 +39,35 @@
         android:paddingLeft="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnSignIn"
+        android:layout_width="243dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="82dp"
+        android:layout_marginEnd="82dp"
+        android:layout_marginBottom="48dp"
+        android:backgroundTint="#E13E6B"
+        android:text="Sign In"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="259dp"
+        android:layout_height="125dp"
+        android:layout_marginStart="76dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/backgroundapp"
+        app:layout_constraintBottom_toTopOf="@+id/edtUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -73,7 +76,7 @@
         android:layout_height="53dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="144dp"
+        android:layout_marginBottom="228dp"
         android:background="@drawable/edit_text"
         android:ems="10"
         android:hint="Last name"
@@ -87,14 +90,49 @@
     <Button
         android:id="@+id/btnSignUp"
         android:layout_width="330dp"
-        android:layout_height="50dp"
+        android:layout_height="52dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
-        android:layout_marginBottom="68dp"
+        android:layout_marginBottom="156dp"
         android:backgroundTint="#C750A5"
         android:text="Sign Up"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.444"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edtPassword"
+        android:layout_width="330dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="380dp"
+        android:background="@drawable/edit_text"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txtHaveAccount"
+        android:layout_width="235dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="82dp"
+        android:layout_marginEnd="82dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:text="YOU HAVE ACCOUNT?"
+        android:textColor="#6A6767"
+        android:textSize="20dp"
+        android:textStyle="italic|bold"
+        app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

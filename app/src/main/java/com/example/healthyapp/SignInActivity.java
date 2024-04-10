@@ -1,8 +1,10 @@
 package com.example.healthyapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SignInActivity extends AppCompatActivity {
-    Button btnSignIn, btnSignUp;
+    Button btnSignIn, btnSignUp, btnResetPass;
     EditText edtEmail, edtPass;
     FirebaseAuth mAuth;
     @Override
@@ -36,9 +38,30 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
                 startActivity(intent);
-                finish(); 
+                finish();
             }
         });
+        btnResetPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignInActivity.this, ResetPassActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    private void showErrorDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Lỗi");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void SignIn() {
@@ -54,7 +77,7 @@ public class SignInActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(SignInActivity.this, "Thông tin đăng nhập không hợp lệ", Toast.LENGTH_SHORT).show();
+                            showErrorDialog("Thông tin đăng nhập không hợp lệ");
                         }
                     }
                 });
@@ -63,6 +86,7 @@ public class SignInActivity extends AppCompatActivity {
     private void Mapping() {
         btnSignIn = (Button) findViewById(R.id.btnLogin);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
+        btnResetPass = (Button) findViewById(R.id.btnResetPass);
         edtEmail = (EditText) findViewById(R.id.edtUsername);
         edtPass = (EditText) findViewById(R.id.edtPassword);
     }

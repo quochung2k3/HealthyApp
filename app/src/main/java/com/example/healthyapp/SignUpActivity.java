@@ -3,10 +3,14 @@ package com.example.healthyapp;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +32,7 @@ import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    Button btnSignUp;
+    Button btnSignUp, btnSignIn;
     EditText edtEmail, edtPass, edtFirstName, edtLastName;
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
@@ -46,10 +50,19 @@ public class SignUpActivity extends AppCompatActivity {
                 SignUp();
             }
         });
+        btnSignIn.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }));
     }
 
     private void Mapping() {
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
+        btnSignIn = (Button) findViewById(R.id.btnSignIn);
         edtEmail = (EditText) findViewById(R.id.edtUsername);
         edtPass = (EditText) findViewById(R.id.edtPassword);
         edtFirstName = (EditText) findViewById(R.id.edtFirstname);
@@ -85,12 +98,38 @@ public class SignUpActivity extends AppCompatActivity {
                                             Toast.makeText(SignUpActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
-                            Toast.makeText(SignUpActivity.this, "Đăng kí thành công", Toast.LENGTH_SHORT).show();
+                            showAnnouncementDialog("Đăng ký thành công");
                         }
                         else {
-                            Toast.makeText(SignUpActivity.this, "Lỗi", Toast.LENGTH_SHORT).show();
+                            showErrorDialog("Thông tin đăng ký không hợp lệ, vui lòng kiểm lại");
                         }
                     }
                 });
+    }
+    private void showAnnouncementDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thông báo");
+        builder.setMessage(message);
+        builder.setPositiveButton("Đến trang đăng nhập", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void showErrorDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Lỗi");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
