@@ -4,15 +4,17 @@ public class ListMessModel {
     private int img;
     private String userName;
     private String mess;
+    private String id;
 
     public ListMessModel() {
 
     }
 
-    public ListMessModel(int img, String userName, String mess) {
+    public ListMessModel(int img, String userName, String mess, String id) {
         this.img = img;
         this.userName = userName;
         this.mess = mess;
+        this.id = id;
     }
 
     public int getImg() {
@@ -37,5 +39,13 @@ public class ListMessModel {
 
     public void setMess(String mess) {
         this.mess = mess;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

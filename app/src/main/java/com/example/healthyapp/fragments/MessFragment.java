@@ -1,17 +1,22 @@
 package com.example.healthyapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.ListMessAdapter;
 import com.example.healthyapp.models.ListMessModel;
@@ -68,7 +73,7 @@ public class MessFragment extends Fragment {
                                         if((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId))
                                                 || (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
                                             listMess.add(new ListMessModel(R.drawable.baseline_search_24,
-                                                    firstName + " " + lastName, "Hello"));
+                                                    firstName + " " + lastName, "Hello", userId));
                                         }
                                     }
                                     listMessAdapter.notifyDataSetChanged();
@@ -86,7 +91,16 @@ public class MessFragment extends Fragment {
 
                 });
         lvMess.setAdapter(listMessAdapter);
-
+        lvMess.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListMessModel selectedMess = listMess.get(position);
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("userName", selectedMess.getUserName());
+                intent.putExtra("id", selectedMess.getId());
+                startActivity(intent);
+            }
+        });
         return rootView;
     }
 }
