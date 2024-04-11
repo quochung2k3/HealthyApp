@@ -16,9 +16,6 @@
             android:name=".ResetPassActivity"
             android:exported="false" />
         <activity
-            android:name=".MenuActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
