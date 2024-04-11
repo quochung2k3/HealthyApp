@@ -107,6 +107,7 @@ public class SignUpActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Thông báo");
         builder.setMessage(message);
+        FirebaseAuth.getInstance().signOut();
         builder.setPositiveButton("Đến trang đăng nhập", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
