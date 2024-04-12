@@ -3,6 +3,7 @@ package com.example.healthyapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,21 +23,25 @@ import com.example.healthyapp.fragments.MenuFragment;
 import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
 import com.example.healthyapp.fragments.UpdatePassFragment;
+import com.example.healthyapp.models.MessageModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ChatActivity extends AppCompatActivity {
 
     TextView txtUsername;
-    ImageView imgBack;
+    EditText edtMess;
+    ImageView imgBack, imgSendMess;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        txtUsername = findViewById(R.id.txtUsername);
-        imgBack = findViewById(R.id.back_button);
+        Mapping();
         Intent intent = getIntent();
         if (intent != null) {
             String userName = intent.getStringExtra("userName");
-            String id = intent.getStringExtra("id");
             txtUsername.setText(userName);
         }
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +70,32 @@ public class ChatActivity extends AppCompatActivity {
                 });
             }
         });
+        imgSendMess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                MessageModel message = new MessageModel();
+                message.setContent(edtMess.getText().toString());
+                assert firebaseUser != null;
+                message.setSender_id(firebaseUser.getUid());
+                assert intent != null;
+                message.setReceiver_id(intent.getStringExtra("id"));
+                message.setIs_deleted(false);
+                FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
+                DatabaseReference databaseReference = database.getReference();
+                databaseReference.child("Message").push().setValue(message);
+                edtMess.setText("");
+            }
+        });
     }
+
+    private void Mapping() {
+        txtUsername = findViewById(R.id.txtUsername);
+        edtMess = findViewById(R.id.edtMess);
+        imgBack = findViewById(R.id.back_button);
+        imgSendMess = findViewById(R.id.imgSendMess);
+    }
+
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

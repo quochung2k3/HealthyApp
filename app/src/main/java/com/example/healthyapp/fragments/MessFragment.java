@@ -74,6 +74,7 @@ public class MessFragment extends Fragment {
                                                 || (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
                                             listMess.add(new ListMessModel(R.drawable.baseline_search_24,
                                                     firstName + " " + lastName, "Hello", userId));
+                                            break;
                                         }
                                     }
                                     listMessAdapter.notifyDataSetChanged();
