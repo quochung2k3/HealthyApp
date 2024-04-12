@@ -6,6 +6,7 @@ public class UserModel {
     private String id;
     private String first_name;
     private String last_name;
+    private String avatar;
     private String email;
     private String password;
     private Timestamp created_date;
@@ -23,6 +24,14 @@ public class UserModel {
 
     public UserModel() {
 
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getId() {

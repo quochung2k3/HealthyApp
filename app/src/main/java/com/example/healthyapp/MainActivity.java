@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.fab) {
                 Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
             if (item.getItemId() == R.id.notification) {
                 replaceFragment(new NotificationFragment());
@@ -216,5 +217,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            replaceFragment(new HomeFragment());
+        }
     }
 }

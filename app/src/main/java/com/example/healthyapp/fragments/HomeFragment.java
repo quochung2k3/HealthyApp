@@ -1,5 +1,6 @@
 package com.example.healthyapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,27 +8,34 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
+import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.UserPostAdapter;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.models.UserPostModel;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.core.FirestoreClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 public class HomeFragment extends Fragment {
     RecyclerView rvUserPost;
-    ArrayList<UserPostModel> userPostList = new ArrayList<>();
+    ArrayList<PostModel> postList = new ArrayList<>();
+    UserPostAdapter userPostAdapter = null;
     FirebaseDBConnection db = FirebaseDBConnection.getInstance();
 
     @Override
@@ -39,7 +47,7 @@ public class HomeFragment extends Fragment {
         rvUserPost = rootView.findViewById(R.id.rvUserPost);
 
         // set adapter
-        UserPostAdapter userPostAdapter = new UserPostAdapter(getActivity(), userPostList);
+        userPostAdapter = new UserPostAdapter(getActivity(), postList);
         rvUserPost.setAdapter(userPostAdapter);
 
         // set layout manager
@@ -53,52 +61,19 @@ public class HomeFragment extends Fragment {
         db.readData(FirebaseDBConnection.POST, new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                userPostList.clear();
-                List<PostModel> postList = new ArrayList<>();
+                postList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PostModel post = postSnapshot.getValue(PostModel.class);
                     post.setId(postSnapshot.getKey());
                     postList.add(post);
+                    Log.d("Post", post.getTitle());
                 }
-
-                // convert post to user post
-                for (PostModel post : postList) {
-                    UserPostModel userPost = postToUserPost(post);
-                    userPostList.add(userPost);
-                }
-
+                userPostAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private UserPostModel postToUserPost(PostModel post) {
-        UserPostModel userPost = new UserPostModel();
-        userPost.setPostTitle(post.getTitle());
-        userPost.setLikes(post.getLikes());
-        // get user name
-        db.readData(FirebaseDBConnection.USER, new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    UserModel user = userSnapshot.getValue(UserModel.class);
-                    if (user.getId().equals(post.getUser_id())) {
-                        userPost.setUserName(user.getFirst_name() + " " + user.getLast_name());
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        return userPost;
     }
 }

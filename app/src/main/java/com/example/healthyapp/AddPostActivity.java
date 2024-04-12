@@ -50,6 +50,8 @@ public class AddPostActivity extends AppCompatActivity {
         getFlairs();
 
         ibBack.setOnClickListener(v -> {
+            // set result code
+            setResult(RESULT_CANCELED);
             finish();
         });
         btnAddPost.setOnClickListener(v -> {
@@ -62,9 +64,10 @@ public class AddPostActivity extends AppCompatActivity {
             String flairId = flairs.get(spFlair.getSelectedItemPosition()).getId();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String uid = user.getUid();
+            Long timestamp = System.currentTimeMillis();
 
             // Add post to database
-            PostModel post = new PostModel(title, content, 0, anonymous, uid, flairId, new Date());
+            PostModel post = new PostModel(title, content, 0, anonymous, uid, flairId, timestamp);
             db.setData(FirebaseDBConnection.POST, post);
             finish();
         });
