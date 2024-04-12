@@ -15,15 +15,10 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.healthyapp.MainActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.SignInActivity;
-import com.example.healthyapp.SignUpActivity;
 import com.example.healthyapp.adapter.ListMenuAdapter;
-import com.example.healthyapp.adapter.ListMessAdapter;
-import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.models.ListMenuModel;
-import com.example.healthyapp.models.ListMessModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 
