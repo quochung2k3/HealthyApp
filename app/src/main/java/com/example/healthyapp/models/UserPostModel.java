@@ -1,16 +1,26 @@
 package com.example.healthyapp.models;
 
 public class UserPostModel {
-    private int img;
+    private String avatar;
     private String userName;
     private String postTitle;
-    private int postImg;
+    private String postImg;
+    int likes;
 
-    public UserPostModel(int img, String userName, String postTitle, int postImg) {
-        this.img = img;
+    public UserPostModel(String img, String userName, String postTitle, String postImg, int likes) {
+        this.avatar = img;
         this.userName = userName;
         this.postTitle = postTitle;
         this.postImg = postImg;
+        this.likes = likes;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     public String getPostTitle() {
@@ -21,32 +31,32 @@ public class UserPostModel {
         this.postTitle = postTitle;
     }
 
-    public int getPostImg() {
+    public String getPostImg() {
         return postImg;
     }
 
-    public void setPostImg(int postImg) {
+    public void setPostImg(String postImg) {
         this.postImg = postImg;
     }
 
-    public UserPostModel(int img, String userName) {
-        this.img = img;
+    public UserPostModel(String img, String userName) {
+        this.avatar = img;
         this.userName = userName;
     }
 
     public UserPostModel() {
     }
 
-    public int getImg() {
-        return img;
+    public String getAvatar() {
+        return avatar;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setImg(int img) {
-        this.img = img;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public void setUserName(String userName) {

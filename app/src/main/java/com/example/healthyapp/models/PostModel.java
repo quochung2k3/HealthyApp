@@ -1,19 +1,18 @@
 package com.example.healthyapp.models;
 
-import java.sql.Timestamp;
-
 public class PostModel {
     private String id;
     private String title;
     private String content;
     private int likes;
     private boolean anonymous;
+    private String postImg;
     private String user_id;
     private String flair_id;
-    private Timestamp created_date;
+    private Long created_date;
     private boolean is_deleted;
 
-    public PostModel(String id, String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Timestamp created_date, boolean is_deleted) {
+    public PostModel(String id, String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Long created_date, boolean is_deleted) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -23,6 +22,24 @@ public class PostModel {
         this.flair_id = flair_id;
         this.created_date = created_date;
         this.is_deleted = is_deleted;
+    }
+
+    public PostModel(String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Long created_date) {
+        this.title = title;
+        this.content = content;
+        this.likes = likes;
+        this.anonymous = anonymous;
+        this.user_id = user_id;
+        this.flair_id = flair_id;
+        this.created_date = created_date;
+    }
+
+    public String getPostImg() {
+        return postImg;
+    }
+
+    public void setPostImg(String postImg) {
+        this.postImg = postImg;
     }
 
     public PostModel() {
@@ -85,11 +102,11 @@ public class PostModel {
         this.flair_id = flair_id;
     }
 
-    public Timestamp getCreated_date() {
+    public Long getCreated_date() {
         return created_date;
     }
 
-    public void setCreated_date(Timestamp created_date) {
+    public void setCreated_date(Long created_date) {
         this.created_date = created_date;
     }
 
