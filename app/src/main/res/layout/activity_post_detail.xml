@@ -144,7 +144,9 @@
                 <ImageView
                     android:id="@+id/ivPostImage"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp" />
+                    android:layout_height="wrap_content"
+                    android:maxHeight="400dp"
+                    android:adjustViewBounds="true"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

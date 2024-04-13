@@ -2,6 +2,8 @@ package com.example.healthyapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +19,9 @@ import com.example.healthyapp.R;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.models.UserPostModel;
+import com.example.healthyapp.services.FirebaseStorageService;
 import com.example.healthyapp.utils.TimestampUtil;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostViewHolder> {
     private Context context;
     ArrayList<PostModel> postList;
+    FirebaseStorageService storageService = new FirebaseStorageService();
 
     public UserPostAdapter(Context context, ArrayList<PostModel> postList) {
         this.context = context;
@@ -64,6 +69,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         if (postModel.getPostImg() == null || postModel.getPostImg().isEmpty()) {
             holder.imgPost.setVisibility(View.GONE);
         } else {
+            holder.imgPost.setVisibility(View.VISIBLE);
             Picasso.get().load(postModel.getPostImg()).into(holder.imgPost);
         }
 
