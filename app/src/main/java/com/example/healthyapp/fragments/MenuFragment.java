@@ -3,24 +3,36 @@ package com.example.healthyapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.healthyapp.R;
 import com.example.healthyapp.SignInActivity;
 import com.example.healthyapp.adapter.ListMenuAdapter;
 import com.example.healthyapp.models.ListMenuModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -29,8 +41,48 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_menu, container, false);
+        FrameLayout frameLayout = rootView.findViewById(R.id.userHome);
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
         ListView lvMenu = rootView.findViewById(R.id.lvMenu);
+        TextView txtUsername = rootView.findViewById(R.id.txtUsername);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        assert currentUser != null;
+        String uid = currentUser.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(uid);
+        String[] username = new String[1];
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String fName = document.getString("first_name");
+                        String lName = document.getString("last_name");
+                        username[0] = fName + " " + lName;
+                        txtUsername.setText(username[0]);
+                    }
+                }
+            }
+        });
+        frameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", username[0]);
+                bundle.putString("id", uid);
+                UserHomeFragment userHomeFragment = new UserHomeFragment();
+                userHomeFragment.setArguments(bundle);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
         ArrayList<ListMenuModel> listMenu = new ArrayList<>();
         listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Update Info"));
         listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Saved"));
@@ -69,7 +121,6 @@ public class MenuFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         FirebaseAuth.getInstance().signOut();
-                        // Chuyển sang màn hình SignInActivity
                         Intent intent = new Intent(getActivity(), SignInActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);

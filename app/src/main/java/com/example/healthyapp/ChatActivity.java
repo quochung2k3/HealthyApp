@@ -5,16 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,7 +22,7 @@ import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.fragments.MenuFragment;
 import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
-import com.example.healthyapp.fragments.UpdatePassFragment;
+import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.MessageModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +39,7 @@ public class ChatActivity extends AppCompatActivity {
 
     TextView txtUsername;
     EditText edtMess;
-    ImageView imgBack, imgSendMess;
+    ImageView imgBack, imgSendMess, profile_image;
     MessAdapter messAdapter;
     List<MessageModel> listMessage;
     RecyclerView recyclerView;
@@ -68,6 +63,37 @@ public class ChatActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         readMess(firebaseUser.getUid(), intent.getStringExtra("id"));
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", intent.getStringExtra("userName"));
+                bundle.putString("id", firebaseUser.getUid());
+                UserHomeFragment userHomeFragment = new UserHomeFragment();
+                userHomeFragment.setArguments(bundle);
+                ActivityMainBinding binding;
+                binding = ActivityMainBinding.inflate(getLayoutInflater());
+                setContentView(binding.getRoot());
+                replaceFragment(userHomeFragment);
+                binding.bottomNavigationView.setBackground(null);
+                binding.bottomNavigationView.setSelectedItemId(R.id.message);
+                binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+                    if (item.getItemId() == R.id.home) {
+                        replaceFragment(new HomeFragment());
+                    }
+                    if (item.getItemId() == R.id.message) {
+                        replaceFragment(new MessFragment());
+                    }
+                    if (item.getItemId() == R.id.notification) {
+                        replaceFragment(new NotificationFragment());
+                    }
+                    if (item.getItemId() == R.id.menu) {
+                        replaceFragment(new MenuFragment());
+                    }
+                    return true;
+                });
+            }
+        });
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +147,7 @@ public class ChatActivity extends AppCompatActivity {
         edtMess = findViewById(R.id.edtMess);
         imgBack = findViewById(R.id.back_button);
         imgSendMess = findViewById(R.id.imgSendMess);
+        profile_image = findViewById(R.id.profile_image);
     }
 
     private void replaceFragment(Fragment fragment) {

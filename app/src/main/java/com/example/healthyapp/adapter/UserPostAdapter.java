@@ -7,6 +7,7 @@ import static androidx.core.content.ContextCompat.startActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.fragments.HomeFragment;
+import com.example.healthyapp.fragments.UpdatePassFragment;
+import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.models.UserPostModel;
@@ -83,10 +89,17 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         holder.imgUserPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("userName", holder.txtUserName.getText().toString());
-                intent.putExtra("id", postModel.getUser_id());
-                context.startActivity(intent);
+                String userName = holder.txtUserName.getText().toString();
+                String id = postModel.getUser_id();
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", userName);
+                bundle.putString("id", id);
+                UserHomeFragment userHomeFragment = new UserHomeFragment();
+                userHomeFragment.setArguments(bundle);
+                FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         });
 
