@@ -1,6 +1,5 @@
 package com.example.healthyapp.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,22 +14,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
-import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.UserPostAdapter;
 import com.example.healthyapp.models.PostModel;
-import com.example.healthyapp.models.UserModel;
-import com.example.healthyapp.models.UserPostModel;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.core.FirestoreClient;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
 
 public class HomeFragment extends Fragment {
     RecyclerView rvUserPost;

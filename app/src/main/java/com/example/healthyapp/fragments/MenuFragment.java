@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +22,6 @@ import com.example.healthyapp.SignInActivity;
 import com.example.healthyapp.adapter.ListMenuAdapter;
 import com.example.healthyapp.models.ListMenuModel;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,14 +67,15 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
+                bundle.putInt("state", 0);
                 bundle.putString("userName", username[0]);
                 bundle.putString("id", uid);
                 UserHomeFragment userHomeFragment = new UserHomeFragment();
                 userHomeFragment.setArguments(bundle);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
                 fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
                 fragmentTransaction.commit();
             }
         });
@@ -104,7 +101,7 @@ public class MenuFragment extends Fragment {
                     FragmentManager fragmentManager = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.frame_layout, new UpdatePassFragment());
-                    fragmentTransaction.addToBackStack(null); // Để có thể quay lại Fragment trước đó nếu cần
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
             }

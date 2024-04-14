@@ -1,40 +1,27 @@
 package com.example.healthyapp.adapter;
 
-import static android.app.PendingIntent.getActivity;
-
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
-import com.example.healthyapp.fragments.HomeFragment;
-import com.example.healthyapp.fragments.UpdatePassFragment;
 import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
-import com.example.healthyapp.models.UserPostModel;
 import com.example.healthyapp.services.FirebaseStorageService;
 import com.example.healthyapp.utils.TimestampUtil;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 

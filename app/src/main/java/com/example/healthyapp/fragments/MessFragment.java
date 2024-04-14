@@ -5,8 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +19,8 @@ import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.ListMessAdapter;
 import com.example.healthyapp.models.ListMessModel;
 import com.example.healthyapp.models.MessageModel;
-import com.example.healthyapp.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
 
@@ -99,6 +94,7 @@ public class MessFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), ChatActivity.class);
                 intent.putExtra("userName", selectedMess.getUserName());
                 intent.putExtra("id", selectedMess.getId());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
             }
         });
