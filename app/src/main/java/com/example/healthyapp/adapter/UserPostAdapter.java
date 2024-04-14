@@ -1,5 +1,9 @@
 package com.example.healthyapp.adapter;
 
+import static android.app.PendingIntent.getActivity;
+
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,12 +14,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
+import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.models.UserPostModel;
@@ -72,6 +79,16 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             holder.imgPost.setVisibility(View.VISIBLE);
             Picasso.get().load(postModel.getPostImg()).into(holder.imgPost);
         }
+
+        holder.imgUserPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("userName", holder.txtUserName.getText().toString());
+                intent.putExtra("id", postModel.getUser_id());
+                context.startActivity(intent);
+            }
+        });
 
         // onItemClick
         holder.itemView.setOnClickListener(v -> {
