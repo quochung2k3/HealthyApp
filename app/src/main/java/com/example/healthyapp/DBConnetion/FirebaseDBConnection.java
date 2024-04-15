@@ -18,6 +18,7 @@ public class FirebaseDBConnection {
     public static final String POST = "Post";
     public static final String POST_IMAGE = "Post_Image";
     public static final String USER = "User";
+    public static final String NOTI = "Notification";
 
     // singelton
     private FirebaseDBConnection() {

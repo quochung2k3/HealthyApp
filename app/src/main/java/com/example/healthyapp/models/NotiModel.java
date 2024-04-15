@@ -3,27 +3,27 @@ package com.example.healthyapp.models;
 import java.sql.Timestamp;
 
 public class NotiModel {
-    private int user_id;
+    private String user_id;
     private String img;
     private String content;
-    private Timestamp going_date_time;
+    private Timestamp created_date;
 
-    public NotiModel(int user_id, String img, String content, Timestamp going_date_time) {
+    public NotiModel(String user_id, String img, String content, Timestamp created_date) {
         this.user_id = user_id;
         this.img = img;
         this.content = content;
-        this.going_date_time = going_date_time;
+        this.created_date = created_date;
     }
 
     public NotiModel() {
 
     }
 
-    public int getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 
@@ -43,11 +43,11 @@ public class NotiModel {
         this.content = content;
     }
 
-    public Timestamp getGoing_date_time() {
-        return going_date_time;
+    public Timestamp getCreated_date() {
+        return created_date;
     }
 
     public void setGoing_date_time(Timestamp going_date_time) {
-        this.going_date_time = going_date_time;
+        this.created_date = going_date_time;
     }
 }
