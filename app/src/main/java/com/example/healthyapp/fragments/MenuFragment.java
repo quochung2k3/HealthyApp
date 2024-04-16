@@ -113,7 +113,7 @@ public class MenuFragment extends Fragment {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
                 bottomSheetDialog.setContentView(bottomSheetView);
 
-                Button btnConfirmLogout = bottomSheetView.findViewById(R.id.btnConfirmLogout);
+                Button btnConfirmLogout = bottomSheetView.findViewById(R.id.btnConfirm);
                 btnConfirmLogout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -125,7 +125,7 @@ public class MenuFragment extends Fragment {
                     }
                 });
 
-                Button btnCancelLogout = bottomSheetView.findViewById(R.id.btnCancelLogout);
+                Button btnCancelLogout = bottomSheetView.findViewById(R.id.btnCancel);
                 btnCancelLogout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -68,7 +68,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
                 bundle.putString("userName", intent.getStringExtra("userName"));
-                bundle.putString("id", firebaseUser.getUid());
+                bundle.putString("id", intent.getStringExtra("id"));
                 UserHomeFragment userHomeFragment = new UserHomeFragment();
                 userHomeFragment.setArguments(bundle);
                 ActivityMainBinding binding;
