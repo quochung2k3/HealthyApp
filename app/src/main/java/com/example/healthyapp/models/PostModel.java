@@ -1,10 +1,15 @@
 package com.example.healthyapp.models;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class PostModel {
     private String id;
     private String title;
     private String content;
-    private int likes;
+    private Map<String, Integer> user_likes = new HashMap<>();
     private boolean anonymous;
     private String postImg;
     private String user_id;
@@ -12,11 +17,10 @@ public class PostModel {
     private Long created_date;
     private boolean is_deleted;
 
-    public PostModel(String id, String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Long created_date, boolean is_deleted) {
+    public PostModel(String id, String title, String content, boolean anonymous, String user_id, String flair_id, Long created_date, boolean is_deleted) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.likes = likes;
         this.anonymous = anonymous;
         this.user_id = user_id;
         this.flair_id = flair_id;
@@ -24,14 +28,21 @@ public class PostModel {
         this.is_deleted = is_deleted;
     }
 
-    public PostModel(String title, String content, int likes, boolean anonymous, String user_id, String flair_id, Long created_date) {
+    public PostModel(String title, String content, boolean anonymous, String user_id, String flair_id, Long created_date) {
         this.title = title;
         this.content = content;
-        this.likes = likes;
         this.anonymous = anonymous;
         this.user_id = user_id;
         this.flair_id = flair_id;
         this.created_date = created_date;
+    }
+
+    public Map<String, Integer> getUser_likes() {
+        return user_likes;
+    }
+
+    public void setUser_likes(Map<String, Integer> user_likes) {
+        this.user_likes = user_likes;
     }
 
     public String getPostImg() {
@@ -68,14 +79,6 @@ public class PostModel {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
     }
 
     public boolean isAnonymous() {

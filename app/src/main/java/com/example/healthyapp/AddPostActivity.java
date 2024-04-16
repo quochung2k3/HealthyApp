@@ -120,7 +120,7 @@ public class AddPostActivity extends AppCompatActivity {
             Long timestamp = System.currentTimeMillis();
 
             // Add post to database
-            PostModel post = new PostModel(title, content, 0, anonymous, uid, flairId, timestamp);
+            PostModel post = new PostModel(title, content, anonymous, uid, flairId, timestamp);
 
 
             // Upload image to Firebase Storage
