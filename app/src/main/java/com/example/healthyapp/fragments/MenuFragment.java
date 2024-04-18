@@ -3,34 +3,107 @@ package com.example.healthyapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.SignInActivity;
 import com.example.healthyapp.adapter.ListMenuAdapter;
 import com.example.healthyapp.models.ListMenuModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 public class MenuFragment extends Fragment {
+    FirebaseFirestore firestore;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_menu, container, false);
+        FrameLayout frameLayout = rootView.findViewById(R.id.userHome);
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
         ListView lvMenu = rootView.findViewById(R.id.lvMenu);
+        TextView txtUsername = rootView.findViewById(R.id.txtUsername);
+        ImageView imgAvatar = rootView.findViewById(R.id.avatar);
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
+        assert currentUser != null;
+        String uid = currentUser.getUid();
+        DocumentReference document = firestore.collection("users").document(uid);
+        document.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot doc = task.getResult();
+                if (doc.exists()) {
+                    String linkImg = doc.getString("imgAvatar");
+                    assert linkImg != null;
+                    if (linkImg.equals("")) {
+                        imgAvatar.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
+                    } else {
+                        Glide.with(requireContext())
+                                .load(linkImg)
+                                .circleCrop()
+                                .into(imgAvatar);
+                    }
+                }
+            }
+        });
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(uid);
+        String[] username = new String[1];
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String fName = document.getString("first_name");
+                        String lName = document.getString("last_name");
+                        username[0] = fName + " " + lName;
+                        txtUsername.setText(username[0]);
+                    }
+                }
+            }
+        });
+        frameLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", username[0]);
+                bundle.putString("id", uid);
+                UserHomeFragment userHomeFragment = new UserHomeFragment();
+                userHomeFragment.setArguments(bundle);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
+                fragmentTransaction.commit();
+            }
+        });
+
         ArrayList<ListMenuModel> listMenu = new ArrayList<>();
         listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Update Info"));
         listMenu.add(new ListMenuModel(R.drawable.baseline_search_24, "Saved"));
@@ -52,7 +125,7 @@ public class MenuFragment extends Fragment {
                     FragmentManager fragmentManager = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.frame_layout, new UpdatePassFragment());
-                    fragmentTransaction.addToBackStack(null); // Để có thể quay lại Fragment trước đó nếu cần
+                    fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
                 }
             }
@@ -64,12 +137,11 @@ public class MenuFragment extends Fragment {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
                 bottomSheetDialog.setContentView(bottomSheetView);
 
-                Button btnConfirmLogout = bottomSheetView.findViewById(R.id.btnConfirmLogout);
+                Button btnConfirmLogout = bottomSheetView.findViewById(R.id.btnConfirm);
                 btnConfirmLogout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         FirebaseAuth.getInstance().signOut();
-                        // Chuyển sang màn hình SignInActivity
                         Intent intent = new Intent(getActivity(), SignInActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
@@ -77,7 +149,7 @@ public class MenuFragment extends Fragment {
                     }
                 });
 
-                Button btnCancelLogout = bottomSheetView.findViewById(R.id.btnCancelLogout);
+                Button btnCancelLogout = bottomSheetView.findViewById(R.id.btnCancel);
                 btnCancelLogout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

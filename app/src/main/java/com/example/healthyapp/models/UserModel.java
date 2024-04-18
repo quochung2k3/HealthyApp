@@ -11,8 +11,10 @@ public class UserModel {
     private String password;
     private Timestamp created_date;
     private Timestamp modified_date;
+    private String imgAvatar;
+    private String imgBackground;
 
-    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date) {
+    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date, String imgAvatar, String imgBackground) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -20,6 +22,8 @@ public class UserModel {
         this.password = password;
         this.created_date = created_date;
         this.modified_date = modified_date;
+        this.imgAvatar = imgAvatar;
+        this.imgBackground = imgBackground;
     }
 
     public UserModel() {
@@ -88,5 +92,21 @@ public class UserModel {
 
     public void setModified_date(Timestamp modified_date) {
         this.modified_date = modified_date;
+    }
+
+    public String getImgAvatar() {
+        return imgAvatar;
+    }
+
+    public void setImgAvatar(String imgAvatar) {
+        this.imgAvatar = imgAvatar;
+    }
+
+    public String getImgBackground() {
+        return imgBackground;
+    }
+
+    public void setImgBackground(String imgBackground) {
+        this.imgBackground = imgBackground;
     }
 }

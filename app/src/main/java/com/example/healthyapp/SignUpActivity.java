@@ -82,6 +82,8 @@ public class SignUpActivity extends AppCompatActivity {
                             user.setLast_name(lastName);
                             user.setEmail(email);
                             user.setPassword(password);
+                            user.setImgAvatar("");
+                            user.setImgBackground("");
                             documentReference.set(user)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override

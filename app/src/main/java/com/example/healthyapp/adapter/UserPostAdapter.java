@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
+import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
-import com.example.healthyapp.models.UserPostModel;
 import com.example.healthyapp.services.FirebaseStorageService;
 import com.example.healthyapp.utils.TimestampUtil;
 import com.google.android.gms.tasks.Task;
@@ -125,6 +128,23 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             holder.imgPost.setVisibility(View.VISIBLE);
             Picasso.get().load(postModel.getPostImg()).into(holder.imgPost);
         }
+
+        holder.imgUserPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userName = holder.txtUserName.getText().toString();
+                String id = postModel.getUser_id();
+                Bundle bundle = new Bundle();
+                bundle.putString("userName", userName);
+                bundle.putString("id", id);
+                UserHomeFragment userHomeFragment = new UserHomeFragment();
+                userHomeFragment.setArguments(bundle);
+                FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
 
         // onItemClick
         holder.itemView.setOnClickListener(v -> {
