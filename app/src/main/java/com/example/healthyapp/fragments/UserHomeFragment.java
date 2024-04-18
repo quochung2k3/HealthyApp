@@ -138,6 +138,7 @@ public class UserHomeFragment extends Fragment {
                 }
             }
         });
+
         DocumentReference document = firestore.collection("users").document(id);
         document.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -163,11 +164,20 @@ public class UserHomeFragment extends Fragment {
         btnChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("test UID: ", id);
-                Intent intent = new Intent(getActivity(), ChatActivity.class);
-                intent.putExtra("userName", txtUsername.getText().toString());
-                intent.putExtra("id", id);
-                startActivity(intent);
+                DocumentReference document = firestore.collection("users").document(id);
+                document.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists()) {
+                            String linkImg = doc.getString("imgAvatar");
+                            Intent intent = new Intent(getActivity(), ChatActivity.class);
+                            intent.putExtra("linkImg", linkImg);
+                            intent.putExtra("userName", txtUsername.getText().toString());
+                            intent.putExtra("id", id);
+                            startActivity(intent);
+                        }
+                    }
+                });
             }
         });
         return rootView;
