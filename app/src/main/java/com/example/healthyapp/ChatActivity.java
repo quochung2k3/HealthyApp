@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.healthyapp.adapter.MessAdapter;
 import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
@@ -55,6 +56,16 @@ public class ChatActivity extends AppCompatActivity {
         intent = getIntent();
         if (intent != null) {
             String userName = intent.getStringExtra("userName");
+            String linkImg = intent.getStringExtra("linkImg");
+            if(linkImg.equals("")) {
+                profile_image.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
+            }
+            else {
+                Glide.with(this)
+                        .load(linkImg)
+                        .circleCrop()
+                        .into(profile_image);
+            }
             txtUsername.setText(userName);
         }
         recyclerView = findViewById(R.id.recyclerView);

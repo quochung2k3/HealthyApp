@@ -1,7 +1,7 @@
 package com.example.healthyapp.models;
 
 public class ListMessModel {
-    private int img;
+    private String img;
     private String userName;
     private String mess;
     private String id;
@@ -10,18 +10,18 @@ public class ListMessModel {
 
     }
 
-    public ListMessModel(int img, String userName, String mess, String id) {
+    public ListMessModel(String img, String userName, String mess, String id) {
         this.img = img;
         this.userName = userName;
         this.mess = mess;
         this.id = id;
     }
 
-    public int getImg() {
+    public String getImg() {
         return img;
     }
 
-    public void setImg(int img) {
+    public void setImg(String img) {
         this.img = img;
     }
 

@@ -1,5 +1,6 @@
 package com.example.healthyapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.healthyapp.R;
 import com.example.healthyapp.models.ListMessModel;
 
@@ -20,6 +22,8 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
     public ListMessAdapter(@NonNull Context context, ArrayList<ListMessModel> listMessView) {
         super(context, 0, listMessView);
     }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
     @NonNull
     @Override
     public View getView(int position, @NonNull View convertView, @NonNull ViewGroup parent) {
@@ -32,7 +36,15 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
         TextView userName = listItemView.findViewById(R.id.txtUsername);
         TextView mess = listItemView.findViewById(R.id.txtMess);
         if (currentMess != null) {
-            imageButton.setImageResource(currentMess.getImg());
+            if(currentMess.getImg().equals("")) {
+                imageButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.baseline_account_circle_24));
+            }
+            else {
+                Glide.with(getContext())
+                        .load(currentMess.getImg())
+                        .circleCrop()
+                        .into(imageButton);
+            }
             userName.setText(currentMess.getUserName());
             mess.setText(currentMess.getMess());
         }

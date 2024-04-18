@@ -8,15 +8,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.SignInActivity;
 import com.example.healthyapp.adapter.ListMenuAdapter;
@@ -33,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 public class MenuFragment extends Fragment {
+    FirebaseFirestore firestore;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,11 +46,31 @@ public class MenuFragment extends Fragment {
         Button btnLogout = rootView.findViewById(R.id.btnLogout);
         ListView lvMenu = rootView.findViewById(R.id.lvMenu);
         TextView txtUsername = rootView.findViewById(R.id.txtUsername);
+        ImageView imgAvatar = rootView.findViewById(R.id.avatar);
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        firestore = FirebaseFirestore.getInstance();
         assert currentUser != null;
         String uid = currentUser.getUid();
+        DocumentReference document = firestore.collection("users").document(uid);
+        document.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot doc = task.getResult();
+                if (doc.exists()) {
+                    String linkImg = doc.getString("imgAvatar");
+                    assert linkImg != null;
+                    if (linkImg.equals("")) {
+                        imgAvatar.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
+                    } else {
+                        Glide.with(requireContext())
+                                .load(linkImg)
+                                .circleCrop()
+                                .into(imgAvatar);
+                    }
+                }
+            }
+        });
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("users").document(uid);
         String[] username = new String[1];
@@ -67,7 +92,6 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putInt("state", 0);
                 bundle.putString("userName", username[0]);
                 bundle.putString("id", uid);
                 UserHomeFragment userHomeFragment = new UserHomeFragment();
