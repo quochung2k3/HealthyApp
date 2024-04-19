@@ -8,25 +8,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.ListMessAdapter;
 import com.example.healthyapp.models.ListMessModel;
 import com.example.healthyapp.models.MessageModel;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,8 +37,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MessFragment extends Fragment {
     FirebaseFirestore firestore;
@@ -60,51 +53,8 @@ public class MessFragment extends Fragment {
         lvMess = rootView.findViewById(R.id.lvMess);
         listMessAdapter = new ListMessAdapter(getActivity(), listMess);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference usersRef = db.collection("users");
+        reloadDataFromFirebase();
 
-        usersRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    listMess.clear();
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String userId = documentSnapshot.getId();
-                        assert firebaseUser != null;
-                        String firstName = documentSnapshot.getString("first_name");
-                        String lastName = documentSnapshot.getString("last_name");
-                        String imgLink = documentSnapshot.getString("imgAvatar");
-                        if(!userId.equals(firebaseUser.getUid())) {
-                            FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-                            DatabaseReference databaseReferenceMess = database.getReference().child("Message");
-                            Log.d("HungTest", databaseReferenceMess.toString());
-                            databaseReferenceMess.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
-                                        assert messageModel != null;
-                                        if((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId))
-                                                || (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
-                                            if(!messageModel.isIs_deleted()) {
-                                                listMess.add(new ListMessModel(imgLink,
-                                                        firstName + " " + lastName, "Hello", userId));
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    listMessAdapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-
-                });
         lvMess.setAdapter(listMessAdapter);
         lvMess.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -176,11 +126,11 @@ public class MessFragment extends Fragment {
 
     private void updateMessageIsDeleted(String id, String myId, int position) {
         DatabaseReference messagesRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message");
-        messagesRef.addValueEventListener(new ValueEventListener() {
+        messagesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    MessageModel message = snapshot.getValue(MessageModel.class); // Giả sử bạn có một lớp Message
+                    MessageModel message = snapshot.getValue(MessageModel.class);
 
                     if (message != null) {
                         if ((message.getReceiver_id().equals(myId) && message.getSender_id().equals(id)) ||
@@ -189,13 +139,57 @@ public class MessFragment extends Fragment {
                         }
                     }
                 }
-//                listMess.remove(position);
+                reloadDataFromFirebase();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Xử lý lỗi nếu có
+
             }
         });
+    }
+    private void reloadDataFromFirebase() {
+        listMess.clear();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersRef = db.collection("users");
+
+        usersRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String userId = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("first_name");
+                        String lastName = documentSnapshot.getString("last_name");
+                        String imgLink = documentSnapshot.getString("imgAvatar");
+                        if (!userId.equals(firebaseUser.getUid())) {
+                            FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
+                            DatabaseReference databaseReferenceMess = database.getReference().child("Message");
+                            databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
+                                        if (messageModel != null && !messageModel.isIs_deleted_by_me()) {
+                                            if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId)) ||
+                                                    (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
+                                                listMess.add(new ListMessModel(imgLink, firstName + " " + lastName, "Hello", userId));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    listMessAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Xử lý lỗi nếu có
+                });
     }
 }
