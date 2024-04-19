@@ -2,6 +2,7 @@ package com.example.healthyapp.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -69,6 +72,7 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                 if(isSeen == false) {
                     Log.d("TEST SUCCESS", "TEST SUCCESS");
                     imgTick.setImageDrawable(getContext().getResources().getDrawable(R.drawable.baseline_brightness_1_24));
+                    mess.setTypeface(null, Typeface.BOLD);
                 }
                 else {
                     Log.d("TEST FAIL", "TEST FAIL");
@@ -81,6 +85,36 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
             }
         });
 
+        databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<MessageModel> messageModels = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    MessageModel messageModel = snapshot.getValue(MessageModel.class);
+                    if (messageModel != null) {
+                        messageModels.add(messageModel);
+                    }
+                }
+
+                Collections.reverse(messageModels);
+
+                for (MessageModel messageModel : messageModels) {
+                    if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(currentMess.getId())) ||
+                            (messageModel.getSender_id().equals(currentMess.getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
+                        if((!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
+                                || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())) {
+                            mess.setText(messageModel.getContent());
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Xử lý lỗi
+            }
+        });
 
         if (currentMess != null) {
             if(currentMess.getImg().equals("")) {
@@ -93,7 +127,6 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                         .into(imageButton);
             }
             userName.setText(currentMess.getUserName());
-            mess.setText(currentMess.getMess());
         }
         return listItemView;
     }

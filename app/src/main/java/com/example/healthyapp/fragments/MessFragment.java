@@ -179,7 +179,7 @@ public class MessFragment extends Fragment {
                                                     (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
                                                 if((!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
                                                         || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())) {
-                                                    listMess.add(new ListMessModel(imgLink, firstName + " " + lastName, "Hello", userId));
+                                                    listMess.add(new ListMessModel(imgLink, firstName + " " + lastName, "", userId));
                                                     break;
                                                 }
                                             }
