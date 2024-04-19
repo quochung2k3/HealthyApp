@@ -64,6 +64,25 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MessageModel message = listMessage.get(position);
         holder.message.setText(message.getContent());
+        DatabaseReference messageRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message").child(message.getId());
+        Map<String, Object> updateData = new HashMap<>();
+        if(message.getReceiver_id().equals(firebaseUser.getUid())) {
+            updateData.put("is_seen", true);
+        }
+        messageRef.updateChildren(updateData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+        Log.d("TEST LINK DB", FirebaseDatabase.getInstance().toString());
         if (getItemViewType(position) == MSG_TYPE_LEFT) {
             firestore = FirebaseFirestore.getInstance();
             DocumentReference document = firestore.collection("users").document(message.getSender_id());
@@ -100,7 +119,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
             btnConfirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showAnnouncementDialog(message.getId());
+                    showAnnouncementDialog(message.getId(), message.getSender_id());
                     Log.d("TEST UID MESS", message.getId());
                     bottomSheetDialog.dismiss();
                 }
@@ -115,7 +134,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
         });
     }
 
-    private void showAnnouncementDialog(String id) {
+    private void showAnnouncementDialog(String id, String sender_id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Thông báo");
         builder.setMessage("Tin nhắn sau khi xoá không thể phục hồi được, bạn có chắc chắn muốn xoá?");
@@ -124,7 +143,13 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
                 DatabaseReference messageRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message").child(id);
                 Log.d("TEST LINK DB", FirebaseDatabase.getInstance().toString());
                 Map<String, Object> updateData = new HashMap<>();
-                updateData.put("is_deleted", true);
+                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                if(sender_id.equals(firebaseUser.getUid())) {
+                    updateData.put("is_deleted_by_me", true);
+                }
+                else {
+                    updateData.put("is_deleted_by_other", true);
+                }
                 messageRef.updateChildren(updateData)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
