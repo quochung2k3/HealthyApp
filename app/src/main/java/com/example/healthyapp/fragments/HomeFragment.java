@@ -71,23 +71,5 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-//        db.readData(FirebaseDBConnection.POST, new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                postList.clear();
-//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                    PostModel post = postSnapshot.getValue(PostModel.class);
-//                    post.setId(postSnapshot.getKey());
-//                    postList.add(post);
-//                    Log.d("Post", post.getTitle());
-//                }
-//                userPostAdapter.notifyDataSetChanged();
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 }

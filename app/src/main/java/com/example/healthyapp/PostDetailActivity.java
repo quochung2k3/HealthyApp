@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -74,6 +76,11 @@ public class PostDetailActivity extends AppCompatActivity {
         });
         btnLike = findViewById(R.id.btnLike);
         btnComment = findViewById(R.id.btnComment);
+        btnComment.setOnClickListener(v -> {
+            edtComment.requestFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(edtComment, InputMethodManager.SHOW_IMPLICIT);
+        });
         commentAdapter = new CommentAdapter(this, commentList);
         rvComment.setAdapter(commentAdapter);
         rvComment.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));

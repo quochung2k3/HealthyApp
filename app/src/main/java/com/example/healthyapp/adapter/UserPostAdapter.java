@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -163,6 +165,35 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             intent.putExtra("post_id", postModel.getId());
             context.startActivity(intent);
         });
+
+        // menu item
+        holder.ibMore.setOnClickListener(v -> {
+            // show menu
+            showPopupMenu(v, postModel);
+        });
+    }
+
+    private void showPopupMenu(View v, PostModel postModel) {
+        PopupMenu popupMenu = new androidx.appcompat.widget.PopupMenu(context, v);
+        popupMenu.inflate(R.menu.post_menu);
+        // hide delete option if post is not created by current user
+        if (!postModel.getUser_id().equals(currentUser)) {
+            popupMenu.getMenu().findItem(R.id.post_delete).setVisible(false);
+        }
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.post_delete) {
+                // set post is_deleted = true
+                DatabaseReference postRef = db.getReference("Post").child(postModel.getId());
+                postRef.child("is_deleted").setValue(true);
+                postList.remove(postModel);
+                notifyDataSetChanged();
+            } else if (id == R.id.post_save) {
+                // save post
+            }
+            return false;
+        });
+        popupMenu.show();
     }
 
     @Override
@@ -174,6 +205,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         ImageView imgUserPost, imgPost;
         TextView txtUserName, txtPostTitle, txtDate;
         Button btnLike;
+        ImageButton ibMore;
 
         public UserPostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -183,6 +215,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             txtPostTitle = itemView.findViewById(R.id.txtPostTitle);
             txtDate = itemView.findViewById(R.id.txtDate);
             btnLike = itemView.findViewById(R.id.btnLike);
+            ibMore = itemView.findViewById(R.id.ibMore);
         }
     }
 }
