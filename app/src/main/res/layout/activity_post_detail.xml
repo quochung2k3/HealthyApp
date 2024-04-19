@@ -163,12 +163,11 @@
 
                     <Button
                         android:id="@+id/btnComment"
-                        android:layout_width="120dp"
+                        android:layout_width="70dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:layout_toEndOf="@+id/btnLike"
-                        android:drawableLeft="@drawable/baseline_comment_24"
-                        android:text="123" />
+                        android:drawableLeft="@drawable/baseline_comment_24" />
 
                     <Button
                         android:id="@+id/btnShare"

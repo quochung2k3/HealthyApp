@@ -198,22 +198,28 @@ public class PostDetailActivity extends AppCompatActivity {
                 PostModel post = snapshot.getValue(PostModel.class);
                 post.setId(snapshot.getKey());
                 taskCompletionSource.setResult(post);
-                // get user
-                Log.d("User ID", post.getUser_id());
-                FirebaseFirestore.getInstance().collection("users").document(post.getUser_id()).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        UserModel userModel = task.getResult().toObject(UserModel.class);
-                        String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
-                        txtUserName.setText(userName);
-                        if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
-                            imgAvatar.setImageResource(R.drawable.backgroundapp);
-                        } else {
-//                            Picasso.get().load(userModel.getImgAvatar()).into(imgAvatar);
-                            Glide.with(PostDetailActivity.this).load(userModel.getImgAvatar()).circleCrop().into(imgAvatar);
 
+                if (post.isAnonymous()) {
+                    txtUserName.setText("Người đăng ẩn danh");
+                    imgAvatar.setImageResource(R.drawable.backgroundapp);
+                } else {
+                    // get user
+                    Log.d("User ID", post.getUser_id());
+                    FirebaseFirestore.getInstance().collection("users").document(post.getUser_id()).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            UserModel userModel = task.getResult().toObject(UserModel.class);
+                            String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
+                            txtUserName.setText(userName);
+                            if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
+                                imgAvatar.setImageResource(R.drawable.backgroundapp);
+                            } else {
+//                            Picasso.get().load(userModel.getImgAvatar()).into(imgAvatar);
+                                Glide.with(PostDetailActivity.this).load(userModel.getImgAvatar()).circleCrop().into(imgAvatar);
+
+                            }
                         }
-                    }
-                });
+                    });
+                }
                 // get flair
                 db.readData(FirebaseDBConnection.FLAIR, new ValueEventListener() {
                     @Override

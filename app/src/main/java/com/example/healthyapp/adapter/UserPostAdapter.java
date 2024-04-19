@@ -60,24 +60,32 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     @Override
     public void onBindViewHolder(@NonNull UserPostViewHolder holder, int position) {
-        // get user
-        FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                UserModel userModel = task.getResult().toObject(UserModel.class);
-                String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
-                holder.txtUserName.setText(userName);
-                if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
-                    holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
-                } else {
-//                    Picasso.get().load(userModel.getImgAvatar()).into(holder.imgUserPost);
-                    Glide.with(context).load(userModel.getImgAvatar()).circleCrop().into(holder.imgUserPost);
-                }
-            }
-        });
-
         // load post
         PostModel postModel = postList.get(position);
         holder.txtPostTitle.setText(postModel.getTitle());
+
+
+        if (postModel.isAnonymous()) {
+            holder.txtUserName.setText("Người đăng ẩn danh");
+            holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
+        } else { // get user
+            FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    UserModel userModel = task.getResult().toObject(UserModel.class);
+                    String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
+
+                    holder.txtUserName.setText(userName);
+                    if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
+                        holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
+                    } else {
+//                    Picasso.get().load(userModel.getImgAvatar()).into(holder.imgUserPost);
+                        Glide.with(context).load(userModel.getImgAvatar()).circleCrop().into(holder.imgUserPost);
+                    }
+                }
+            });
+        }
+
+
 
         // get likes
         int likes = postModel.getUser_likes().size();
