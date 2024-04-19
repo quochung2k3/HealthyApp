@@ -180,7 +180,10 @@ public class ChatActivity extends AppCompatActivity {
                     assert message != null;
                     if((message.getReceiver_id().equals(myId) && message.getSender_id().equals(userId))
                             || (message.getReceiver_id().equals(userId) && message.getSender_id().equals(myId))) {
-                        listMessage.add(message);
+                        if(!message.isIs_deleted()) {
+                            message.setId(dataSnapshot.getKey());
+                            listMessage.add(message);
+                        }
                     }
                     messAdapter = new MessAdapter(ChatActivity.this, listMessage);
                     recyclerView.setAdapter(messAdapter);

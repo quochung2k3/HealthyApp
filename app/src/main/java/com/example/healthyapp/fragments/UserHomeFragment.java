@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.models.ListMessModel;
+import com.example.healthyapp.models.NotiModel;
 import com.example.healthyapp.services.FirebaseStorageService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +42,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserHomeFragment extends Fragment {
