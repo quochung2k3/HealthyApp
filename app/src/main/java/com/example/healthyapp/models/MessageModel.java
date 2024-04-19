@@ -8,15 +8,19 @@ public class MessageModel {
     private String receiver_id;
     private String content;
     private Timestamp created_date;
-    private boolean is_deleted;
+    private boolean is_deleted_by_me;
+    private boolean is_deleted_by_other;
+    private boolean is_seen;
 
-    public MessageModel(String id, String sender_id, String receiver_id, String content, Timestamp created_date, boolean is_deleted) {
+    public MessageModel(String id, String sender_id, String receiver_id, String content, Timestamp created_date, boolean is_deleted_by_me, boolean is_deleted_by_other, boolean is_seen) {
         this.id = id;
         this.sender_id = sender_id;
         this.receiver_id = receiver_id;
         this.content = content;
         this.created_date = created_date;
-        this.is_deleted = is_deleted;
+        this.is_deleted_by_me = is_deleted_by_me;
+        this.is_deleted_by_other = is_deleted_by_other;
+        this.is_seen = is_seen;
     }
 
     public MessageModel() {
@@ -63,11 +67,27 @@ public class MessageModel {
         this.created_date = created_date;
     }
 
-    public boolean isIs_deleted() {
-        return is_deleted;
+    public boolean isIs_deleted_by_me() {
+        return is_deleted_by_me;
     }
 
-    public void setIs_deleted(boolean is_deleted) {
-        this.is_deleted = is_deleted;
+    public void setIs_deleted_by_me(boolean is_deleted_by_me) {
+        this.is_deleted_by_me = is_deleted_by_me;
+    }
+
+    public boolean isIs_deleted_by_other() {
+        return is_deleted_by_other;
+    }
+
+    public void setIs_deleted_by_other(boolean is_deleted_by_other) {
+        this.is_deleted_by_other = is_deleted_by_other;
+    }
+
+    public boolean isIs_seen() {
+        return is_seen;
+    }
+
+    public void setIs_seen(boolean is_seen) {
+        this.is_seen = is_seen;
     }
 }

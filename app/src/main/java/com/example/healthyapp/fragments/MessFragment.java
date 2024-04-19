@@ -135,7 +135,12 @@ public class MessFragment extends Fragment {
                     if (message != null) {
                         if ((message.getReceiver_id().equals(myId) && message.getSender_id().equals(id)) ||
                                 (message.getReceiver_id().equals(id) && message.getSender_id().equals(myId))) {
-                            snapshot.getRef().child("is_deleted").setValue(true);
+                            if(message.getSender_id().equals(myId)) {
+                                snapshot.getRef().child("is_deleted_by_me").setValue(true);
+                            }
+                            if(message.getReceiver_id().equals(myId)) {
+                                snapshot.getRef().child("is_deleted_by_other").setValue(true);
+                            }
                         }
                     }
                 }
@@ -169,11 +174,14 @@ public class MessFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                         MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
-                                        if (messageModel != null && !messageModel.isIs_deleted_by_me()) {
+                                        if (messageModel != null) {
                                             if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId)) ||
                                                     (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
-                                                listMess.add(new ListMessModel(imgLink, firstName + " " + lastName, "Hello", userId));
-                                                break;
+                                                if((!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
+                                                        || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())) {
+                                                    listMess.add(new ListMessModel(imgLink, firstName + " " + lastName, "Hello", userId));
+                                                    break;
+                                                }
                                             }
                                         }
                                     }

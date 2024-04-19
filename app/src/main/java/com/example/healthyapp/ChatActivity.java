@@ -142,7 +142,9 @@ public class ChatActivity extends AppCompatActivity {
                     message.setSender_id(firebaseUser.getUid());
                     assert intent != null;
                     message.setReceiver_id(intent.getStringExtra("id"));
-                    message.setIs_deleted(false);
+                    message.setIs_deleted_by_me(false);
+                    message.setIs_deleted_by_other(false);
+                    message.setIs_seen(false);
                     database.getReference().child("Message").push().setValue(message);
                     edtMess.setText("");
                 }
@@ -180,7 +182,8 @@ public class ChatActivity extends AppCompatActivity {
                     assert message != null;
                     if((message.getReceiver_id().equals(myId) && message.getSender_id().equals(userId))
                             || (message.getReceiver_id().equals(userId) && message.getSender_id().equals(myId))) {
-                        if(!message.isIs_deleted()) {
+                        if((!message.isIs_deleted_by_me() && message.getSender_id().equals(myId))
+                            || (message.getReceiver_id().equals(myId) && !message.isIs_deleted_by_other())) {
                             message.setId(dataSnapshot.getKey());
                             listMessage.add(message);
                         }
