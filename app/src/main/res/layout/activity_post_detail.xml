@@ -52,7 +52,7 @@
         </RelativeLayout>
 
     </com.google.android.material.appbar.MaterialToolbar>
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/materialToolbar">
@@ -183,13 +183,14 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvCommentList"
+                android:id="@+id/rvComment"
+                android:nestedScrollingEnabled="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/item_user_post"
                 android:layout_marginTop="0dp" />
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <LinearLayout
@@ -201,12 +202,16 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp">
         <EditText
+            android:id="@+id/edtComment"
+            android:textColor="@color/black"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
             android:layout_weight="8"
             android:hint="Write a comment"
+            android:textColorHint="#777777"
             />
         <ImageButton
+            android:id="@+id/ibSendComment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/baseline_send_24"

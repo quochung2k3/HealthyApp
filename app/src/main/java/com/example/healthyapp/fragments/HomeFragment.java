@@ -19,6 +19,8 @@ import com.example.healthyapp.adapter.UserPostAdapter;
 import com.example.healthyapp.models.PostModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -49,7 +51,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void getPosts() {
-        db.readData(FirebaseDBConnection.POST, new ValueEventListener() {
+        DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
+        // get where is_deleted = false
+        postRef.orderByChild("is_deleted").equalTo(false).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
@@ -61,10 +65,29 @@ public class HomeFragment extends Fragment {
                 }
                 userPostAdapter.notifyDataSetChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+//        db.readData(FirebaseDBConnection.POST, new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                postList.clear();
+//                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                    PostModel post = postSnapshot.getValue(PostModel.class);
+//                    post.setId(postSnapshot.getKey());
+//                    postList.add(post);
+//                    Log.d("Post", post.getTitle());
+//                }
+//                userPostAdapter.notifyDataSetChanged();
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 }

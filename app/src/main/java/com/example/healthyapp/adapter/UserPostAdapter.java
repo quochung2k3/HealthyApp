@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
@@ -65,10 +66,11 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                 UserModel userModel = task.getResult().toObject(UserModel.class);
                 String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
                 holder.txtUserName.setText(userName);
-                if (userModel.getAvatar() == null || userModel.getAvatar().isEmpty()) {
+                if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
                     holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
                 } else {
-                    Picasso.get().load(userModel.getAvatar()).into(holder.imgUserPost);
+//                    Picasso.get().load(userModel.getImgAvatar()).into(holder.imgUserPost);
+                    Glide.with(context).load(userModel.getImgAvatar()).circleCrop().into(holder.imgUserPost);
                 }
             }
         });

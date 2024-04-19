@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     cardview:cardCornerRadius="4dp"
-    cardview:cardElevation="4dp"
-    cardview:cardUseCompatPadding="true">
+    cardview:cardElevation="2dp"
+    android:layout_marginVertical="2dp"
+    cardview:cardUseCompatPadding="false">
 
 
     <LinearLayout
@@ -26,7 +27,9 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="22dp"
-                android:background="@drawable/image_custom"
+                android:background="@drawable/shape_circle"
+                android:src="@drawable/qlong"
+                android:scaleType="centerCrop"
                 cardview:layout_constraintBottom_toBottomOf="parent"
                 cardview:layout_constraintStart_toStartOf="parent"
                 cardview:layout_constraintTop_toTopOf="parent" />
@@ -43,7 +46,7 @@
                 cardview:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/txtSubtext"
+                android:id="@+id/txtDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

@@ -2,17 +2,24 @@ package com.example.healthyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
+import com.example.healthyapp.adapter.CommentAdapter;
+import com.example.healthyapp.models.CommentModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.utils.TimestampUtil;
@@ -27,7 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PostDetailActivity extends AppCompatActivity {
@@ -35,17 +44,23 @@ public class PostDetailActivity extends AppCompatActivity {
     TextView txtPostTitle, txtPostContent, txtPostDate, txtFlair, txtUserName;
     ImageView imgPost, imgAvatar;
     Button btnLike, btnComment;
-    ImageButton ibBack;
-
+    ImageButton ibBack, ibSendComment;
+    EditText edtComment;
+    RecyclerView rvComment;
+    String postId;
     PostModel post;
     FirebaseAuth auth = FirebaseAuth.getInstance();
     String currentUserId = auth.getCurrentUser().getUid();
+    ArrayList<CommentModel> commentList = new ArrayList<>();
+    CommentAdapter commentAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
 
-
+        edtComment = findViewById(R.id.edtComment);
+        ibSendComment = findViewById(R.id.ibSendComment);
+        rvComment = findViewById(R.id.rvComment);
         txtPostTitle = findViewById(R.id.txtPostTitle);
         txtPostContent = findViewById(R.id.txtPostContent);
         txtPostDate = findViewById(R.id.txtDate);
@@ -59,12 +74,22 @@ public class PostDetailActivity extends AppCompatActivity {
         });
         btnLike = findViewById(R.id.btnLike);
         btnComment = findViewById(R.id.btnComment);
+        commentAdapter = new CommentAdapter(this, commentList);
+        rvComment.setAdapter(commentAdapter);
+        rvComment.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));
 
-        String postId = getIntent().getStringExtra("post_id");
+        postId = getIntent().getStringExtra("post_id");
         getPost(postId).addOnCompleteListener(task -> {
             post = task.getResult();
             loadPost();
         });
+
+        // comment
+        ibSendComment.setOnClickListener(v -> {
+            sendComment();
+        });
+        loadComment();
+
         // btn like
         btnLike.setOnClickListener(v -> {
             FirebaseDatabase fb = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
@@ -96,7 +121,54 @@ public class PostDetailActivity extends AppCompatActivity {
                 }
             });
         });
+
+
     }
+
+    private void loadComment() {
+        DatabaseReference commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
+                .getReference(FirebaseDBConnection.COMMENT)
+                .child(postId);
+        commentRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                commentList.clear();
+                for (DataSnapshot commentSnapshot : snapshot.getChildren()) {
+                    CommentModel comment = commentSnapshot.getValue(CommentModel.class);
+                    Log.d("Comment", comment.getContent());
+                    comment.setId(commentSnapshot.getKey());
+                    commentList.add(comment);
+                }
+                Log.d("Comment", "size: " + commentList.size());
+                commentAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(PostDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void sendComment() {
+        String commentContent = edtComment.getText().toString();
+        if (commentContent.isEmpty()) {
+            return;
+        }
+        DatabaseReference commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
+                .getReference(FirebaseDBConnection.COMMENT)
+                .child(post.getId())
+                .push();
+        CommentModel comment = new CommentModel();
+        comment.setContent(commentContent);
+        comment.setUser_id(currentUserId);
+        comment.setPost_id(post.getId());
+        Long timestamp = System.currentTimeMillis();
+        comment.setCreated_date(timestamp);
+        commentRef.setValue(comment);
+        edtComment.setText("");
+    }
+
     private void loadPost() {
         btnLike.setText(String.valueOf(post.getUser_likes().size()));
         Drawable likeIcon = btnLike.getCompoundDrawables()[0];
@@ -133,10 +205,12 @@ public class PostDetailActivity extends AppCompatActivity {
                         UserModel userModel = task.getResult().toObject(UserModel.class);
                         String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
                         txtUserName.setText(userName);
-                        if (userModel.getAvatar() == null || userModel.getAvatar().isEmpty()) {
+                        if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
                             imgAvatar.setImageResource(R.drawable.backgroundapp);
                         } else {
-                            Picasso.get().load(userModel.getAvatar()).into(imgAvatar);
+//                            Picasso.get().load(userModel.getImgAvatar()).into(imgAvatar);
+                            Glide.with(PostDetailActivity.this).load(userModel.getImgAvatar()).circleCrop().into(imgAvatar);
+
                         }
                     }
                 });

@@ -27,6 +27,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="22dp"
             android:background="@drawable/image_custom"
+            android:scaleType="centerCrop"
             cardview:layout_constraintBottom_toBottomOf="parent"
             cardview:layout_constraintStart_toStartOf="parent"
             cardview:layout_constraintTop_toTopOf="parent" />
