@@ -166,6 +166,15 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             context.startActivity(intent);
         });
 
+        // btn Comment
+        holder.btnComment.setOnClickListener(v -> {
+            // go to post detail
+            Intent intent = new Intent(context, PostDetailActivity.class);
+            intent.putExtra("post_id", postModel.getId());
+            intent.putExtra("isComment", true);
+            context.startActivity(intent);
+        });
+
         // menu item
         holder.ibMore.setOnClickListener(v -> {
             // show menu
@@ -188,6 +197,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                 postRef.child("is_deleted").setValue(true);
                 postList.remove(postModel);
                 notifyDataSetChanged();
+                return true;
             } else if (id == R.id.post_save) {
                 // save post
             }
@@ -204,7 +214,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     public static class UserPostViewHolder extends RecyclerView.ViewHolder {
         ImageView imgUserPost, imgPost;
         TextView txtUserName, txtPostTitle, txtDate;
-        Button btnLike;
+        Button btnLike, btnComment;
         ImageButton ibMore;
 
         public UserPostViewHolder(@NonNull View itemView) {
@@ -215,6 +225,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             txtPostTitle = itemView.findViewById(R.id.txtPostTitle);
             txtDate = itemView.findViewById(R.id.txtDate);
             btnLike = itemView.findViewById(R.id.btnLike);
+            btnComment = itemView.findViewById(R.id.btnComment);
             ibMore = itemView.findViewById(R.id.ibMore);
         }
     }

@@ -196,18 +196,22 @@
         android:id="@+id/llComment"
         android:background="#DDDADA"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp">
         <EditText
             android:id="@+id/edtComment"
             android:textColor="@color/black"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_weight="8"
             android:hint="Write a comment"
             android:textColorHint="#777777"
+            android:inputType="textMultiLine"
+            android:maxLines="3"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="insideInset"
             />
         <ImageButton
             android:id="@+id/ibSendComment"

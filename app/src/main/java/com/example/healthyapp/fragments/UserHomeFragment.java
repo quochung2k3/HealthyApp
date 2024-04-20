@@ -13,6 +13,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
 import android.util.Log;
@@ -27,13 +29,21 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.healthyapp.ChatActivity;
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.R;
+import com.example.healthyapp.adapter.UserPostAdapter;
 import com.example.healthyapp.models.ListMessModel;
+import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.services.FirebaseStorageService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,15 +51,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class UserHomeFragment extends Fragment {
     TextView txtUsername;
     Button btnChat;
     ImageView imgBack, imgAvatar;
+    RecyclerView rvUserPost;
+    UserPostAdapter userPostAdapter;
+    ArrayList<PostModel> postList = new ArrayList<>();
     ArrayList<ListMessModel> listMess = new ArrayList<>();
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
+    FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
     private Uri imageUri = null;
     Long timestamp = System.currentTimeMillis();
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -63,9 +78,17 @@ public class UserHomeFragment extends Fragment {
         btnChat = rootView.findViewById(R.id.btnChat);
         imgBack = rootView.findViewById(R.id.back_button);
         imgAvatar = rootView.findViewById(R.id.imgAvatar);
+        rvUserPost = rootView.findViewById(R.id.rvUserPost);
         assert getArguments() != null;
         txtUsername.setText(getArguments().getString("userName"));
         String id = getArguments().getString("id");
+
+        // rvUserPost
+        userPostAdapter = new UserPostAdapter(getContext(), postList);
+        rvUserPost.setAdapter(userPostAdapter);
+        rvUserPost.setLayoutManager(new LinearLayoutManager(getContext()));
+        loadPost(id);
+
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,6 +205,30 @@ public class UserHomeFragment extends Fragment {
         });
         return rootView;
     }
+
+    private void loadPost(String id) {
+        Log.d("UserHomeFragment", "loadPost: " + id);
+        // get post by user id
+        Query query = db.getReference("Post").orderByChild("user_id").equalTo(id);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                postList.clear();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    PostModel post = postSnapshot.getValue(PostModel.class);
+                    post.setId(postSnapshot.getKey());
+                    postList.add(post);
+                }
+                userPostAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private static final int REQUEST_IMAGE_PICK = 1;
     private void pickImage() {
         Intent intent = new Intent();

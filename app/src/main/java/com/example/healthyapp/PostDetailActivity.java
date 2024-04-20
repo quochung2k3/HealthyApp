@@ -86,6 +86,10 @@ public class PostDetailActivity extends AppCompatActivity {
         rvComment.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));
 
         postId = getIntent().getStringExtra("post_id");
+        boolean isComment = getIntent().getBooleanExtra("isComment", false);
+        if (isComment) {
+            btnComment.performClick();
+        }
         getPost(postId).addOnCompleteListener(task -> {
             post = task.getResult();
             loadPost();
