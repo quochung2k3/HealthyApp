@@ -46,6 +46,7 @@ public class MessFragment extends Fragment {
     ListMessAdapter listMessAdapter = null;
     ListView lvMess = null;
     ArrayList<ListMessModel> listMess = new ArrayList<>();
+    int i = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,10 +54,8 @@ public class MessFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_list_mess, container, false);
         firestore = FirebaseFirestore.getInstance();
         lvMess = rootView.findViewById(R.id.lvMess);
-        listMessAdapter = new ListMessAdapter(getActivity(), listMess);
-
         reloadDataFromFirebase();
-
+        listMessAdapter = new ListMessAdapter(getActivity(), listMess);
         lvMess.setAdapter(listMessAdapter);
         lvMess.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -172,10 +171,10 @@ public class MessFragment extends Fragment {
                         if(messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(firebaseUser.getUid())) {
                             UID = firebaseUser.getUid();
                         }
-                        else if(messageModel.getSender_id().equals(firebaseUser.getUid())) {
+                        else if(messageModel.getSender_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_me()) {
                             UID = messageModel.getReceiver_id();
                         }
-                        else if(messageModel.getReceiver_id().equals(firebaseUser.getUid())) {
+                        else if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other()) {
                             UID = messageModel.getSender_id();
                         }
                         if(UID != null) {
@@ -196,28 +195,28 @@ public class MessFragment extends Fragment {
                 }
                 Log.d("TEST LIST", testList.toString());
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                for (String userId : testList) {
-                    CollectionReference usersRef = db.collection("users");
-                    usersRef.document(userId.trim()).get()
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
-                                        String firstName = document.getString("first_name");
-                                        String lastName = document.getString("last_name");
-                                        String imgLink = document.getString("imgAvatar");
+                CollectionReference usersRef = db.collection("users");
+                i = 0;
+                usersRef.get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            while (i < testList.size()) {
+                                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                    String userId = documentSnapshot.getId();
+                                    String firstName = documentSnapshot.getString("first_name");
+                                    String lastName = documentSnapshot.getString("last_name");
+                                    String imgLink = documentSnapshot.getString("imgAvatar");
+                                    if (userId.equals(testList.get(i))) {
                                         listMess.add(new ListMessModel(imgLink,
-                                                firstName + " " + lastName, "Hello", userId));
+                                                firstName + " " + lastName, "", userId));
                                     }
-                                    else {
-
-                                    }
-                                } else {
-                                    Exception e = task.getException();
                                 }
-                            });
-                }
-                listMessAdapter.notifyDataSetChanged();
+                                i++;
+                            }
+                            listMessAdapter.notifyDataSetChanged();
+                        })
+                        .addOnFailureListener(e -> {
+
+                        });
             }
 
             @Override

@@ -68,6 +68,8 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
         Map<String, Object> updateData = new HashMap<>();
         if(message.getReceiver_id().equals(firebaseUser.getUid())) {
             updateData.put("is_seen", true);
+            Log.d("ABCABC", "CBA");
+            Log.d("TEST MESS ID", message.getId());
         }
         messageRef.updateChildren(updateData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

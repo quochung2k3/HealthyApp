@@ -69,13 +69,11 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                         }
                     }
                 }
-                if(isSeen == false) {
+                if(!isSeen) {
                     Log.d("TEST SUCCESS", "TEST SUCCESS");
                     imgTick.setImageDrawable(getContext().getResources().getDrawable(R.drawable.baseline_brightness_1_24));
                     mess.setTypeface(null, Typeface.BOLD);
-                }
-                else {
-                    Log.d("TEST FAIL", "TEST FAIL");
+                    isSeen = true;
                 }
             }
 
