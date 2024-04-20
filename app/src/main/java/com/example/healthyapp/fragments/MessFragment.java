@@ -37,6 +37,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class MessFragment extends Fragment {
     FirebaseFirestore firestore;
@@ -155,49 +157,73 @@ public class MessFragment extends Fragment {
     }
     private void reloadDataFromFirebase() {
         listMess.clear();
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference usersRef = db.collection("users");
-
-        usersRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String userId = documentSnapshot.getId();
-                        String firstName = documentSnapshot.getString("first_name");
-                        String lastName = documentSnapshot.getString("last_name");
-                        String imgLink = documentSnapshot.getString("imgAvatar");
-                        if (!userId.equals(firebaseUser.getUid())) {
-                            FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-                            DatabaseReference databaseReferenceMess = database.getReference().child("Message");
-                            databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
-                                        if (messageModel != null) {
-                                            if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId)) ||
-                                                    (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
-                                                if((!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
-                                                        || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())) {
-                                                    listMess.add(new ListMessModel(imgLink, firstName + " " + lastName, "", userId));
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    listMessAdapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+        ArrayList<String> testList = new ArrayList<>();
+        HashSet<String> seen = new HashSet<>();
+        Log.d("TEST LIST", testList.toString());
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        DatabaseReference databaseReferenceMess = database.getReference().child("Message");
+        databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
+                    if (messageModel != null) {
+                        String UID = null;
+                        if(messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(firebaseUser.getUid())) {
+                            UID = firebaseUser.getUid();
+                        }
+                        else if(messageModel.getSender_id().equals(firebaseUser.getUid())) {
+                            UID = messageModel.getReceiver_id();
+                        }
+                        else if(messageModel.getReceiver_id().equals(firebaseUser.getUid())) {
+                            UID = messageModel.getSender_id();
+                        }
+                        if(UID != null) {
+                            testList.add(UID);
                         }
                     }
-                })
-                .addOnFailureListener(e -> {
-                    // Xử lý lỗi nếu có
-                });
+                }
+                Collections.reverse(testList);
+                for (int i = 0; i < testList.size(); i++) {
+                    String item = testList.get(i);
+                    if (seen.contains(item)) {
+                        testList.remove(i);
+                        i--;
+                    }
+                    else {
+                        seen.add(item);
+                    }
+                }
+                Log.d("TEST LIST", testList.toString());
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                for (String userId : testList) {
+                    CollectionReference usersRef = db.collection("users");
+                    usersRef.document(userId.trim()).get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        String firstName = document.getString("first_name");
+                                        String lastName = document.getString("last_name");
+                                        String imgLink = document.getString("imgAvatar");
+                                        listMess.add(new ListMessModel(imgLink,
+                                                firstName + " " + lastName, "Hello", userId));
+                                    }
+                                    else {
+
+                                    }
+                                } else {
+                                    Exception e = task.getException();
+                                }
+                            });
+                }
+                listMessAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
