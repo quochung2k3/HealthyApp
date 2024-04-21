@@ -10,12 +10,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +26,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.R;
-import com.example.healthyapp.models.ListMessModel;
-import com.example.healthyapp.models.NotiModel;
 import com.example.healthyapp.services.FirebaseStorageService;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -41,114 +35,75 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Objects;
 
 public class UserHomeFragment extends Fragment {
     TextView txtUsername;
     Button btnChat;
-    ImageView imgBack, imgAvatar;
-    ArrayList<ListMessModel> listMess = new ArrayList<>();
+    ImageView imgBack, imgAvatar, imgBackground;
     FirebaseAuth mAuth;
-    FirebaseFirestore firestore;
+    FirebaseFirestore ft;
     private Uri imageUri = null;
     Long timestamp = System.currentTimeMillis();
-    @SuppressLint("UseCompatLoadingForDrawables")
+    String field = null;
+    @SuppressLint({"UseCompatLoadingForDrawables", "MissingInflatedId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_user_home, container, false);
         mAuth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+        ft = FirebaseFirestore.getInstance();
         txtUsername = rootView.findViewById(R.id.txtUsername);
         btnChat = rootView.findViewById(R.id.btnChat);
         imgBack = rootView.findViewById(R.id.back_button);
         imgAvatar = rootView.findViewById(R.id.imgAvatar);
+        imgBackground = rootView.findViewById(R.id.imgBackground);
         assert getArguments() != null;
         txtUsername.setText(getArguments().getString("userName"));
         String id = getArguments().getString("id");
-        imgBack.setOnClickListener(new View.OnClickListener() {
+        imgBack.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            }
+            else {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            }
+        });
+        imgBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
-                    getParentFragmentManager().popBackStack();
-                }
-                else {
-                    if (getActivity() != null) {
-                        getActivity().finish();
-                    }
+                field = "imgBackground";
+                assert id != null;
+                if(id.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
+                    solve();
                 }
             }
         });
 
         imgAvatar.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View v) {
-                if(id.equals(mAuth.getCurrentUser().getUid())) {
-                    View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_logout, null);
-                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
-                    bottomSheetDialog.setContentView(bottomSheetView);
-                    Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
-                    btnConfirm.setText("Upload Image");
-                    Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
-                    btnCancel.setText("Remove Image");
-                    btnConfirm.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // check permission for camera
-                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 100);
-                            }
-                            // check permission for storage
-                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
-                            }
-                            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 102);
-                            }
-                            bottomSheetDialog.dismiss();
-                            pickImage();
-                        }
-                    });
-
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @SuppressLint("UseCompatLoadingForDrawables")
-                        @Override
-                        public void onClick(View v) {
-                            imgAvatar.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
-                            imageUri = null;
-                            DocumentReference documentReference = firestore.collection("users").document(mAuth.getCurrentUser().getUid());
-                            documentReference.update("imgAvatar", "")
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            // Xử lý thành công
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Xử lý thất bại
-                                            Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                            bottomSheetDialog.dismiss();
-                        }
-                    });
-                    bottomSheetDialog.show();
+                field = "imgAvatar";
+                assert id != null;
+                if(id.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
+                    solve();
                 }
             }
         });
 
-        DocumentReference document = firestore.collection("users").document(id);
+        assert id != null;
+        DocumentReference document = ft.collection("users").document(id);
         document.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot doc = task.getResult();
                 if (doc.exists()) {
                     String linkImg = doc.getString("imgAvatar");
+                    String linkImgBackground = doc.getString("imgBackground");
                     assert linkImg != null;
-                    if(linkImg.equals("")) {
+                    if(linkImg.isEmpty()) {
                         imgAvatar.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
                     }
                     else {
@@ -157,30 +112,33 @@ public class UserHomeFragment extends Fragment {
                                 .circleCrop()
                                 .into(imgAvatar);
                     }
+                    assert linkImgBackground != null;
+                    if(linkImgBackground.isEmpty()) {
+                        imgBackground.setImageDrawable(getResources().getDrawable(R.drawable.background));
+                    }
+                    else {
+                        Glide.with(requireContext())
+                                .load(linkImgBackground)
+                                .into(imgBackground);
+                    }
                 }
             }
-            else {
-
-            }
         });
-        btnChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DocumentReference document = firestore.collection("users").document(id);
-                document.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot doc = task.getResult();
-                        if (doc.exists()) {
-                            String linkImg = doc.getString("imgAvatar");
-                            Intent intent = new Intent(getActivity(), ChatActivity.class);
-                            intent.putExtra("linkImg", linkImg);
-                            intent.putExtra("userName", txtUsername.getText().toString());
-                            intent.putExtra("id", id);
-                            startActivity(intent);
-                        }
+        btnChat.setOnClickListener(v -> {
+            DocumentReference document1 = ft.collection("users").document(id);
+            document1.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        String linkImg = doc.getString("imgAvatar");
+                        Intent intent = new Intent(getActivity(), ChatActivity.class);
+                        intent.putExtra("linkImg", linkImg);
+                        intent.putExtra("userName", txtUsername.getText().toString());
+                        intent.putExtra("id", id);
+                        startActivity(intent);
                     }
-                });
-            }
+                }
+            });
         });
         return rootView;
     }
@@ -201,13 +159,21 @@ public class UserHomeFragment extends Fragment {
             if (requestCode == REQUEST_IMAGE_PICK) {
                 Uri selectedImageUri = data.getData();
                 imageUri = selectedImageUri;
-
-                Glide.with(this)
-                        .load(selectedImageUri)
-                        .circleCrop()
-                        .into(imgAvatar);
-                isImageLoaded = true;
-                imgAvatar.setVisibility(View.VISIBLE);
+                if(field.equals("imgAvatar")) {
+                    Glide.with(this)
+                            .load(selectedImageUri)
+                            .circleCrop()
+                            .into(imgAvatar);
+                    isImageLoaded = true;
+                    imgAvatar.setVisibility(View.VISIBLE);
+                }
+                if(field.equals("imgBackground")) {
+                    Glide.with(this)
+                            .load(selectedImageUri)
+                            .into(imgBackground);
+                    isImageLoaded = true;
+                    imgBackground.setVisibility(View.VISIBLE);
+                }
             }
         }
         // Upload image to Firebase Storage
@@ -218,21 +184,12 @@ public class UserHomeFragment extends Fragment {
             storageService.uploadImage(imageInByte, "post_" + timestamp + extension).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Uri downloadUri = task.getResult();
-                    DocumentReference documentReference = firestore.collection("users").document(mAuth.getCurrentUser().getUid());
-                    documentReference.update("imgAvatar", downloadUri.toString())
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    // Xử lý thành công
-                                }
+                    DocumentReference documentReference = ft.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+                    documentReference.update(field, downloadUri.toString())
+                            .addOnSuccessListener(unused -> {
+
                             })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // Xử lý thất bại
-                                    Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                 } else {
                     Toast.makeText(getContext(), "Failed to upload image", Toast.LENGTH_SHORT).show();
                 }
@@ -243,10 +200,11 @@ public class UserHomeFragment extends Fragment {
     private byte[] getBytesFromImageUri(Uri imageUri) {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            return baos.toByteArray();
-        } catch (IOException e) {
+            ByteArrayOutputStream bass = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bass);
+            return bass.toByteArray();
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -256,5 +214,52 @@ public class UserHomeFragment extends Fragment {
         ContentResolver contentResolver = requireContext().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(imageUri));
+    }
+
+    private void solve() {
+        @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_logout, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
+        Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
+        btnConfirm.setText("Upload Image");
+        Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
+        btnCancel.setText("Remove Image");
+        btnConfirm.setOnClickListener(v1 -> {
+            // check permission for camera
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 100);
+            }
+            // check permission for storage
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+            }
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 102);
+            }
+            bottomSheetDialog.dismiss();
+            pickImage();
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onClick(View v) {
+                if(field.equals("imgAvatar")) {
+                    imgAvatar.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
+                }
+                else {
+                    imgBackground.setImageDrawable(getResources().getDrawable(R.drawable.background));
+                }
+                imageUri = null;
+                DocumentReference documentReference = ft.collection("users").document(mAuth.getCurrentUser().getUid());
+                documentReference.update(field, "")
+                        .addOnSuccessListener(unused -> {
+
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
     }
 }

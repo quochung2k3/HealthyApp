@@ -20,12 +20,13 @@
         android:background="#CCC"/>
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/imgBackground"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:src="@drawable/avatar_hung"
+        android:src="@drawable/background"
         android:background="@drawable/rounded_corner"
-        android:clipToOutline="true"/>
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"/>
 
 
     <FrameLayout
