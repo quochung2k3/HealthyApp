@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +39,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class PostDetailActivity extends AppCompatActivity {
     FirebaseDBConnection db = FirebaseDBConnection.getInstance();
-    TextView txtPostTitle, txtPostContent, txtPostDate, txtFlair, txtUserName;
+    TextView txtPostTitle, txtPostContent, txtPostDate, txtFlair, txtUserName, txtReplyTo, txtCancelReply;
     ImageView imgPost, imgAvatar;
     Button btnLike, btnComment;
     ImageButton ibBack, ibSendComment;
@@ -51,10 +53,12 @@ public class PostDetailActivity extends AppCompatActivity {
     RecyclerView rvComment;
     String postId;
     PostModel post;
+    LinearLayout llReply;
     FirebaseAuth auth = FirebaseAuth.getInstance();
     String currentUserId = auth.getCurrentUser().getUid();
     ArrayList<CommentModel> commentList = new ArrayList<>();
     CommentAdapter commentAdapter;
+    public String replyTo = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,13 @@ public class PostDetailActivity extends AppCompatActivity {
         commentAdapter = new CommentAdapter(this, commentList);
         rvComment.setAdapter(commentAdapter);
         rvComment.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));
+        llReply = findViewById(R.id.llReply);
+        txtReplyTo = findViewById(R.id.txtReplyingTo);
+        txtCancelReply = findViewById(R.id.txtCancelReply);
+        txtCancelReply.setOnClickListener(v -> {
+            llReply.setVisibility(View.GONE);
+            replyTo = null;
+        });
 
         postId = getIntent().getStringExtra("post_id");
         boolean isComment = getIntent().getBooleanExtra("isComment", false);
@@ -135,6 +146,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
 
     }
+    public void showReplyTo(String username) {
+        llReply.setVisibility(View.VISIBLE);
+        txtReplyTo.setText("Replying to " + username + "'s comment");
+    }
 
     private void loadComment() {
         DatabaseReference commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
@@ -149,15 +164,25 @@ public class PostDetailActivity extends AppCompatActivity {
                     Log.d("Comment", comment.getContent());
                     comment.setId(commentSnapshot.getKey());
                     commentList.add(comment);
+                    if (comment.getReplies() != null) {
+                        Iterator<Map.Entry<String, CommentModel>> iterator = comment.getReplies().entrySet().iterator();
+                        while (iterator.hasNext()) {
+                            Map.Entry<String, CommentModel> entry = iterator.next();
+                            CommentModel reply = entry.getValue();
+                            reply.setId(entry.getKey());
+                            commentList.add(reply);
+                        }
+                    }
+                    Log.d("Comment", "size: " + commentList.size());
+                    commentAdapter.notifyDataSetChanged();
                 }
-                Log.d("Comment", "size: " + commentList.size());
-                commentAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(PostDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 
@@ -166,18 +191,28 @@ public class PostDetailActivity extends AppCompatActivity {
         if (commentContent.isEmpty()) {
             return;
         }
-        DatabaseReference commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
-                .getReference(FirebaseDBConnection.COMMENT)
-                .child(post.getId())
-                .push();
+        DatabaseReference commentRef = null;
+        if (replyTo == null) {
+            commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
+                    .getReference(FirebaseDBConnection.COMMENT)
+                    .child(post.getId())
+                    .push();
+        } else {
+            commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
+                    .getReference(FirebaseDBConnection.COMMENT)
+                    .child(post.getId()).child(replyTo).child("replies")
+                    .push();
+        }
         CommentModel comment = new CommentModel();
         comment.setContent(commentContent);
         comment.setUser_id(currentUserId);
         comment.setPost_id(post.getId());
+        comment.setParent_id(replyTo);
         Long timestamp = System.currentTimeMillis();
         comment.setCreated_date(timestamp);
         commentRef.setValue(comment);
         edtComment.setText("");
+        txtCancelReply.performClick();
     }
 
     private void loadPost() {

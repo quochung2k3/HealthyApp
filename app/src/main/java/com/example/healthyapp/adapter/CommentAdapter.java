@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
+import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.models.CommentModel;
 import com.example.healthyapp.models.UserModel;
@@ -45,14 +46,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         View view = LayoutInflater.from(context).inflate(R.layout.item_user_comment, parent, false);
         return new CommentViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         CommentModel comment = commentList.get(position);
+
         // get user
         firestore.collection("users").document(comment.getUser_id()).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 UserModel user = documentSnapshot.toObject(UserModel.class);
+                user.setId(documentSnapshot.getId());
+                holder.user = user;
                 holder.txtUsername.setText(user.getFirst_name() + " " + user.getLast_name());
                 if (user.getImgAvatar() == null || user.getImgAvatar().isEmpty()) {
                     holder.ivAvatar.setImageResource(R.drawable.backgroundapp);
@@ -94,6 +97,18 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                     .child(comment.getPost_id()).child(comment.getId());
             commentRef.child("likes").setValue(comment.getLikes());
         });
+
+        // reply
+        holder.ibReply.setOnClickListener(v -> {
+            PostDetailActivity activity = (PostDetailActivity) context;
+            activity.replyTo = comment.getParent_id() == null ? comment.getId() : comment.getParent_id();
+            activity.showReplyTo(holder.user.getFirst_name() + " " + holder.user.getLast_name());
+        });
+        if (comment.getParent_id() == null) {
+            holder.verticalLine.setVisibility(View.GONE);
+        } else {
+            holder.verticalLine.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -106,6 +121,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Button btnLike;
         ImageButton ibReply;
         ImageView ivAvatar;
+        UserModel user;
+        View verticalLine;
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             txtUsername = itemView.findViewById(R.id.txtUsername);
@@ -114,6 +131,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             btnLike = itemView.findViewById(R.id.btnLike);
             ibReply = itemView.findViewById(R.id.ibReply);
             ivAvatar = itemView.findViewById(R.id.ivAvatar);
+            verticalLine = itemView.findViewById(R.id.vertical_line);
         }
     }
 }

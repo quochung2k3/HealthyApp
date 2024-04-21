@@ -1,12 +1,14 @@
 package com.example.healthyapp.models;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 public class CommentModel {
     private String id;
     private String content;
     private Map<String, Boolean> likes;
+    private Map<String, CommentModel> replies;
     private String parent_id;
     private String user_id;
     private String post_id;
@@ -54,6 +56,14 @@ public class CommentModel {
 
     public void setLikes(Map<String, Boolean> likes) {
         this.likes = likes;
+    }
+
+    public Map<String, CommentModel> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Map<String, CommentModel> replies) {
+        this.replies = replies;
     }
 
     public String getParent_id() {

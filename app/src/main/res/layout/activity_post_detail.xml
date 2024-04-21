@@ -193,6 +193,27 @@
 
 
     <LinearLayout
+        android:id="@+id/llReply"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_above="@+id/llComment"
+        android:orientation="horizontal"
+        android:layout_marginBottom="0dp">
+
+        <TextView
+            android:id="@+id/txtReplyingTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Replying to John" />
+        <TextView
+            android:id="@+id/txtCancelReply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text=" | Cancel" />
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/llComment"
         android:background="#DDDADA"
         android:layout_width="match_parent"
@@ -200,6 +221,7 @@
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp">
+
         <EditText
             android:id="@+id/edtComment"
             android:textColor="@color/black"
