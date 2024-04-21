@@ -1,5 +1,6 @@
 package com.example.healthyapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,11 +51,13 @@ public class HomeFragment extends Fragment {
 
     private void getPosts() {
         db.readData(FirebaseDBConnection.POST, new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PostModel post = postSnapshot.getValue(PostModel.class);
+                    assert post != null;
                     post.setId(postSnapshot.getKey());
                     postList.add(post);
                     Log.d("Post", post.getTitle());
