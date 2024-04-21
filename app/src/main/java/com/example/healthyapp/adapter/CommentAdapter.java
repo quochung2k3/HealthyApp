@@ -93,8 +93,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 likeIcon.setTint(context.getResources().getColor(R.color.blue));
             }
             // update likes
-            DatabaseReference commentRef = db.getReference(FirebaseDBConnection.COMMENT)
-                    .child(comment.getPost_id()).child(comment.getId());
+            DatabaseReference commentRef = null;
+            if (comment.getParent_id() != null) {
+                commentRef = db.getReference(FirebaseDBConnection.COMMENT).child(comment.getPost_id()).child(comment.getParent_id()).child("replies").child(comment.getId());
+            } else {
+                commentRef = db.getReference(FirebaseDBConnection.COMMENT).child(comment.getPost_id()).child(comment.getId());
+            }
             commentRef.child("likes").setValue(comment.getLikes());
         });
 

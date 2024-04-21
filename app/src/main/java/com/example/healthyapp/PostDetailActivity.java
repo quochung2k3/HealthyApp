@@ -161,7 +161,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 commentList.clear();
                 for (DataSnapshot commentSnapshot : snapshot.getChildren()) {
                     CommentModel comment = commentSnapshot.getValue(CommentModel.class);
-                    Log.d("Comment", comment.getContent());
                     comment.setId(commentSnapshot.getKey());
                     commentList.add(comment);
                     if (comment.getReplies() != null) {

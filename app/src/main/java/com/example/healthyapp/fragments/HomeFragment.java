@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
     private void getPosts() {
         DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
         // get where is_deleted = false
-        postRef.orderByChild("is_deleted").equalTo(false).addValueEventListener(new ValueEventListener() {
+        postRef.orderByChild("is_deleted").equalTo(false).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
