@@ -1,6 +1,6 @@
 package com.example.healthyapp.fragments;
 
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,11 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -41,91 +39,73 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class MessFragment extends Fragment {
-    FirebaseFirestore firestore;
+    FirebaseFirestore ft;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     ListMessAdapter listMessAdapter = null;
     ListView lvMess = null;
     ArrayList<ListMessModel> listMess = new ArrayList<>();
+    String UID = null;
     int i = 0;
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_list_mess, container, false);
-        firestore = FirebaseFirestore.getInstance();
+        ft = FirebaseFirestore.getInstance();
         lvMess = rootView.findViewById(R.id.lvMess);
         reloadDataFromFirebase();
-        listMessAdapter = new ListMessAdapter(getActivity(), listMess);
+        listMessAdapter = new ListMessAdapter(requireActivity(), listMess);
         lvMess.setAdapter(listMessAdapter);
-        lvMess.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListMessModel selectedMess = listMess.get(position);
-                Log.d("ABCXYZ", selectedMess.getId());
-                DocumentReference document = firestore.collection("users").document(selectedMess.getId());
-                document.get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot doc = task.getResult();
-                        if (doc.exists()) {
-                            String linkImg = doc.getString("imgAvatar");
-                            Intent intent = new Intent(getActivity(), ChatActivity.class);
-                            intent.putExtra("linkImg", linkImg);
-                            intent.putExtra("userName", selectedMess.getUserName());
-                            intent.putExtra("id", selectedMess.getId());
-                            startActivity(intent);
-                        }
+        lvMess.setOnItemClickListener((parent, view, position, id) -> {
+            ListMessModel selectedMess = listMess.get(position);
+            DocumentReference document = ft.collection("users").document(selectedMess.getId());
+            document.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        String linkImg = doc.getString("imgAvatar");
+                        Intent intent = new Intent(getActivity(), ChatActivity.class);
+                        intent.putExtra("linkImg", linkImg);
+                        intent.putExtra("userName", selectedMess.getUserName());
+                        intent.putExtra("id", selectedMess.getId());
+                        startActivity(intent);
                     }
-                });
-            }
+                }
+            });
         });
 
-        lvMess.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ListMessModel selectedMess = listMess.get(position);
-                LayoutInflater inflater = LayoutInflater.from(getContext());
-                View bottomSheetView = inflater.inflate(R.layout.bottom_sheet_logout, null);
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
-                bottomSheetDialog.setContentView(bottomSheetView);
-                Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
-                btnConfirm.setText("Delete All Mess");
-                Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
-                btnCancel.setText("Cancel");
-                bottomSheetDialog.show();
-                btnConfirm.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showAnnouncementDialog(selectedMess.getId(), position);
-                        Log.d("TEST UID MESS", selectedMess.getId());
-                        bottomSheetDialog.dismiss();
-                    }
-                });
-                btnCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.dismiss();
-                    }
-                });
-                return true;
-            }
+        lvMess.setOnItemLongClickListener((parent, view, position, id) -> {
+            ListMessModel selectedMess = listMess.get(position);
+            LayoutInflater inflater1 = LayoutInflater.from(getContext());
+            @SuppressLint("InflateParams") View bottomSheetView = inflater1.inflate(R.layout.bottom_sheet_logout, null);
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
+            bottomSheetDialog.setContentView(bottomSheetView);
+            Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
+            btnConfirm.setText("Delete All Mess");
+            Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
+            btnCancel.setText("Cancel");
+            bottomSheetDialog.show();
+            btnConfirm.setOnClickListener(v -> {
+                showAnnouncementDialog(selectedMess.getId());
+                bottomSheetDialog.dismiss();
+            });
+            btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+            return true;
         });
         return rootView;
     }
-    private void showAnnouncementDialog(String id, int position) {
+    private void showAnnouncementDialog(String id) {
         String myId = firebaseUser.getUid();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Thông báo");
-        builder.setMessage("Tin nhắn sau khi xoá không thể phục hồi được, bạn có chắc chắn muốn xoá?");
-        builder.setPositiveButton("Xoá", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                updateMessageIsDeleted(id, myId, position);
-            }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Announcement");
+        builder.setMessage("Once deleted, messages cannot be recovered, are you sure you want to delete them?");
+        builder.setPositiveButton("Delete", (dialog, which) -> updateMessageIsDeleted(id, myId));
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
-    private void updateMessageIsDeleted(String id, String myId, int position) {
+    private void updateMessageIsDeleted(String id, String myId) {
         DatabaseReference messagesRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message");
         messagesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -158,7 +138,6 @@ public class MessFragment extends Fragment {
         listMess.clear();
         ArrayList<String> testList = new ArrayList<>();
         HashSet<String> seen = new HashSet<>();
-        Log.d("TEST LIST", testList.toString());
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
         DatabaseReference databaseReferenceMess = database.getReference().child("Message");
         databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -167,7 +146,6 @@ public class MessFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
                     if (messageModel != null) {
-                        String UID = null;
                         if(messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(firebaseUser.getUid())) {
                             UID = firebaseUser.getUid();
                         }
@@ -193,7 +171,6 @@ public class MessFragment extends Fragment {
                         seen.add(item);
                     }
                 }
-                Log.d("TEST LIST", testList.toString());
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 CollectionReference usersRef = db.collection("users");
                 i = 0;
