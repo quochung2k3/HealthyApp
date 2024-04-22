@@ -1,7 +1,5 @@
 package com.example.healthyapp.models;
 
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.Map;
 
 public class CommentModel {

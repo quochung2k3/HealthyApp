@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -46,6 +47,7 @@ public class AddPostActivity extends AppCompatActivity {
     TextView tvTitle, tvContent;
     ImageView ivImage;
     FrameLayout loadingOverlay;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch swAnonymous;
     Spinner spFlair;
     List<FlairModel> flairs = new ArrayList<>();
@@ -105,6 +107,7 @@ public class AddPostActivity extends AppCompatActivity {
             boolean anonymous = swAnonymous.isChecked();
             String flairId = flairs.get(spFlair.getSelectedItemPosition()).getId();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            assert user != null;
             String uid = user.getUid();
             Long timestamp = System.currentTimeMillis();
 
@@ -139,9 +142,9 @@ public class AddPostActivity extends AppCompatActivity {
     private byte[] getBytesFromImageUri(Uri imageUri) {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            return baos.toByteArray();
+            ByteArrayOutputStream bass = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bass);
+            return bass.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -183,9 +186,9 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 adapter.clear();
-                Object value = snapshot.getValue();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     FlairModel flair = dataSnapshot.getValue(FlairModel.class);
+                    assert flair != null;
                     flair.setId(dataSnapshot.getKey());
                     // log flairs
                     Log.d("flair", flair.getName());

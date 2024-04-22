@@ -1,8 +1,9 @@
 package com.example.healthyapp.services;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class FirebaseStorageService {
     private static final String TAG = "StorageService";
@@ -29,7 +31,7 @@ public class FirebaseStorageService {
         return imageRef.putBytes(image)
                 .continueWithTask(task -> {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw Objects.requireNonNull(task.getException());
                     }
                     return imageRef.getDownloadUrl();
                 });
@@ -47,9 +49,9 @@ public class FirebaseStorageService {
             // Register observers to listen for when the download is done or if it fails
             return uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public Task<Uri> then(Task<UploadTask.TaskSnapshot> task) throws Exception {
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw Objects.requireNonNull(task.getException());
                     }
                     Log.d("Image", imageRef.getDownloadUrl().toString());
 

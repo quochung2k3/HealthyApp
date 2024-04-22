@@ -1,8 +1,8 @@
 package com.example.healthyapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,6 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
     DatabaseReference databaseReference;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +58,8 @@ public class ChatActivity extends AppCompatActivity {
         if (intent != null) {
             String userName = intent.getStringExtra("userName");
             String linkImg = intent.getStringExtra("linkImg");
-            if(linkImg.equals("")) {
+            assert linkImg != null;
+            if(linkImg.isEmpty()) {
                 profile_image.setImageDrawable(getResources().getDrawable(R.drawable.baseline_account_circle_24));
             }
             else {
@@ -74,83 +76,74 @@ public class ChatActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         readMess(firebaseUser.getUid(), intent.getStringExtra("id"));
-        profile_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("userName", intent.getStringExtra("userName"));
-                bundle.putString("id", intent.getStringExtra("id"));
-                UserHomeFragment userHomeFragment = new UserHomeFragment();
-                userHomeFragment.setArguments(bundle);
-                ActivityMainBinding binding;
-                binding = ActivityMainBinding.inflate(getLayoutInflater());
-                setContentView(binding.getRoot());
-                replaceFragment(userHomeFragment);
-                binding.bottomNavigationView.setBackground(null);
-                binding.bottomNavigationView.setSelectedItemId(R.id.message);
-                binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-                    if (item.getItemId() == R.id.home) {
-                        replaceFragment(new HomeFragment());
-                    }
-                    if (item.getItemId() == R.id.message) {
-                        replaceFragment(new MessFragment());
-                    }
-                    if (item.getItemId() == R.id.notification) {
-                        replaceFragment(new NotificationFragment());
-                    }
-                    if (item.getItemId() == R.id.menu) {
-                        replaceFragment(new MenuFragment());
-                    }
-                    return true;
-                });
-            }
-        });
-        imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ActivityMainBinding binding;
-                binding = ActivityMainBinding.inflate(getLayoutInflater());
-                setContentView(binding.getRoot());
-                replaceFragment(new MessFragment());
-                binding.bottomNavigationView.setBackground(null);
-                binding.bottomNavigationView.setSelectedItemId(R.id.message);
-                binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-                    if (item.getItemId() == R.id.home) {
-                        replaceFragment(new HomeFragment());
-                    }
-                    if (item.getItemId() == R.id.message) {
-                        replaceFragment(new MessFragment());
-                    }
-                    if (item.getItemId() == R.id.notification) {
-                        replaceFragment(new NotificationFragment());
-                    }
-                    if (item.getItemId() == R.id.menu) {
-                        replaceFragment(new MenuFragment());
-                    }
-                    return true;
-                });
-            }
-        });
-        imgSendMess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!edtMess.getText().toString().isEmpty()) {
-                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    MessageModel message = new MessageModel();
-                    message.setContent(edtMess.getText().toString());
-                    assert firebaseUser != null;
-                    message.setSender_id(firebaseUser.getUid());
-                    assert intent != null;
-                    message.setReceiver_id(intent.getStringExtra("id"));
-                    message.setIs_deleted_by_me(false);
-                    message.setIs_deleted_by_other(false);
-                    message.setIs_seen(false);
-                    database.getReference().child("Message").push().setValue(message);
-                    edtMess.setText("");
+        profile_image.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("userName", intent.getStringExtra("userName"));
+            bundle.putString("id", intent.getStringExtra("id"));
+            UserHomeFragment userHomeFragment = new UserHomeFragment();
+            userHomeFragment.setArguments(bundle);
+            ActivityMainBinding binding;
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+            replaceFragment(userHomeFragment);
+            binding.bottomNavigationView.setBackground(null);
+            binding.bottomNavigationView.setSelectedItemId(R.id.message);
+            binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+                if (item.getItemId() == R.id.home) {
+                    replaceFragment(new HomeFragment());
                 }
-                else {
-                    Toast.makeText(ChatActivity.this, "Không thể gởi tin nhắn với nội dung rỗng", Toast.LENGTH_SHORT).show();
+                if (item.getItemId() == R.id.message) {
+                    replaceFragment(new MessFragment());
                 }
+                if (item.getItemId() == R.id.notification) {
+                    replaceFragment(new NotificationFragment());
+                }
+                if (item.getItemId() == R.id.menu) {
+                    replaceFragment(new MenuFragment());
+                }
+                return true;
+            });
+        });
+        imgBack.setOnClickListener(v -> {
+            ActivityMainBinding binding;
+            binding = ActivityMainBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+            replaceFragment(new MessFragment());
+            binding.bottomNavigationView.setBackground(null);
+            binding.bottomNavigationView.setSelectedItemId(R.id.message);
+            binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+                if (item.getItemId() == R.id.home) {
+                    replaceFragment(new HomeFragment());
+                }
+                if (item.getItemId() == R.id.message) {
+                    replaceFragment(new MessFragment());
+                }
+                if (item.getItemId() == R.id.notification) {
+                    replaceFragment(new NotificationFragment());
+                }
+                if (item.getItemId() == R.id.menu) {
+                    replaceFragment(new MenuFragment());
+                }
+                return true;
+            });
+        });
+        imgSendMess.setOnClickListener(v -> {
+            if(!edtMess.getText().toString().isEmpty()) {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                MessageModel message = new MessageModel();
+                message.setContent(edtMess.getText().toString());
+                assert firebaseUser != null;
+                message.setSender_id(firebaseUser.getUid());
+                assert intent != null;
+                message.setReceiver_id(intent.getStringExtra("id"));
+                message.setIs_deleted_by_me(false);
+                message.setIs_deleted_by_other(false);
+                message.setIs_seen(false);
+                database.getReference().child("Message").push().setValue(message);
+                edtMess.setText("");
+            }
+            else {
+                Toast.makeText(ChatActivity.this, "Cannot send messages with empty content", Toast.LENGTH_SHORT).show();
             }
         });
     }

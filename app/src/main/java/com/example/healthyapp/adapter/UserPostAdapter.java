@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,9 +27,7 @@ import com.example.healthyapp.R;
 import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
-import com.example.healthyapp.services.FirebaseStorageService;
 import com.example.healthyapp.utils.TimestampUtil;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,10 +42,9 @@ import java.util.Objects;
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostViewHolder> {
     private final Context context;
     ArrayList<PostModel> postList;
-    FirebaseStorageService storageService = new FirebaseStorageService();
     FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    String currentUser = null;
+    String currentUser;
     public UserPostAdapter(Context context, ArrayList<PostModel> postList) {
         this.context = context;
         this.postList = postList;
@@ -62,6 +58,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         return new UserPostViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull UserPostViewHolder holder, int position) {
         // load post
@@ -70,13 +67,14 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
 
         if (postModel.isAnonymous()) {
-            holder.txtUserName.setText("Người đăng ẩn danh");
+            holder.txtUserName.setText("Posted anonymously");
             holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
         }
         else { // get user
             FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     UserModel userModel = task.getResult().toObject(UserModel.class);
+                    assert userModel != null;
                     String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
 
                     holder.txtUserName.setText(userName);
@@ -181,21 +179,18 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             Picasso.get().load(postModel.getPostImg()).into(holder.imgPost);
         }
 
-        holder.imgUserPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userName = holder.txtUserName.getText().toString();
-                String id = postModel.getUser_id();
-                Bundle bundle = new Bundle();
-                bundle.putString("userName", userName);
-                bundle.putString("id", id);
-                UserHomeFragment userHomeFragment = new UserHomeFragment();
-                userHomeFragment.setArguments(bundle);
-                FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
+        holder.imgUserPost.setOnClickListener(v -> {
+            String userName = holder.txtUserName.getText().toString();
+            String id = postModel.getUser_id();
+            Bundle bundle = new Bundle();
+            bundle.putString("userName", userName);
+            bundle.putString("id", id);
+            UserHomeFragment userHomeFragment = new UserHomeFragment();
+            userHomeFragment.setArguments(bundle);
+            FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         });
 
         // onItemClick

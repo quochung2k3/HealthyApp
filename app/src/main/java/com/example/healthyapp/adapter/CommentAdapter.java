@@ -1,5 +1,6 @@
 package com.example.healthyapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -24,18 +25,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
-    private Context context;
+    private final Context context;
     ArrayList<CommentModel> commentList;
-    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    FirebaseFirestore ft = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
-    String currentUser = auth.getCurrentUser().getUid();
+    String currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
     public CommentAdapter(Context context, ArrayList<CommentModel> commentList) {
         this.context = context;
         this.commentList = commentList;
@@ -46,14 +47,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         View view = LayoutInflater.from(context).inflate(R.layout.item_user_comment, parent, false);
         return new CommentViewHolder(view);
     }
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         CommentModel comment = commentList.get(position);
 
         // get user
-        firestore.collection("users").document(comment.getUser_id()).get().addOnSuccessListener(documentSnapshot -> {
+        ft.collection("users").document(comment.getUser_id()).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 UserModel user = documentSnapshot.toObject(UserModel.class);
+                assert user != null;
                 user.setId(documentSnapshot.getId());
                 holder.user = user;
                 holder.txtUsername.setText(user.getFirst_name() + " " + user.getLast_name());
@@ -93,7 +96,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 likeIcon.setTint(context.getResources().getColor(R.color.blue));
             }
             // update likes
-            DatabaseReference commentRef = null;
+            DatabaseReference commentRef;
             if (comment.getParent_id() != null) {
                 commentRef = db.getReference(FirebaseDBConnection.COMMENT).child(comment.getPost_id()).child(comment.getParent_id()).child("replies").child(comment.getId());
             } else {

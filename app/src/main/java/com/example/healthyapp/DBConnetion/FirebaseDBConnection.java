@@ -13,14 +13,10 @@ public class FirebaseDBConnection {
     public static final String MESSAGE = "Message";
     public static final String FLAIR = "Flair";
     public static final String COMMENT = "Comment";
-    public static final String LIKE_COMMENT = "Like_Comment";
-    public static final String LIKE_POST = "Like_Post";
     public static final String POST = "Post";
-    public static final String POST_IMAGE = "Post_Image";
-    public static final String USER = "User";
     public static final String DB_URL = "https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-    // singelton
+    // singleton
     private FirebaseDBConnection() {
         initFirebase();
     }
@@ -31,7 +27,7 @@ public class FirebaseDBConnection {
         }
         return instance;
     }
-    // Hàm này được sử dụng để khởi tạo kết nối với Firebase Database
+    // Hàm này sử dụng để khởi tạo kết nối với Firebase Database
     private void initFirebase() {
         // Kiểm tra xem Firebase đã được khởi tạo chưa
         if (database == null) {

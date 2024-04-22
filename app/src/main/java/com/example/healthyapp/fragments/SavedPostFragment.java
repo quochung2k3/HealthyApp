@@ -1,6 +1,5 @@
 package com.example.healthyapp.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,16 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
-import com.example.healthyapp.adapter.ListMessAdapter;
 import com.example.healthyapp.adapter.ListSavedPostAdapter;
-import com.example.healthyapp.models.ListMessModel;
 import com.example.healthyapp.models.PostModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -51,59 +47,41 @@ public class SavedPostFragment extends Fragment {
         reloadDataFromFirebase();
         listSavedPostAdapter = new ListSavedPostAdapter(requireActivity(), postModels);
         lvPost.setAdapter(listSavedPostAdapter);
-        lvPost.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                PostModel selectedPost = postModels.get(position);
-                showAnnouncementDialog(selectedPost);
-                return true;
-            }
+        lvPost.setOnItemLongClickListener((parent, view, position, id) -> {
+            PostModel selectedPost = postModels.get(position);
+            showAnnouncementDialog(selectedPost);
+            return true;
         });
 
-        lvPost.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PostModel selectedPost = postModels.get(position);
-                Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-                intent.putExtra("post_id", selectedPost.getId());
-                startActivity(intent);
-            }
+        lvPost.setOnItemClickListener((parent, view, position, id) -> {
+            PostModel selectedPost = postModels.get(position);
+            Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+            intent.putExtra("post_id", selectedPost.getId());
+            startActivity(intent);
         });
 
-        ibBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requireActivity().onBackPressed();
-            }
-        });
+        ibBack.setOnClickListener(v -> requireActivity().onBackPressed());
 
         return rootView;
     }
     private void showAnnouncementDialog(PostModel selectedPost) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Cảnh báo");
-        builder.setMessage("Bạn có chắc muốn bỏ lưu bài viết này");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                DatabaseReference postRef = db.getReference("Post").child(selectedPost.getId());
-                postRef.child("list_user_save").get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        selectedPost.getList_user_save().remove(currentUser);
-                        postRef.child("list_user_save").setValue(selectedPost.getList_user_save());
-                        reloadDataFromFirebase();
-                    }
-                    else {
-                        Log.d("UserPostAdapter", "Error getting user likes: ", task.getException());
-                    }
-                });
-            }
+        builder.setTitle("Warning");
+        builder.setMessage("Are you sure you want to un save this post?");
+        builder.setPositiveButton("Yes", (dialog, id) -> {
+            DatabaseReference postRef = db.getReference("Post").child(selectedPost.getId());
+            postRef.child("list_user_save").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    selectedPost.getList_user_save().remove(currentUser);
+                    postRef.child("list_user_save").setValue(selectedPost.getList_user_save());
+                    reloadDataFromFirebase();
+                }
+                else {
+                    Log.d("UserPostAdapter", "Error getting user likes: ", task.getException());
+                }
+            });
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }

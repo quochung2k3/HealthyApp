@@ -1,10 +1,13 @@
 package com.example.healthyapp.utils;
 
+import android.annotation.SuppressLint;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class TimestampUtil {
+    @SuppressLint("DefaultLocale")
     public static String convertTimestampToDateString(long timestamp) {
         long now = System.currentTimeMillis();
         long elapsedTime = now - timestamp;

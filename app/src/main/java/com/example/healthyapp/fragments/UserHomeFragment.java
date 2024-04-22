@@ -31,7 +31,6 @@ import com.example.healthyapp.ChatActivity;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.UserPostAdapter;
-import com.example.healthyapp.models.ListMessModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.services.FirebaseStorageService;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -48,8 +47,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.Objects;
 
 public class UserHomeFragment extends Fragment {
@@ -58,9 +55,7 @@ public class UserHomeFragment extends Fragment {
     RecyclerView rvUserPost;
     UserPostAdapter userPostAdapter;
     ArrayList<PostModel> postList = new ArrayList<>();
-    ArrayList<ListMessModel> listMess = new ArrayList<>();
     FirebaseAuth mAuth;
-    FirebaseFirestore firestore;
     FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
     ImageView imgBack, imgAvatar, imgBackground;
     FirebaseFirestore ft;
@@ -92,14 +87,11 @@ public class UserHomeFragment extends Fragment {
                 }
             }
         });
-        imgBackground.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                field = "imgBackground";
-                assert id != null;
-                if(id.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
-                    solve();
-                }
+        imgBackground.setOnClickListener(v -> {
+            field = "imgBackground";
+            assert id != null;
+            if(id.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
+                solve();
             }
         });
         rvUserPost = rootView.findViewById(R.id.rvUserPost);
@@ -266,6 +258,7 @@ public class UserHomeFragment extends Fragment {
         return mime.getExtensionFromMimeType(contentResolver.getType(imageUri));
     }
 
+    @SuppressLint("SetTextI18n")
     private void solve() {
         @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_logout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
@@ -301,7 +294,7 @@ public class UserHomeFragment extends Fragment {
                     imgBackground.setImageDrawable(getResources().getDrawable(R.drawable.background));
                 }
                 imageUri = null;
-                DocumentReference documentReference = ft.collection("users").document(mAuth.getCurrentUser().getUid());
+                DocumentReference documentReference = ft.collection("users").document(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
                 documentReference.update(field, "")
                         .addOnSuccessListener(unused -> {
 

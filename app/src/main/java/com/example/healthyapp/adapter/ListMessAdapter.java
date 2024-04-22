@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,8 +60,8 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
                     if (messageModel != null) {
-                        if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(currentMess.getId())) ||
-                                (messageModel.getSender_id().equals(currentMess.getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
+                        if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
+                                (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
                             if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
                                 Log.d("TEST IF", "TEST IF");
                                 isSeen = false;
@@ -97,8 +98,8 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                 Collections.reverse(messageModels);
 
                 for (MessageModel messageModel : messageModels) {
-                    if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(currentMess.getId())) ||
-                            (messageModel.getSender_id().equals(currentMess.getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
+                    if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
+                            (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
                         if((!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
                                 || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())) {
                             mess.setText(messageModel.getContent());
@@ -115,7 +116,7 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
         });
 
         if (currentMess != null) {
-            if(currentMess.getImg().equals("")) {
+            if(currentMess.getImg().isEmpty()) {
                 imageButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.baseline_account_circle_24));
             }
             else {

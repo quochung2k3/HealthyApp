@@ -2,10 +2,10 @@ package com.example.healthyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PostDetailActivity extends AppCompatActivity {
     FirebaseDBConnection db = FirebaseDBConnection.getInstance();
@@ -57,7 +58,7 @@ public class PostDetailActivity extends AppCompatActivity {
     PostModel post;
     LinearLayout llReply;
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    String currentUserId = auth.getCurrentUser().getUid();
+    String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
     ArrayList<CommentModel> commentList = new ArrayList<>();
     CommentAdapter commentAdapter;
     public String replyTo = null;
@@ -77,9 +78,7 @@ public class PostDetailActivity extends AppCompatActivity {
         imgPost = findViewById(R.id.ivPostImage);
         imgAvatar = findViewById(R.id.ivAvatar);
         ibBack = findViewById(R.id.ibBack);
-        ibBack.setOnClickListener(v -> {
-            finish();
-        });
+        ibBack.setOnClickListener(v -> finish());
         btnLike = findViewById(R.id.btnLike);
         btnComment = findViewById(R.id.btnComment);
         btnSave = findViewById(R.id.btnSave);
@@ -127,9 +126,7 @@ public class PostDetailActivity extends AppCompatActivity {
 //        });
 
         // comment
-        ibSendComment.setOnClickListener(v -> {
-            sendComment();
-        });
+        ibSendComment.setOnClickListener(v -> sendComment());
         loadComment();
 
         // btn like
@@ -174,7 +171,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     Drawable saveIcon = btnSave.getCompoundDrawables()[0];
                     if (post.getList_user_save().containsKey(currentUserId)) {
-                        // unsave post
+                        // un save post
                         post.getList_user_save().remove(currentUserId);
                         saveIcon.setTint(getResources().getColor(R.color.primary_color));
                     }
@@ -193,6 +190,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
 
     }
+    @SuppressLint("SetTextI18n")
     public void showReplyTo(String username) {
         llReply.setVisibility(View.VISIBLE);
         txtReplyTo.setText("Replying to " + username + "'s comment");
@@ -203,11 +201,13 @@ public class PostDetailActivity extends AppCompatActivity {
                 .getReference(FirebaseDBConnection.COMMENT)
                 .child(postId);
         commentRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 commentList.clear();
                 for (DataSnapshot commentSnapshot : snapshot.getChildren()) {
                     CommentModel comment = commentSnapshot.getValue(CommentModel.class);
+                    assert comment != null;
                     comment.setId(commentSnapshot.getKey());
                     commentList.add(comment);
                     if (comment.getReplies() != null) {
@@ -237,7 +237,7 @@ public class PostDetailActivity extends AppCompatActivity {
         if (commentContent.isEmpty()) {
             return;
         }
-        DatabaseReference commentRef = null;
+        DatabaseReference commentRef;
         if (replyTo == null) {
             commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
                     .getReference(FirebaseDBConnection.COMMENT)
@@ -295,14 +295,16 @@ public class PostDetailActivity extends AppCompatActivity {
                                 .child(postId);
         // get post
         postRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 PostModel post = snapshot.getValue(PostModel.class);
+                assert post != null;
                 post.setId(snapshot.getKey());
                 taskCompletionSource.setResult(post);
 
                 if (post.isAnonymous()) {
-                    txtUserName.setText("Người đăng ẩn danh");
+                    txtUserName.setText("Posted anonymously");
                     imgAvatar.setImageResource(R.drawable.backgroundapp);
                 }
                 else {
@@ -311,6 +313,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     FirebaseFirestore.getInstance().collection("users").document(post.getUser_id()).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             UserModel userModel = task.getResult().toObject(UserModel.class);
+                            assert userModel != null;
                             String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
                             txtUserName.setText(userName);
                             if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
