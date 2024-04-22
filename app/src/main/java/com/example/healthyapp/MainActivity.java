@@ -21,8 +21,8 @@ import com.example.healthyapp.fragments.NotificationFragment;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
-    String countMess = "";
-    String countNotification = "";
+//    String countMess = "";
+//    String countNotification = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,21 +31,21 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
 
-        TextView txtCountMess = findViewById(R.id.countMess);
-        TextView txtCountNotification = findViewById(R.id.countNotification);
-        if(!countMess.isEmpty()) {
-            txtCountMess.setText(countMess);
-        }
-        else {
-            txtCountMess.setVisibility(View.GONE);
-        }
-
-        if(!countNotification.isEmpty()) {
-            txtCountNotification.setText(countNotification);
-        }
-        else {
-            txtCountNotification.setVisibility(View.GONE);
-        }
+//        TextView txtCountMess = findViewById(R.id.countMess);
+//        TextView txtCountNotification = findViewById(R.id.countNotification);
+//        if(!countMess.isEmpty()) {
+//            txtCountMess.setText(countMess);
+//        }
+//        else {
+//            txtCountMess.setVisibility(View.GONE);
+//        }
+//
+//        if(!countNotification.isEmpty()) {
+//            txtCountNotification.setText(countNotification);
+//        }
+//        else {
+//            txtCountNotification.setVisibility(View.GONE);
+//        }
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
