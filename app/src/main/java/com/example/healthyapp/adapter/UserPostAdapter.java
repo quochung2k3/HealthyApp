@@ -1,5 +1,6 @@
 package com.example.healthyapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -39,9 +40,10 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostViewHolder> {
-    private Context context;
+    private final Context context;
     ArrayList<PostModel> postList;
     FirebaseStorageService storageService = new FirebaseStorageService();
     FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
@@ -50,7 +52,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     public UserPostAdapter(Context context, ArrayList<PostModel> postList) {
         this.context = context;
         this.postList = postList;
-        currentUser = auth.getCurrentUser().getUid();
+        currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
     }
 
     @NonNull
@@ -220,6 +222,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void showPopupMenu(View v, PostModel postModel) {
         PopupMenu popupMenu = new androidx.appcompat.widget.PopupMenu(context, v);
         popupMenu.inflate(R.menu.post_menu);

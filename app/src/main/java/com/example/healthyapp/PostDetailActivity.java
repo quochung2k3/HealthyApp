@@ -2,6 +2,7 @@ package com.example.healthyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.adapter.CommentAdapter;
+import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.CommentModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
@@ -106,6 +108,23 @@ public class PostDetailActivity extends AppCompatActivity {
             post = task.getResult();
             loadPost();
         });
+
+        // Navigate to User Home
+//        imgAvatar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String userName = txtUserName.getText().toString();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("userName", userName);
+//                bundle.putString("id", postId);
+//                UserHomeFragment userHomeFragment = new UserHomeFragment();
+//                userHomeFragment.setArguments(bundle);
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
+//                fragmentTransaction.addToBackStack(null);
+//                fragmentTransaction.commit();
+//            }
+//        });
 
         // comment
         ibSendComment.setOnClickListener(v -> {
