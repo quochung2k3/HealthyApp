@@ -10,6 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.view.View;
+import android.widget.TextView;
+
 import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.fragments.MenuFragment;
@@ -18,6 +21,8 @@ import com.example.healthyapp.fragments.NotificationFragment;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
+    String countMess = "";
+    String countNotification = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +30,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
+
+        TextView txtCountMess = findViewById(R.id.countMess);
+        TextView txtCountNotification = findViewById(R.id.countNotification);
+        if(!countMess.isEmpty()) {
+            txtCountMess.setText(countMess);
+        }
+        else {
+            txtCountMess.setVisibility(View.GONE);
+        }
+
+        if(!countNotification.isEmpty()) {
+            txtCountNotification.setText(countNotification);
+        }
+        else {
+            txtCountNotification.setVisibility(View.GONE);
+        }
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
