@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -140,10 +141,10 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         Drawable drawableSave = holder.btnSave.getCompoundDrawables()[0];
         boolean saved = postModel.getList_user_save().containsKey(currentUser);
         if (saved) {
-            drawableSave.setTint(context.getResources().getColor(R.color.yellow));
+            holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.yellow));
         }
         else {
-            drawableSave.setTint(context.getResources().getColor(R.color.white));
+            holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.button));
         }
         // btnSave onClick
         holder.btnSave.setOnClickListener(v -> {
@@ -154,12 +155,12 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                     if (postModel.getList_user_save().containsKey(currentUser)) {
                         // unSave post
                         postModel.getList_user_save().remove(currentUser);
-                        drawableSave.setTint(context.getResources().getColor(R.color.primary_color));
+                        holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.button));
                     }
                     else {
                         // Save post
                         postModel.getList_user_save().put(currentUser, 1);
-                        drawableSave.setTint(context.getResources().getColor(R.color.yellow));
+                        holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.yellow));
                     }
                     postRef.child("list_user_save").setValue(postModel.getList_user_save());
                 }

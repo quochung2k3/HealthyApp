@@ -2,6 +2,7 @@ package com.example.healthyapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -169,16 +170,15 @@ public class PostDetailActivity extends AppCompatActivity {
             // get newest user likes
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Drawable saveIcon = btnSave.getCompoundDrawables()[0];
                     if (post.getList_user_save().containsKey(currentUserId)) {
                         // un save post
                         post.getList_user_save().remove(currentUserId);
-                        saveIcon.setTint(getResources().getColor(R.color.primary_color));
+                        btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.button));
                     }
                     else {
                         // like post
                         post.getList_user_save().put(currentUserId, 1);
-                        saveIcon.setTint(getResources().getColor(R.color.yellow));
+                        btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.yellow));
                     }
                     postRef.child("list_user_save").setValue(post.getList_user_save());
                 }
@@ -271,12 +271,11 @@ public class PostDetailActivity extends AppCompatActivity {
         else {
             likeIcon.setTint(getResources().getColor(R.color.primary_color));
         }
-        Drawable saveIcon = btnSave.getCompoundDrawables()[0];
         if (post.getList_user_save().containsKey(currentUserId)) {
-            saveIcon.setTint(getResources().getColor(R.color.yellow));
+            btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.yellow));
         }
         else {
-            saveIcon.setTint(getResources().getColor(R.color.primary_color));
+            btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.button));
         }
         txtPostTitle.setText(post.getTitle());
         txtPostContent.setText(post.getContent());
