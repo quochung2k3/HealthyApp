@@ -1,5 +1,6 @@
 package com.example.healthyapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,6 @@ public class HomeFragment extends Fragment {
     RecyclerView rvUserPost;
     ArrayList<PostModel> postList = new ArrayList<>();
     UserPostAdapter userPostAdapter = null;
-    FirebaseDBConnection db = FirebaseDBConnection.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,11 +54,13 @@ public class HomeFragment extends Fragment {
         DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
         // get where is_deleted = false
         postRef.orderByChild("is_deleted").equalTo(false).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PostModel post = postSnapshot.getValue(PostModel.class);
+                    assert post != null;
                     post.setId(postSnapshot.getKey());
                     postList.add(post);
                     Log.d("Post", post.getTitle());

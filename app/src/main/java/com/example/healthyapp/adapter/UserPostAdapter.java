@@ -70,7 +70,8 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         if (postModel.isAnonymous()) {
             holder.txtUserName.setText("Người đăng ẩn danh");
             holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
-        } else { // get user
+        }
+        else { // get user
             FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     UserModel userModel = task.getResult().toObject(UserModel.class);
@@ -98,7 +99,8 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         boolean liked = postModel.getUser_likes().containsKey(currentUser);
         if (liked) {
             drawable.setTint(context.getResources().getColor(R.color.blue));
-        } else {
+        }
+        else {
             drawable.setTint(context.getResources().getColor(R.color.primary_color));
         }
 
@@ -110,7 +112,8 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                 if (task.isSuccessful()) {
                     if (task.getResult().getValue() == null) {
                         postModel.setUser_likes(new HashMap<>());
-                    } else {
+                    }
+                    else {
                         postModel.setUser_likes((Map<String, Integer>) task.getResult().getValue());
                     }
                     Log.d("UserPostAdapter", "user likes: " + postModel.getUser_likes());
@@ -118,25 +121,60 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                         // unlike post
                         postModel.getUser_likes().remove(currentUser);
                         drawable.setTint(context.getResources().getColor(R.color.primary_color));
-                    } else {
+                    }
+                    else {
                         // like post
                         postModel.getUser_likes().put(currentUser, 1);
                         drawable.setTint(context.getResources().getColor(R.color.blue));
                     }
                     postRef.child("user_likes").setValue(postModel.getUser_likes());
                     holder.btnLike.setText(String.valueOf(postModel.getUser_likes().size()));
-                } else {
+                }
+                else {
                     Log.d("UserPostAdapter", "Error getting user likes: ", task.getException());
                 }
             });
 
         });
 
+        Drawable drawableSave = holder.btnSave.getCompoundDrawables()[0];
+        boolean saved = postModel.getList_user_save().containsKey(currentUser);
+        if (saved) {
+            drawableSave.setTint(context.getResources().getColor(R.color.yellow));
+        }
+        else {
+            drawableSave.setTint(context.getResources().getColor(R.color.white));
+        }
+        // btnSave onClick
+        holder.btnSave.setOnClickListener(v -> {
+            DatabaseReference postRef = db.getReference("Post").child(postModel.getId());
+            // get newest user save
+            postRef.child("list_user_save").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    if (postModel.getList_user_save().containsKey(currentUser)) {
+                        // unSave post
+                        postModel.getList_user_save().remove(currentUser);
+                        drawableSave.setTint(context.getResources().getColor(R.color.primary_color));
+                    }
+                    else {
+                        // Save post
+                        postModel.getList_user_save().put(currentUser, 1);
+                        drawableSave.setTint(context.getResources().getColor(R.color.yellow));
+                    }
+                    postRef.child("list_user_save").setValue(postModel.getList_user_save());
+                }
+                else {
+                    Log.d("UserPostAdapter", "Error getting user likes: ", task.getException());
+                }
+            });
+        });
+
         String date = TimestampUtil.convertTimestampToDateString(postModel.getCreated_date());
         holder.txtDate.setText(date);
         if (postModel.getPostImg() == null || postModel.getPostImg().isEmpty()) {
             holder.imgPost.setVisibility(View.GONE);
-        } else {
+        }
+        else {
             holder.imgPost.setVisibility(View.VISIBLE);
             Picasso.get().load(postModel.getPostImg()).into(holder.imgPost);
         }
@@ -214,7 +252,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     public static class UserPostViewHolder extends RecyclerView.ViewHolder {
         ImageView imgUserPost, imgPost;
         TextView txtUserName, txtPostTitle, txtDate;
-        Button btnLike, btnComment;
+        Button btnLike, btnComment, btnSave;
         ImageButton ibMore;
 
         public UserPostViewHolder(@NonNull View itemView) {
@@ -226,6 +264,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             txtDate = itemView.findViewById(R.id.txtDate);
             btnLike = itemView.findViewById(R.id.btnLike);
             btnComment = itemView.findViewById(R.id.btnComment);
+            btnSave = itemView.findViewById(R.id.btnSave);
             ibMore = itemView.findViewById(R.id.ibMore);
         }
     }

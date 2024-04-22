@@ -10,6 +10,7 @@ public class PostModel {
     private String title;
     private String content;
     private Map<String, Integer> user_likes = new HashMap<>();
+    private Map<String, Integer> list_user_save = new HashMap<>();
     private boolean anonymous;
     private String postImg;
     private String user_id;
@@ -119,5 +120,13 @@ public class PostModel {
 
     public void setIs_deleted(boolean is_deleted) {
         this.is_deleted = is_deleted;
+    }
+
+    public Map<String, Integer> getList_user_save() {
+        return list_user_save;
+    }
+
+    public void setList_user_save(Map<String, Integer> list_user_save) {
+        this.list_user_save = list_user_save;
     }
 }

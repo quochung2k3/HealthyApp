@@ -47,7 +47,7 @@ public class PostDetailActivity extends AppCompatActivity {
     FirebaseDBConnection db = FirebaseDBConnection.getInstance();
     TextView txtPostTitle, txtPostContent, txtPostDate, txtFlair, txtUserName, txtReplyTo, txtCancelReply;
     ImageView imgPost, imgAvatar;
-    Button btnLike, btnComment;
+    Button btnLike, btnComment, btnSave;
     ImageButton ibBack, ibSendComment;
     EditText edtComment;
     RecyclerView rvComment;
@@ -80,6 +80,7 @@ public class PostDetailActivity extends AppCompatActivity {
         });
         btnLike = findViewById(R.id.btnLike);
         btnComment = findViewById(R.id.btnComment);
+        btnSave = findViewById(R.id.btnSave);
         btnComment.setOnClickListener(v -> {
             edtComment.requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -144,6 +145,33 @@ public class PostDetailActivity extends AppCompatActivity {
             });
         });
 
+        // btn like save
+        btnSave.setOnClickListener(v -> {
+            FirebaseDatabase fb = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+            // save post
+            DatabaseReference postRef = fb.getReference("Post").child(post.getId());
+            // get newest user likes
+            postRef.child("list_user_save").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Drawable saveIcon = btnSave.getCompoundDrawables()[0];
+                    if (post.getList_user_save().containsKey(currentUserId)) {
+                        // unsave post
+                        post.getList_user_save().remove(currentUserId);
+                        saveIcon.setTint(getResources().getColor(R.color.primary_color));
+                    }
+                    else {
+                        // like post
+                        post.getList_user_save().put(currentUserId, 1);
+                        saveIcon.setTint(getResources().getColor(R.color.yellow));
+                    }
+                    postRef.child("list_user_save").setValue(post.getList_user_save());
+                }
+                else {
+                    Log.d("UserPostAdapter", "Error getting user likes: ", task.getException());
+                }
+            });
+        });
+
 
     }
     public void showReplyTo(String username) {
@@ -196,7 +224,8 @@ public class PostDetailActivity extends AppCompatActivity {
                     .getReference(FirebaseDBConnection.COMMENT)
                     .child(post.getId())
                     .push();
-        } else {
+        }
+        else {
             commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
                     .getReference(FirebaseDBConnection.COMMENT)
                     .child(post.getId()).child(replyTo).child("replies")
@@ -219,15 +248,24 @@ public class PostDetailActivity extends AppCompatActivity {
         Drawable likeIcon = btnLike.getCompoundDrawables()[0];
         if (post.getUser_likes().containsKey(currentUserId)) {
             likeIcon.setTint(getResources().getColor(R.color.blue));
-        } else {
+        }
+        else {
             likeIcon.setTint(getResources().getColor(R.color.primary_color));
+        }
+        Drawable saveIcon = btnSave.getCompoundDrawables()[0];
+        if (post.getList_user_save().containsKey(currentUserId)) {
+            saveIcon.setTint(getResources().getColor(R.color.yellow));
+        }
+        else {
+            saveIcon.setTint(getResources().getColor(R.color.primary_color));
         }
         txtPostTitle.setText(post.getTitle());
         txtPostContent.setText(post.getContent());
         txtPostDate.setText(TimestampUtil.convertTimestampToDateString(post.getCreated_date()));
         if (post.getPostImg() == null || post.getPostImg().isEmpty()) {
             imgPost.setVisibility(View.GONE);
-        } else {
+        }
+        else {
             Picasso.get().load(post.getPostImg()).into(imgPost);
         }
     }
@@ -247,7 +285,8 @@ public class PostDetailActivity extends AppCompatActivity {
                 if (post.isAnonymous()) {
                     txtUserName.setText("Người đăng ẩn danh");
                     imgAvatar.setImageResource(R.drawable.backgroundapp);
-                } else {
+                }
+                else {
                     // get user
                     Log.d("User ID", post.getUser_id());
                     FirebaseFirestore.getInstance().collection("users").document(post.getUser_id()).get().addOnCompleteListener(task -> {
@@ -257,7 +296,8 @@ public class PostDetailActivity extends AppCompatActivity {
                             txtUserName.setText(userName);
                             if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
                                 imgAvatar.setImageResource(R.drawable.backgroundapp);
-                            } else {
+                            }
+                            else {
 //                            Picasso.get().load(userModel.getImgAvatar()).into(imgAvatar);
                                 Glide.with(PostDetailActivity.this).load(userModel.getImgAvatar()).circleCrop().into(imgAvatar);
 

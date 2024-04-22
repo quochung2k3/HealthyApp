@@ -172,11 +172,13 @@ public class UserHomeFragment extends Fragment {
         // get post by user id
         Query query = db.getReference("Post").orderByChild("user_id").equalTo(id);
         query.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PostModel post = postSnapshot.getValue(PostModel.class);
+                    assert post != null;
                     post.setId(postSnapshot.getKey());
                     postList.add(post);
                 }
