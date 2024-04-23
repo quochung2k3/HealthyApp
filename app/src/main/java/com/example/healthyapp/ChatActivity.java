@@ -54,6 +54,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        ActivityMainBinding binding;
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding.countMess.setVisibility(View.GONE);
+        binding.countNotification.setVisibility(View.GONE);
+//        updateCount();
         Mapping();
         intent = getIntent();
         if (intent != null) {
@@ -83,8 +88,6 @@ public class ChatActivity extends AppCompatActivity {
             bundle.putString("id", intent.getStringExtra("id"));
             UserHomeFragment userHomeFragment = new UserHomeFragment();
             userHomeFragment.setArguments(bundle);
-            ActivityMainBinding binding;
-            binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
             replaceFragment(userHomeFragment);
             binding.bottomNavigationView.setBackground(null);
@@ -106,8 +109,6 @@ public class ChatActivity extends AppCompatActivity {
             });
         });
         imgBack.setOnClickListener(v -> {
-            ActivityMainBinding binding;
-            binding = ActivityMainBinding.inflate(getLayoutInflater());
             setContentView(binding.getRoot());
             replaceFragment(new MessFragment());
             binding.bottomNavigationView.setBackground(null);
