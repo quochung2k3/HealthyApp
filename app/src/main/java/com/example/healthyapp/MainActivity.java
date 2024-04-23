@@ -38,6 +38,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
+    TextView txtCountMess, txtCountNotification;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     boolean isSeen = true;
     int countMess = 0;
@@ -50,10 +51,34 @@ public class MainActivity extends AppCompatActivity {
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
 
-        TextView txtCountMess = findViewById(R.id.countMess);
-        TextView txtCountNotification = findViewById(R.id.countNotification);
+        txtCountMess = findViewById(R.id.countMess);
+        txtCountNotification = findViewById(R.id.countNotification);
         txtCountMess.setVisibility(View.GONE);
         txtCountNotification.setVisibility(View.GONE);
+        reloadCountMess();
+
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.home) {
+                replaceFragment(new HomeFragment());
+            }
+            if (item.getItemId() == R.id.message) {
+                replaceFragment(new MessFragment());
+            }
+            if (item.getItemId() == R.id.fab) {
+                Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
+                startActivityForResult(intent, 1);
+            }
+            if (item.getItemId() == R.id.notification) {
+                replaceFragment(new NotificationFragment());
+            }
+            if (item.getItemId() == R.id.menu) {
+                replaceFragment(new MenuFragment());
+            }
+            return true;
+        });
+    }
+
+    private void reloadCountMess() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("users");
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
@@ -100,27 +125,8 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
 
                 });
-
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.home) {
-                replaceFragment(new HomeFragment());
-            }
-            if (item.getItemId() == R.id.message) {
-                replaceFragment(new MessFragment());
-            }
-            if (item.getItemId() == R.id.fab) {
-                Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
-                startActivityForResult(intent, 1);
-            }
-            if (item.getItemId() == R.id.notification) {
-                replaceFragment(new NotificationFragment());
-            }
-            if (item.getItemId() == R.id.menu) {
-                replaceFragment(new MenuFragment());
-            }
-            return true;
-        });
     }
+
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

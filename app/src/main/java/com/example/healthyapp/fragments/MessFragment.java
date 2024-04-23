@@ -58,58 +58,6 @@ public class MessFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_list_mess, container, false);
         ft = FirebaseFirestore.getInstance();
         lvMess = rootView.findViewById(R.id.lvMess);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView txtCountMess = rootView.findViewById(R.id.countMess);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference usersRef = db.collection("users");
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceMess = database.getReference().child("Message");
-        usersRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String userId = documentSnapshot.getId();
-                        Log.d("TEST UID", userId);
-                        if(!userId.equals(firebaseUser.getUid())) {
-                            databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        MessageModel messageModel = snapshot.getValue(MessageModel.class);
-                                        Log.d("TEST THU", "1");
-                                        if (messageModel != null) {
-                                            if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId)) ||
-                                                    (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
-                                                if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
-                                                    isSeen = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if(!isSeen) {
-                                        countMess++;
-                                        Log.d("TEST COUNT", String.valueOf(countMess));
-//                                        txtCountMess.setText(String.valueOf(countMess));
-                                        isSeen = true;
-                                    }
-                                    else {
-                                        if(countMess == 0) {
-                                            Log.d("TEST TEST", "SUCCESS");
-//                                            txtCountMess.setText(String.valueOf(countMess));
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-
-                });
         reloadDataFromFirebase();
         listMessAdapter = new ListMessAdapter(requireActivity(), listMess);
         lvMess.setAdapter(listMessAdapter);

@@ -62,6 +62,7 @@ public class UserHomeFragment extends Fragment {
     private Uri imageUri = null;
     Long timestamp = System.currentTimeMillis();
     String field = null;
+    String linkImg;
     @SuppressLint({"UseCompatLoadingForDrawables", "MissingInflatedId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,13 +79,12 @@ public class UserHomeFragment extends Fragment {
         txtUsername.setText(getArguments().getString("userName"));
         String id = getArguments().getString("id");
         imgBack.setOnClickListener(v -> {
-            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
-                getParentFragmentManager().popBackStack();
-            }
-            else {
-                if (getActivity() != null) {
-                    getActivity().finish();
-                }
+            if (getActivity() != null) {
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("userName", txtUsername.getText().toString());
+                intent.putExtra("linkImg", linkImg);
+                intent.putExtra("id", id);
+                startActivity(intent);
             }
         });
         imgBackground.setOnClickListener(v -> {
@@ -117,7 +117,7 @@ public class UserHomeFragment extends Fragment {
             if (task.isSuccessful()) {
                 DocumentSnapshot doc = task.getResult();
                 if (doc.exists()) {
-                    String linkImg = doc.getString("imgAvatar");
+                    linkImg = doc.getString("imgAvatar");
                     String linkImgBackground = doc.getString("imgBackground");
                     assert linkImg != null;
                     if(linkImg.isEmpty()) {
