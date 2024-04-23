@@ -3,6 +3,7 @@ package com.example.healthyapp;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -117,6 +118,10 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 if (item.getItemId() == R.id.message) {
                     replaceFragment(new MessFragment());
+                }
+                if (item.getItemId() == R.id.fab) {
+                    Intent intent = new Intent(ChatActivity.this, AddPostActivity.class);
+                    startActivityForResult(intent, 1);
                 }
                 if (item.getItemId() == R.id.notification) {
                     replaceFragment(new NotificationFragment());
