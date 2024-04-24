@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -74,8 +75,6 @@ public class ChatActivity extends AppCompatActivity {
             }
             txtUsername.setText(userName);
         }
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -195,6 +194,32 @@ public class ChatActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.back_button);
         imgSendMess = findViewById(R.id.imgSendMess);
         profile_image = findViewById(R.id.profile_image);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+        ViewGroup.LayoutParams edtMessLayoutParams = edtMess.getLayoutParams();
+        edtMessLayoutParams.width = (int) (screenWidth * 0.8);
+        edtMess.setLayoutParams(edtMessLayoutParams);
+
+        ViewGroup.LayoutParams recyclerViewLayoutParams = recyclerView.getLayoutParams();
+        recyclerViewLayoutParams.height = (int) (screenHeight * 0.8);
+        recyclerView.setLayoutParams(recyclerViewLayoutParams);
+
+        ViewGroup.LayoutParams layoutParams = imgSendMess.getLayoutParams();
+        int desiredWidth = (int) (screenWidth * 0.15);
+        int desiredHeight = (int) (screenWidth * 0.15);
+        layoutParams.width = desiredWidth;
+        layoutParams.height = desiredHeight;
+        imgSendMess.setLayoutParams(layoutParams);
+
+        ViewGroup.LayoutParams layoutParamsImg = profile_image.getLayoutParams();
+        int desiredSize = (int) (screenHeight * 0.07);
+        layoutParamsImg.width = desiredSize;
+        layoutParamsImg.height = desiredSize;
+        profile_image.setLayoutParams(layoutParamsImg);
+
     }
 
     private void replaceFragment(Fragment fragment) {

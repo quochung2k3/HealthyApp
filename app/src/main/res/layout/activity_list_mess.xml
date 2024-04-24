@@ -39,7 +39,7 @@
 
     <ListView
         android:id="@+id/lvMess"
-        android:layout_width="409dp"
+        android:layout_width="match_parent"
         android:layout_height="545dp"
         android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
