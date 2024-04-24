@@ -78,13 +78,20 @@ public class UserHomeFragment extends Fragment {
         assert getArguments() != null;
         txtUsername.setText(getArguments().getString("userName"));
         String id = getArguments().getString("id");
+        int state = getArguments().getInt("state");
         imgBack.setOnClickListener(v -> {
             if (getActivity() != null) {
-                Intent intent = new Intent(getActivity(), ChatActivity.class);
-                intent.putExtra("userName", txtUsername.getText().toString());
-                intent.putExtra("linkImg", linkImg);
-                intent.putExtra("id", id);
-                startActivity(intent);
+                if(state == 1) {
+                    Intent intent = new Intent(getActivity(), ChatActivity.class);
+                    intent.putExtra("userName", txtUsername.getText().toString());
+                    intent.putExtra("linkImg", linkImg);
+                    intent.putExtra("id", id);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_in_left);
+                }
+                else {
+                    
+                }
             }
         });
         imgBackground.setOnClickListener(v -> {

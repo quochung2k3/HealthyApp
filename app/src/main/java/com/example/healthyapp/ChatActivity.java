@@ -91,6 +91,7 @@ public class ChatActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("userName", intent.getStringExtra("userName"));
             bundle.putString("id", intent.getStringExtra("id"));
+            bundle.putInt("state", 1);
             UserHomeFragment userHomeFragment = new UserHomeFragment();
             userHomeFragment.setArguments(bundle);
             setContentView(binding.getRoot());
