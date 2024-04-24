@@ -1,7 +1,5 @@
 package com.example.healthyapp;
 
-
-import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,7 +19,6 @@ import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.fragments.MenuFragment;
 import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
-import com.example.healthyapp.models.ListMessModel;
 import com.example.healthyapp.models.MessageModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,8 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -89,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         String userId = documentSnapshot.getId();
                         Log.d("TEST UID", userId);
                         if(!userId.equals(firebaseUser.getUid())) {
-                            databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
+                            databaseReferenceMess.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {

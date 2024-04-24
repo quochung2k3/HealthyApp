@@ -147,7 +147,7 @@ public class MessFragment extends Fragment {
         Log.d("TEST LIST", testList.toString());
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
         DatabaseReference databaseReferenceMess = database.getReference().child("Message");
-        databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReferenceMess.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
