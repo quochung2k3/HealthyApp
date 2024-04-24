@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,16 +26,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     TextView txtCountMess, txtCountNotification;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-    boolean isSeen = true;
-    int countMess = 0;
 //    int countNotification = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,51 +70,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadCountMess() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference usersRef = db.collection("users");
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
         DatabaseReference databaseReferenceMess = database.getReference().child("Message");
-        usersRef.get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String userId = documentSnapshot.getId();
-                        Log.d("TEST UID", userId);
-                        if(!userId.equals(firebaseUser.getUid())) {
-                            databaseReferenceMess.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        MessageModel messageModel = snapshot.getValue(MessageModel.class);
-                                        if (messageModel != null) {
-                                            if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(userId)) ||
-                                                    (messageModel.getSender_id().equals(userId) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
-                                                if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
-                                                    isSeen = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if(!isSeen) {
-                                        countMess++;
-                                        Log.d("TEST COUNT", String.valueOf(countMess));
-                                        txtCountMess.setVisibility(View.VISIBLE);
-                                        txtCountMess.setText(String.valueOf(countMess));
-                                        isSeen = true;
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
+        databaseReferenceMess.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> arrayUserId = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    MessageModel messageModel = snapshot.getValue(MessageModel.class);
+                    if (messageModel != null) {
+                        if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
+                            if(!arrayUserId.contains(messageModel.getSender_id())) {
+                                arrayUserId.add(messageModel.getSender_id());
+                            }
                         }
                     }
-                })
-                .addOnFailureListener(e -> {
+                    if(arrayUserId.isEmpty()) {
+                        txtCountMess.setVisibility(View.GONE);
+                    }
+                    else {
+                        txtCountMess.setVisibility(View.VISIBLE);
+                        txtCountMess.setText(String.valueOf(arrayUserId.size()));
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                });
+            }
+        });
     }
 
     private void replaceFragment(Fragment fragment) {

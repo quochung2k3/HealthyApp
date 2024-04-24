@@ -87,7 +87,7 @@ public class UserHomeFragment extends Fragment {
                     intent.putExtra("linkImg", linkImg);
                     intent.putExtra("id", id);
                     startActivity(intent);
-                    getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_in_left);
+                    getActivity().overridePendingTransition(0 ,0);
                 }
                 else {
                     getParentFragmentManager().popBackStack();
