@@ -94,7 +94,7 @@ public class SavedPostFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     PostModel postModel = dataSnapshot.getValue(PostModel.class);
-                    if (postModel != null && postModel.getList_user_save().containsKey(currentUser)) {
+                    if (postModel != null && postModel.getList_user_save().containsKey(currentUser) && !postModel.isIs_deleted()) {
                         postModel.setId(dataSnapshot.getKey());
                         postModels.add(postModel);
                         Log.d("TEST POST", "SUCCESS");

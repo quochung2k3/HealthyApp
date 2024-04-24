@@ -154,7 +154,8 @@ public class MessFragment extends Fragment {
                     MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
                     if (messageModel != null) {
                         String UID = null;
-                        if(messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(firebaseUser.getUid())) {
+                        if(messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(firebaseUser.getUid())
+                            && !messageModel.isIs_deleted_by_me()) {
                             UID = firebaseUser.getUid();
                         }
                         else if(messageModel.getSender_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_me()) {
