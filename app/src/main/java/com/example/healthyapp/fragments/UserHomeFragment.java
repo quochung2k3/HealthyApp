@@ -90,7 +90,7 @@ public class UserHomeFragment extends Fragment {
                     getActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_in_left);
                 }
                 else {
-                    
+                    getParentFragmentManager().popBackStack();
                 }
             }
         });
