@@ -10,7 +10,7 @@
 
     <EditText
         android:id="@+id/edtUsername"
-        android:layout_width="377dp"
+        android:layout_width="377sp"
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
@@ -33,7 +33,7 @@
         android:layout_height="82dp"
         android:layout_marginEnd="176dp"
         android:layout_marginBottom="645dp"
-        android:background="@drawable/backgroundapp"
+        android:background="@drawable/background_app"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -69,7 +69,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
         if (postModel.isAnonymous()) {
             holder.txtUserName.setText("Posted anonymously");
-            holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
+            holder.imgUserPost.setImageResource(R.drawable.background_app);
         }
         else { // get user
             FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
@@ -80,7 +80,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
                     holder.txtUserName.setText(userName);
                     if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
-                        holder.imgUserPost.setImageResource(R.drawable.backgroundapp);
+                        holder.imgUserPost.setImageResource(R.drawable.background_app);
                     } else {
 //                    Picasso.get().load(userModel.getImgAvatar()).into(holder.imgUserPost);
                         Glide.with(context).load(userModel.getImgAvatar()).circleCrop().into(holder.imgUserPost);

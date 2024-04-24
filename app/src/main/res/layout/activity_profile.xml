@@ -15,7 +15,7 @@
         android:layout_marginBottom="670dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/backgroundapp" />
+        app:srcCompat="@drawable/background_app" />
 
     <ImageView
         android:id="@+id/imageView4"

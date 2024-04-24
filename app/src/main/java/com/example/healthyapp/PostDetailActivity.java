@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.adapter.CommentAdapter;
-import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.CommentModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
@@ -43,7 +42,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -304,7 +302,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 if (post.isAnonymous()) {
                     txtUserName.setText("Posted anonymously");
-                    imgAvatar.setImageResource(R.drawable.backgroundapp);
+                    imgAvatar.setImageResource(R.drawable.background_app);
                 }
                 else {
                     // get user
@@ -316,7 +314,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
                             txtUserName.setText(userName);
                             if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
-                                imgAvatar.setImageResource(R.drawable.backgroundapp);
+                                imgAvatar.setImageResource(R.drawable.background_app);
                             }
                             else {
 //                            Picasso.get().load(userModel.getImgAvatar()).into(imgAvatar);

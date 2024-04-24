@@ -61,7 +61,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 holder.user = user;
                 holder.txtUsername.setText(user.getFirst_name() + " " + user.getLast_name());
                 if (user.getImgAvatar() == null || user.getImgAvatar().isEmpty()) {
-                    holder.ivAvatar.setImageResource(R.drawable.backgroundapp);
+                    holder.ivAvatar.setImageResource(R.drawable.background_app);
                 } else {
 //                    Picasso.get().load(user.getImgAvatar()).into(holder.ivAvatar);
                     Glide.with(context).load(user.getImgAvatar()).circleCrop().into(holder.ivAvatar);
