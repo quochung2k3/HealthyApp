@@ -10,7 +10,7 @@
 
     <EditText
         android:id="@+id/edtUsername"
-        android:layout_width="377sp"
+        android:layout_width="377dp"
         android:layout_height="50dp"
         android:layout_marginStart="36dp"
         android:layout_marginEnd="36dp"
