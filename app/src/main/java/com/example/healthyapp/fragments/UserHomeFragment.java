@@ -178,6 +178,8 @@ public class UserHomeFragment extends Fragment {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PostModel post = postSnapshot.getValue(PostModel.class);
                     assert post != null;
+                    if (post.isAnonymous())
+                        continue;
                     post.setId(postSnapshot.getKey());
                     postList.add(post);
                 }
