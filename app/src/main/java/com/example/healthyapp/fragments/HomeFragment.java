@@ -4,14 +4,17 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
@@ -38,13 +41,17 @@ public class HomeFragment extends Fragment {
         getPosts();
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         rvUserPost = rootView.findViewById(R.id.rvUserPost);
-
-        // set adapter
         userPostAdapter = new UserPostAdapter(getActivity(), postList);
         rvUserPost.setAdapter(userPostAdapter);
-
-        // set layout manager
         rvUserPost.setLayoutManager(new LinearLayoutManager(getActivity()));
+        FrameLayout homeFragment = rootView.findViewById(R.id.homeFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = homeFragment.getLayoutParams();
+        layoutParams.height = newHeight;
+        homeFragment.setLayoutParams(layoutParams);
 
         return rootView;
 

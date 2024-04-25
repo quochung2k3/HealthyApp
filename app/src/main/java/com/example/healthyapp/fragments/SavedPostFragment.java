@@ -5,8 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class SavedPostFragment extends Fragment {
+    View rootView;
     ListView lvPost = null;
     ImageButton ibBack;
     ListSavedPostAdapter listSavedPostAdapter = null;
@@ -40,10 +43,9 @@ public class SavedPostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_saved_post, container, false);
+        rootView = inflater.inflate(R.layout.fragment_saved_post, container, false);
         currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
-        lvPost = rootView.findViewById(R.id.lvPost);
-        ibBack = rootView.findViewById(R.id.ibBack);
+        Mapping();
         reloadDataFromFirebase();
         listSavedPostAdapter = new ListSavedPostAdapter(requireActivity(), postModels);
         lvPost.setAdapter(listSavedPostAdapter);
@@ -64,6 +66,24 @@ public class SavedPostFragment extends Fragment {
 
         return rootView;
     }
+
+    private void Mapping() {
+        lvPost = rootView.findViewById(R.id.lvPost);
+        ibBack = rootView.findViewById(R.id.ibBack);
+
+        ConstraintLayout savedPostFragment = rootView.findViewById(R.id.savedPostFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = savedPostFragment.getLayoutParams();
+        layoutParams.height = newHeight;
+        savedPostFragment.setLayoutParams(layoutParams);
+
+        // lvPost
+        lvPost.getLayoutParams().height = (int) (newHeight * 0.9);
+    }
+
     private void showAnnouncementDialog(PostModel selectedPost) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Warning");

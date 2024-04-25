@@ -42,6 +42,7 @@
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:padding="2dp"
+                app:layout_constraintHorizontal_bias="0.5"
                 tools:ignore="HardcodedText" />
             <TextView
                 android:id="@+id/countNotification"

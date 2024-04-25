@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.healthyapp.models.UserModel;
@@ -18,7 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity {
-
+    ImageView img;
+    TextView txtHaveAccount;
     Button btnSignUp, btnSignIn;
     EditText edtEmail, edtPass, edtFirstName, edtLastName;
     FirebaseAuth mAuth;
@@ -40,12 +44,51 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void Mapping() {
+        img = findViewById(R.id.img);
+        txtHaveAccount = findViewById(R.id.txtHaveAccount);
         btnSignUp = findViewById(R.id.btnSignUp);
         btnSignIn = findViewById(R.id.btnSignIn);
         edtEmail = findViewById(R.id.edtUsername);
         edtPass = findViewById(R.id.edtPassword);
         edtFirstName = findViewById(R.id.edtFirstname);
         edtLastName = findViewById(R.id.edtLastname);
+
+        // img
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+        int imgWidth = (int) (screenWidth * 0.7);
+        int imgHeight = (int) (screenHeight * 0.17);
+        img.getLayoutParams().width = imgWidth;
+        img.getLayoutParams().height = imgHeight;
+
+        // edt
+        int edtWidth = (int) (screenWidth * 0.8);
+        int edtHeight = (int) (screenHeight * 0.06);
+        edtEmail.getLayoutParams().width = edtWidth;
+        edtEmail.getLayoutParams().height = edtHeight;
+        edtPass.getLayoutParams().width = edtWidth;
+        edtPass.getLayoutParams().height = edtHeight;
+        edtFirstName.getLayoutParams().width = edtWidth;
+        edtFirstName.getLayoutParams().height = edtHeight;
+        edtLastName.getLayoutParams().width = edtWidth;
+        edtLastName.getLayoutParams().height = edtHeight;
+
+        // btn
+        int btnSignInWidth = (int) (screenWidth * 0.6);
+        int btnSignInHeight = (int) (screenHeight * 0.06);
+        int btnSignUpWidth = (int) (screenWidth * 0.8);
+        int btnSignUpHeight = (int) (screenHeight * 0.06);
+        btnSignIn.getLayoutParams().width = btnSignInWidth;
+        btnSignIn.getLayoutParams().height = btnSignInHeight;
+        btnSignUp.getLayoutParams().width = btnSignUpWidth;
+        btnSignUp.getLayoutParams().height = btnSignUpHeight;
+
+        // txt
+        int txtWidth = (int) (screenWidth * 0.57);
+        int txtHeight = (int) (screenHeight * 0.04);
+        txtHaveAccount.getLayoutParams().width = txtWidth;
+        txtHaveAccount.getLayoutParams().height = txtHeight;
     }
 
     private void SignUp() {

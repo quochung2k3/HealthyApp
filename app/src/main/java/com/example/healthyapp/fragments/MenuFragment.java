@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,20 +32,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MenuFragment extends Fragment {
     FirebaseFirestore ft;
+    View rootView;
+    FrameLayout frameLayout;
+    Button btnLogout;
+    ListView lvMenu;
+    TextView txtUsername, txtMenu;
+    ImageView imgAvatar;
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_menu, container, false);
-        FrameLayout frameLayout = rootView.findViewById(R.id.userHome);
-        Button btnLogout = rootView.findViewById(R.id.btnLogout);
-        ListView lvMenu = rootView.findViewById(R.id.lvMenu);
-        TextView txtUsername = rootView.findViewById(R.id.txtUsername);
-        ImageView imgAvatar = rootView.findViewById(R.id.avatar);
-
+        rootView = inflater.inflate(R.layout.activity_menu, container, false);
+        Mapping();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         ft = FirebaseFirestore.getInstance();
@@ -144,5 +148,41 @@ public class MenuFragment extends Fragment {
             bottomSheetDialog.show();
         });
         return rootView;
+    }
+
+    private void Mapping() {
+        frameLayout = rootView.findViewById(R.id.userHome);
+        btnLogout = rootView.findViewById(R.id.btnLogout);
+        lvMenu = rootView.findViewById(R.id.lvMenu);
+        txtUsername = rootView.findViewById(R.id.txtUsername);
+        txtMenu = rootView.findViewById(R.id.txtMenu);
+        imgAvatar = rootView.findViewById(R.id.avatar);
+
+        // Screen
+        ConstraintLayout menuFragment = rootView.findViewById(R.id.menuFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = menuFragment.getLayoutParams();
+        layoutParams.height = newHeight;
+        menuFragment.setLayoutParams(layoutParams);
+
+        // ListView
+        frameLayout.getLayoutParams().height = (int) (newHeight * 0.52);
+
+        // Fragment
+        int fragmentWidth = (int) (screenWidth * 0.9);
+        int fragmentHeight = (int) (newHeight * 0.15);
+        frameLayout.getLayoutParams().width = fragmentWidth;
+        frameLayout.getLayoutParams().height = fragmentHeight;
+
+        // btnLogout
+        int btnWidth = (int) (screenWidth * 0.9);
+        int btnHeight = (int) (newHeight * 0.064);
+        btnLogout.getLayoutParams().width = btnWidth;
+        btnLogout.getLayoutParams().height = btnHeight;
+
     }
 }

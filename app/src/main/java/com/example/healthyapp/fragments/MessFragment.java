@@ -6,14 +6,18 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +46,9 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class MessFragment extends Fragment {
+    View rootView;
+    ImageView img;
+    EditText edtSearch;
     FirebaseFirestore ft;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     ListMessAdapter listMessAdapter = null;
@@ -55,9 +62,9 @@ public class MessFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_list_mess, container, false);
+        rootView = inflater.inflate(R.layout.activity_list_mess, container, false);
         ft = FirebaseFirestore.getInstance();
-        lvMess = rootView.findViewById(R.id.lvMess);
+        Mapping();
         reloadDataFromFirebase();
         listMessAdapter = new ListMessAdapter(requireActivity(), listMess);
         lvMess.setAdapter(listMessAdapter);
@@ -101,6 +108,38 @@ public class MessFragment extends Fragment {
         });
         return rootView;
     }
+
+    private void Mapping() {
+        img = rootView.findViewById(R.id.img);
+        edtSearch = rootView.findViewById(R.id.edtUsername);
+        lvMess = rootView.findViewById(R.id.lvMess);
+
+        ConstraintLayout messFragment = rootView.findViewById(R.id.messFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int screenWidth = displayMetrics.widthPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = messFragment.getLayoutParams();
+        layoutParams.height = newHeight;
+        messFragment.setLayoutParams(layoutParams);
+
+        // img
+        int imgWidth = (int) (screenWidth * 0.52);
+        int imgHeight = (int) (newHeight * 0.1);
+        img.getLayoutParams().width = imgWidth;
+        img.getLayoutParams().height = imgHeight;
+
+        // edt
+        int edtWidth = (int) (screenWidth * 0.9);
+        int edtHeight = (int) (newHeight * 0.062);
+        edtSearch.getLayoutParams().width = edtWidth;
+        edtSearch.getLayoutParams().height = edtHeight;
+
+        // lvMess
+        lvMess.getLayoutParams().height = (int) (newHeight * 0.67);
+    }
+
     private void showAnnouncementDialog(String id) {
         String myId = firebaseUser.getUid();
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

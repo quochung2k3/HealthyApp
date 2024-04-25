@@ -2,8 +2,10 @@ package com.example.healthyapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ResetPassActivity extends AppCompatActivity {
+    ImageView img;
     EditText edtEmail;
     Button btnResetPass;
     @Override
@@ -45,7 +48,29 @@ public class ResetPassActivity extends AppCompatActivity {
     }
 
     private void Mapping() {
+        img = findViewById(R.id.img);
         edtEmail = findViewById(R.id.edtEmail);
         btnResetPass = findViewById(R.id.btnResetPass);
+        // img
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+        int imgWidth = (int) (screenWidth * 0.7);
+        int imgHeight = (int) (screenHeight * 0.17);
+        img.getLayoutParams().width = imgWidth;
+        img.getLayoutParams().height = imgHeight;
+
+        // editText
+        int edtWidth = (int) (screenWidth * 0.8);
+        int edtHeight = (int) (screenHeight * 0.06);
+        edtEmail.getLayoutParams().width = edtWidth;
+        edtEmail.getLayoutParams().height = edtHeight;
+
+        // btn
+        // btn and txt
+        int btnResetWidth = (int) (screenWidth * 0.8);
+        int btnResetHeight = (int) (screenHeight * 0.06);
+        btnResetPass.getLayoutParams().width = btnResetWidth;
+        btnResetPass.getLayoutParams().height = btnResetHeight;
     }
 }

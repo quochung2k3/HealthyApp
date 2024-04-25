@@ -3,29 +3,33 @@ package com.example.healthyapp.fragments;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.healthyapp.R;
+import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UpdatePassFragment extends Fragment {
+    ActivityMainBinding binding;
     EditText edtNewPass, edtConfirmPass;
     Button btnUpdate;
+    View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_update_pass, container, false);
-
-        edtNewPass = rootView.findViewById(R.id.edtNewPass);
-        edtConfirmPass = rootView.findViewById(R.id.edtNewPassConfirm);
-        btnUpdate = rootView.findViewById(R.id.btnUpdatePass);
+        rootView = inflater.inflate(R.layout.fragment_update_pass, container, false);
+        Mapping();
         btnUpdate.setOnClickListener(v -> {
             String newPassword = edtNewPass.getText().toString();
             if(!edtNewPass.getText().toString().equals(edtConfirmPass.getText().toString())) {
@@ -46,6 +50,21 @@ public class UpdatePassFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    private void Mapping() {
+        edtNewPass = rootView.findViewById(R.id.edtNewPass);
+        edtConfirmPass = rootView.findViewById(R.id.edtNewPassConfirm);
+        btnUpdate = rootView.findViewById(R.id.btnUpdatePass);
+        ConstraintLayout updatePassLayout = rootView.findViewById(R.id.updatePassFragment);
+        // Lấy kích thước của màn hình
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = updatePassLayout.getLayoutParams();
+        layoutParams.height = newHeight;
+        updatePassLayout.setLayoutParams(layoutParams);
     }
 
     private void showAnnouncementDialog() {
