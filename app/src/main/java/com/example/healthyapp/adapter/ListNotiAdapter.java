@@ -33,7 +33,7 @@ public class ListNotiAdapter extends ArrayAdapter<ListNotiModel> {
         if (currentNoti != null) {
             imageButton.setImageResource(currentNoti.getImg());
             userName.setText(currentNoti.getUserName());
-            noti.setText(currentNoti.getNoti());
+            noti.setText(currentNoti.getNotification());
         }
         return listItemView;
     }

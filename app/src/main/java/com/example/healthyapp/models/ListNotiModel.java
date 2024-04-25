@@ -3,14 +3,14 @@ package com.example.healthyapp.models;
 public class ListNotiModel {
     private int img;
     private String userName;
-    private String noti;
+    private String notification;
     public ListNotiModel() {
 
     }
-    public ListNotiModel(int img, String userName, String noti) {
+    public ListNotiModel(int img, String userName, String notification) {
         this.img = img;
         this.userName = userName;
-        this.noti = noti;
+        this.notification = notification;
     }
 
     public int getImg() {
@@ -29,11 +29,11 @@ public class ListNotiModel {
         this.userName = userName;
     }
 
-    public String getNoti() {
-        return noti;
+    public String getNotification() {
+        return notification;
     }
 
     public void setMess(String noti) {
-        this.noti = noti;
+        this.notification = noti;
     }
 }
