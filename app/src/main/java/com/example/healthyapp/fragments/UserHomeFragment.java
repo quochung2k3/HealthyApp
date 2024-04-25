@@ -17,12 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class UserHomeFragment extends Fragment {
+    View rootView;
     TextView txtUsername;
     Button btnChat;
     RecyclerView rvUserPost;
@@ -67,14 +70,10 @@ public class UserHomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_user_home, container, false);
+        rootView = inflater.inflate(R.layout.fragment_user_home, container, false);
         mAuth = FirebaseAuth.getInstance();
         ft = FirebaseFirestore.getInstance();
-        txtUsername = rootView.findViewById(R.id.txtUsername);
-        btnChat = rootView.findViewById(R.id.btnChat);
-        imgBack = rootView.findViewById(R.id.back_button);
-        imgAvatar = rootView.findViewById(R.id.imgAvatar);
-        imgBackground = rootView.findViewById(R.id.imgBackground);
+        Mapping();
         assert getArguments() != null;
         txtUsername.setText(getArguments().getString("userName"));
         String id = getArguments().getString("id");
@@ -165,6 +164,23 @@ public class UserHomeFragment extends Fragment {
             });
         });
         return rootView;
+    }
+
+    private void Mapping() {
+        txtUsername = rootView.findViewById(R.id.txtUsername);
+        btnChat = rootView.findViewById(R.id.btnChat);
+        imgBack = rootView.findViewById(R.id.back_button);
+        imgAvatar = rootView.findViewById(R.id.imgAvatar);
+        imgBackground = rootView.findViewById(R.id.imgBackground);
+
+        LinearLayout userHomeFragment = rootView.findViewById(R.id.userHomeFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = userHomeFragment.getLayoutParams();
+        layoutParams.height = newHeight;
+        userHomeFragment.setLayoutParams(layoutParams);
     }
 
     private void loadPost(String id) {

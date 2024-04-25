@@ -42,11 +42,8 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
     @SuppressLint("UseCompatLoadingForDrawables")
     @NonNull
     @Override
-    public View getView(int position, @NonNull View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_mess_custom, parent, false);
-        }
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        @SuppressLint("ViewHolder") View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_mess_custom, parent, false);
         ListMessModel currentMess = getItem(position);
         ImageView imageButton = listItemView.findViewById(R.id.imgAvatar);
         ImageView imgTick = listItemView.findViewById(R.id.imgTick);

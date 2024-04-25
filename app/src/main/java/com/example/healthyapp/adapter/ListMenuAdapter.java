@@ -1,5 +1,6 @@
 package com.example.healthyapp.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,8 @@ public class ListMenuAdapter extends ArrayAdapter<ListMenuModel> {
     }
     @NonNull
     @Override
-    public View getView(int position, @NonNull View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_menu_custom, parent, false);
-        }
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        @SuppressLint("ViewHolder") View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_menu_custom, parent, false);
         ListMenuModel currentMenu = getItem(position);
         ImageView imageView = listItemView.findViewById(R.id.iconTitle);
         TextView title = listItemView.findViewById(R.id.txtTitle);

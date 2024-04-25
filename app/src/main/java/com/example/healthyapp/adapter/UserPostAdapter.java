@@ -69,7 +69,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
         if (postModel.isAnonymous()) {
             holder.txtUserName.setText("Posted anonymously");
-            holder.imgUserPost.setImageResource(R.drawable.background_app);
+            holder.imgUserPost.setImageResource(R.drawable.anonymous);
         }
         else { // get user
             FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
@@ -80,7 +80,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
                     holder.txtUserName.setText(userName);
                     if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
-                        holder.imgUserPost.setImageResource(R.drawable.background_app);
+                        holder.imgUserPost.setImageResource(R.drawable.baseline_account_circle_24);
                     } else {
 //                    Picasso.get().load(userModel.getImgAvatar()).into(holder.imgUserPost);
                         Glide.with(context).load(userModel.getImgAvatar()).circleCrop().into(holder.imgUserPost);
@@ -138,7 +138,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
         });
 
-        Drawable drawableSave = holder.btnSave.getCompoundDrawables()[0];
         boolean saved = postModel.getList_user_save().containsKey(currentUser);
         if (saved) {
             holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.yellow));
@@ -238,8 +237,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                 postList.remove(postModel);
                 notifyDataSetChanged();
                 return true;
-            } else if (id == R.id.post_save) {
-                // save post
             }
             return false;
         });

@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -19,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.healthyapp.ChatActivity;
@@ -55,8 +53,6 @@ public class MessFragment extends Fragment {
     ListView lvMess = null;
     ArrayList<ListMessModel> listMess = new ArrayList<>();
     int i = 0;
-    int countMess = 0;
-    boolean isSeen = true;
 
     @SuppressLint("SetTextI18n")
     @Override

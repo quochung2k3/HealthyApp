@@ -26,13 +26,11 @@ public class ListSavedPostAdapter extends ArrayAdapter<PostModel> {
     public ListSavedPostAdapter(@NonNull Context context, ArrayList<PostModel> listPostSavedView) {
         super(context, 0, listPostSavedView);
     }
+    @NonNull
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public View getView(int position, @NonNull View convertView, @NonNull ViewGroup parent) {
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.saved_post_custom, parent, false);
-        }
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        @SuppressLint("ViewHolder") View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.saved_post_custom, parent, false);
         currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         PostModel currentPost = getItem(position);
         ImageView imgPost = listItemView.findViewById(R.id.imgPost);

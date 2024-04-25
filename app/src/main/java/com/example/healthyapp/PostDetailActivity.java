@@ -41,7 +41,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -138,7 +137,8 @@ public class PostDetailActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (task.getResult().getValue() == null) {
                         post.setUser_likes(new HashMap<>());
-                    } else {
+                    }
+                    else {
                         post.setUser_likes((Map<String, Integer>) task.getResult().getValue());
                     }
                     Log.d("UserPostAdapter", "user likes: " + post.getUser_likes());
@@ -147,14 +147,16 @@ public class PostDetailActivity extends AppCompatActivity {
                         // unlike post
                         post.getUser_likes().remove(currentUserId);
                         likeIcon.setTint(getResources().getColor(R.color.primary_color));
-                    } else {
+                    }
+                    else {
                         // like post
                         post.getUser_likes().put(currentUserId, 1);
                         likeIcon.setTint(getResources().getColor(R.color.blue));
                     }
                     postRef.child("user_likes").setValue(post.getUser_likes());
                     btnLike.setText(String.valueOf(post.getUser_likes().size()));
-                } else {
+                }
+                else {
                     Log.d("UserPostAdapter", "Error getting user likes: ", task.getException());
                 }
             });
@@ -209,9 +211,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     comment.setId(commentSnapshot.getKey());
                     commentList.add(comment);
                     if (comment.getReplies() != null) {
-                        Iterator<Map.Entry<String, CommentModel>> iterator = comment.getReplies().entrySet().iterator();
-                        while (iterator.hasNext()) {
-                            Map.Entry<String, CommentModel> entry = iterator.next();
+                        for (Map.Entry<String, CommentModel> entry : comment.getReplies().entrySet()) {
                             CommentModel reply = entry.getValue();
                             reply.setId(entry.getKey());
                             commentList.add(reply);
