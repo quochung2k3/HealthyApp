@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MessFragment"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="15dp">
+    tools:layout_editor_absoluteY="15dp"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/frameLayout2"

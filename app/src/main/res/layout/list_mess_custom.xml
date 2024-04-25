@@ -1,54 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/txtUsername"
         android:layout_width="225dp"
         android:layout_height="36dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="66dp"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1" />
 
     <TextView
         android:id="@+id/txtMess"
         android:layout_width="225dp"
         android:layout_height="36dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="66dp"
-        android:textSize="16sp"
-        android:maxLines="1"
         android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtUsername" />
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/imgAvatar"
         android:layout_width="84dp"
         android:layout_height="76dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="25dp"
         android:background="@drawable/image_custom"
+        android:contentDescription="@string/avatar"
         android:src="@drawable/baseline_search_24"
         app:circularflow_radiusInDP="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.02"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/avatar"
-        app:layout_constraintHorizontal_bias="0.5"/>
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/imgTick"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
