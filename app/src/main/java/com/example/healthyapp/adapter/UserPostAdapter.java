@@ -181,6 +181,9 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         }
 
         holder.imgUserPost.setOnClickListener(v -> {
+            if (postModel.isAnonymous()) {
+                return;
+            }
             String userName = holder.txtUserName.getText().toString();
             String id = postModel.getUser_id();
             Bundle bundle = new Bundle();
