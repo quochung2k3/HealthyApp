@@ -67,7 +67,6 @@ public class ResetPassActivity extends AppCompatActivity {
         edtEmail.getLayoutParams().height = edtHeight;
 
         // btn
-        // btn and txt
         int btnResetWidth = (int) (screenWidth * 0.8);
         int btnResetHeight = (int) (screenHeight * 0.06);
         btnResetPass.getLayoutParams().width = btnResetWidth;
