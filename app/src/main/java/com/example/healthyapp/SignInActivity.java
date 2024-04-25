@@ -97,7 +97,7 @@ public class SignInActivity extends AppCompatActivity {
         edtPass.getLayoutParams().height = edtHeight;
 
         // btn and txt
-        int btnResetWidth = (int) (screenWidth * 0.56);
+        int btnResetWidth = (int) (screenWidth * 0.7);
         int btnResetHeight = (int) (screenHeight * 0.0561);
 
         int btnSignInWidth = (int) (screenWidth * 0.8);
@@ -106,7 +106,7 @@ public class SignInActivity extends AppCompatActivity {
         int btnSignUpWidth = (int) (screenWidth * 0.6);
         int btnSignUpHeight = (int) (screenHeight * 0.068);
 
-        int txtWidth = (int) (screenWidth * 0.46);
+        int txtWidth = (int) (screenWidth * 0.6);
         int txtHeight = (int) (screenHeight * 0.043);
 
         btnResetPass.getLayoutParams().width = btnResetWidth;
