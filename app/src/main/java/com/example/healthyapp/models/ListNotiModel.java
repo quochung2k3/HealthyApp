@@ -32,7 +32,4 @@ public class ListNotiModel {
         return notification;
     }
 
-    public void setMess(String noti) {
-        this.notification = noti;
-    }
 }

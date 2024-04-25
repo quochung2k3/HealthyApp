@@ -54,7 +54,11 @@ public class NotificationFragment extends Fragment {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     NotiModel notiModel = dataSnapshot.getValue(NotiModel.class);
                     assert notiModel != null;
-                    listNoti.add(new ListNotiModel(R.drawable.baseline_search_24, "Quoc Hung", notiModel.getContent()));
+                    listNoti.add(new ListNotiModel(
+                            R.drawable.baseline_search_24,
+                            "Quoc Hung",
+                            notiModel.getContent()
+                    ));
 
                 }
                 listNotiAdapter.notifyDataSetChanged();

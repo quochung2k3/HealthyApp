@@ -29,6 +29,14 @@ public class NotiModel {
         this.user_id = user_id;
     }
 
+    public String getUserName()
+    {
+        return userName;
+    }
+    public void setUserName(String userName)
+    {
+        this.userName =userName;
+    }
     public String getImg() {
         return img;
     }
