@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 
 public class NotiModel {
     private String user_id;
+    private String userName;
     private String img;
     private String content;
     private Timestamp created_date;
 
-    public NotiModel(String user_id, String img, String content, Timestamp created_date) {
+    public NotiModel(String user_id, String userName, String img, String content, Timestamp created_date) {
         this.user_id = user_id;
+        this.userName = userName;
         this.img = img;
         this.content = content;
         this.created_date = created_date;
