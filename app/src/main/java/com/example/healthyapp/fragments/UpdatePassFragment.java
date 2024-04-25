@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.healthyapp.R;
 import com.example.healthyapp.databinding.ActivityMainBinding;
@@ -22,9 +23,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class UpdatePassFragment extends Fragment {
     ActivityMainBinding binding;
+    View rootView;
+    ImageView img;
     EditText edtNewPass, edtConfirmPass;
     Button btnUpdate;
-    View rootView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,18 +55,38 @@ public class UpdatePassFragment extends Fragment {
     }
 
     private void Mapping() {
+        img = rootView.findViewById(R.id.img);
         edtNewPass = rootView.findViewById(R.id.edtNewPass);
         edtConfirmPass = rootView.findViewById(R.id.edtNewPassConfirm);
         btnUpdate = rootView.findViewById(R.id.btnUpdatePass);
+
         ConstraintLayout updatePassLayout = rootView.findViewById(R.id.updatePassFragment);
-        // Lấy kích thước của màn hình
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
         int screenHeight = displayMetrics.heightPixels;
         int newHeight = (int) ((811.0 / 891.0) * screenHeight);
         ViewGroup.LayoutParams layoutParams = updatePassLayout.getLayoutParams();
         layoutParams.height = newHeight;
         updatePassLayout.setLayoutParams(layoutParams);
+
+        // img
+        int imgWidth = (int) (screenWidth * 0.68);
+        int imgHeight = (int) (newHeight * 0.18);
+        img.getLayoutParams().width = imgWidth;
+        img.getLayoutParams().height = imgHeight;
+
+        // edt
+        int edtWidth = (int) (screenWidth * 0.8);
+        int edtHeight = (int) (newHeight * 0.067);
+        edtNewPass.getLayoutParams().width = edtWidth;
+        edtNewPass.getLayoutParams().height = edtHeight;
+        edtConfirmPass.getLayoutParams().width = edtWidth;
+        edtConfirmPass.getLayoutParams().height = edtHeight;
+
+        // btn
+        btnUpdate.getLayoutParams().width = edtWidth;
+        btnUpdate.getLayoutParams().height = edtHeight;
     }
 
     private void showAnnouncementDialog() {

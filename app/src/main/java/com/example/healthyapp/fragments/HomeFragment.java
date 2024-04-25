@@ -52,7 +52,6 @@ public class HomeFragment extends Fragment {
         ViewGroup.LayoutParams layoutParams = homeFragment.getLayoutParams();
         layoutParams.height = newHeight;
         homeFragment.setLayoutParams(layoutParams);
-
         return rootView;
 
     }
