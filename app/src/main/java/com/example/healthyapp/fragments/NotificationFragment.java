@@ -47,7 +47,7 @@ public class NotificationFragment extends Fragment {
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     NotiModel notification = dataSnapshot.getValue(NotiModel.class);
                     assert notification != null;
-                    if (notification.getUserPostId().equals(firebaseUser.getUid())) {
+                    if (notification.getUserPostId().equals(firebaseUser.getUid()) && notification.isIs_active()) {
                         listNoti.add(new ListNotiModel(notification.getImgAvatar(), notification.getContent(), notification.getPostId(), notification.isIs_click(), dataSnapshot.getKey()));
                     }
                 }

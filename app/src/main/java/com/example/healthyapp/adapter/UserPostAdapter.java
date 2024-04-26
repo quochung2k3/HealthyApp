@@ -128,7 +128,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                         // unlike post
                         postModel.getUser_likes().remove(currentUser);
                         drawable.setTint(context.getResources().getColor(R.color.primary_color));
-                        //
+                        // cập nhật trường is_active = false (dùng so sánh postid = postmodel.id ; người like là mình ; người post: postModel.UserId = snap
                     }
                     else {
                         // like post
