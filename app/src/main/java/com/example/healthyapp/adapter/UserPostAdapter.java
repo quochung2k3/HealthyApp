@@ -250,7 +250,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                         notificationModel.setUserLikeId(id);
                         notificationModel.setUserPostId(postModel.getUser_id());
                         notificationModel.setImgAvatar(img);
-                        notificationModel.setContent(firstName + " " + lastName + " đã thích bài viết: " + postModel.getContent());
+                        notificationModel.setContent(firstName + " " + lastName + " đã thích bài viết: " + postModel.getTitle());
                         notificationModel.setIs_active(true);
                         notificationModel.setIs_seen(false);
                         notificationModel.setIs_click(false);
