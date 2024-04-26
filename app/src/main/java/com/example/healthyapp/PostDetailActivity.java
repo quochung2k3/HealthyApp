@@ -1,11 +1,5 @@
 package com.example.healthyapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -20,6 +14,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
@@ -230,7 +230,7 @@ public class PostDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void sendComment() {
+    private void sendComment() {////gui cmt
         String commentContent = edtComment.getText().toString();
         if (commentContent.isEmpty()) {
             return;

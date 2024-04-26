@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +26,18 @@ import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.fragments.UserHomeFragment;
+import com.example.healthyapp.models.NotiModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.utils.TimestampUtil;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +50,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     private final Context context;
     ArrayList<PostModel> postList;
     FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     String currentUser;
     public UserPostAdapter(Context context, ArrayList<PostModel> postList) {
@@ -65,7 +72,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         // load post
         PostModel postModel = postList.get(position);
         holder.txtPostTitle.setText(postModel.getTitle());
-
 
         if (postModel.isAnonymous()) {
             holder.txtUserName.setText("Posted anonymously");
@@ -122,11 +128,15 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                         // unlike post
                         postModel.getUser_likes().remove(currentUser);
                         drawable.setTint(context.getResources().getColor(R.color.primary_color));
+                        //
                     }
                     else {
                         // like post
                         postModel.getUser_likes().put(currentUser, 1);
                         drawable.setTint(context.getResources().getColor(R.color.blue));
+                        //insert notification
+                        insertNotification(postModel);
+
                     }
                     postRef.child("user_likes").setValue(postModel.getUser_likes());
                     holder.btnLike.setText(String.valueOf(postModel.getUser_likes().size()));
@@ -218,6 +228,42 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             // show menu
             showPopupMenu(v, postModel);
         });
+    }
+
+    private void insertNotification(PostModel postModel) {
+        String id = firebaseUser.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("users").document(id);
+
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    String firstName = documentSnapshot.getString("first_name");
+                    String lastName = documentSnapshot.getString("last_name");
+                    String img = documentSnapshot.getString("imgAvatar");
+                    DatabaseReference notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+                    String notificationId = notificationRef.push().getKey();
+                    NotiModel notificationModel = new NotiModel();
+                    notificationModel.setPostId(postModel.getId());
+                    notificationModel.setUserLikeId(id);
+                    notificationModel.setUserPostId(postModel.getUser_id());
+                    notificationModel.setImgAvatar(img);
+                    notificationModel.setContent(firstName + " " + lastName + " đã thích bài viết: " + postModel.getContent());
+                    notificationModel.setIs_active(true);
+                    notificationModel.setIs_seen(false);
+                    notificationModel.setIs_click(false);
+                    assert notificationId != null;
+                    notificationRef.child(notificationId).setValue(notificationModel);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Xử lý lỗi nếu có
+            }
+        });
+
     }
 
     @SuppressLint("NotifyDataSetChanged")

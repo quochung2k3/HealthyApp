@@ -87,6 +87,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             // like comment
             if (comment.getLikes() == null) {
                 comment.setLikes(new HashMap<>());
+                //likepost
             }
             if (comment.getLikes().containsKey(currentUser)) {
                 comment.getLikes().remove(currentUser);

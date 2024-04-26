@@ -1,39 +1,60 @@
 package com.example.healthyapp.models;
 
 public class ListNotiModel {
-    private int img;
-    private String userName;
-    private String noti;
-    public ListNotiModel() {
+    private String id;
+    private String img;
+    private String content;
+    private String postId;
+    private boolean is_click;
 
-    }
-    public ListNotiModel(int img, String userName, String noti) {
+    public ListNotiModel(String img, String content, String postId, boolean is_click, String id) {
         this.img = img;
-        this.userName = userName;
-        this.noti = noti;
+        this.content = content;
+        this.postId = postId;
+        this.is_click = is_click;
+        this.id = id;
     }
 
-    public int getImg() {
+    public ListNotiModel() {
+    }
+
+    public String getImg() {
         return img;
     }
 
-    public void setImg(int img) {
+    public void setImg(String img) {
         this.img = img;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getContent() {
+        return content;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getNoti() {
-        return noti;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setMess(String noti) {
-        this.noti = noti;
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public boolean isIs_click() {
+        return is_click;
+    }
+
+    public void setIs_click(boolean is_click) {
+        this.is_click = is_click;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
