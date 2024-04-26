@@ -19,6 +19,7 @@ import com.example.healthyapp.fragments.MenuFragment;
 import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
 import com.example.healthyapp.models.MessageModel;
+import com.example.healthyapp.models.NotiModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     TextView txtCountMess, txtCountNotification;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//    int countNotification = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         txtCountMess.setVisibility(View.GONE);
         txtCountNotification.setVisibility(View.GONE);
         reloadCountMess();
+        reloadCountNotification();
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
@@ -66,6 +67,34 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new MenuFragment());
             }
             return true;
+        });
+    }
+
+    private void reloadCountNotification() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        DatabaseReference databaseReferenceNotification = database.getReference().child("Notification");
+        databaseReferenceNotification.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int count = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    NotiModel notiModel = dataSnapshot.getValue(NotiModel.class);
+                    assert notiModel != null;
+                    if(notiModel.getUserPostId().equals(firebaseUser.getUid()) && notiModel.isIs_active() && !notiModel.isIs_seen()) {
+                        count ++;
+                        txtCountNotification.setVisibility(View.VISIBLE);
+                        txtCountNotification.setText(String.valueOf(count));
+                    }
+                }
+                if(count == 0) {
+                    txtCountNotification.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
     }
 

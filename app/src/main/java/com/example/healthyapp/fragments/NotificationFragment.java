@@ -2,13 +2,16 @@ package com.example.healthyapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.healthyapp.PostDetailActivity;
@@ -25,9 +28,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NotificationFragment extends Fragment {
     View rootView;
+    ImageView img;
+    ListView lvNoti;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference notificationRef;
     ListNotificationAdapter listNotificationAdapter = null;
@@ -36,10 +42,26 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.activity_notification, container, false);
-        ListView lvNoti = rootView.findViewById(R.id.lvNotification);
-
+        Mapping();
         notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+        notificationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listNoti.clear();
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    NotiModel notification = dataSnapshot.getValue(NotiModel.class);
+                    assert notification != null;
+                    if (notification.getUserPostId().equals(firebaseUser.getUid())) {
+                        dataSnapshot.getRef().child("is_seen").setValue(true);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         notificationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -51,6 +73,7 @@ public class NotificationFragment extends Fragment {
                         listNoti.add(new ListNotiModel(notification.getImgAvatar(), notification.getContent(), notification.getPostId(), notification.isIs_click(), dataSnapshot.getKey()));
                     }
                 }
+                Collections.reverse(listNoti);
                 listNotificationAdapter.notifyDataSetChanged();
             }
 
@@ -59,9 +82,7 @@ public class NotificationFragment extends Fragment {
 
             }
         });
-//        listNoti.add(new ListNotiModel(R.drawable.baseline_search_24, "Quốc Hưng đã đăng 1 bài viết", "1 giờ"));
-//        listNoti.add(new ListNotiModel(R.drawable.baseline_search_24, "Đức Phú đã 1 đăng bài viết", "20 phút"));
-//        listNoti.add(new ListNotiModel(R.drawable.baseline_search_24, "Quốc Long đã đăng 1 bài viết", "30 phút"));
+
         listNotificationAdapter = new ListNotificationAdapter(requireContext(), listNoti);
         lvNoti.setAdapter(listNotificationAdapter);
 
@@ -83,5 +104,29 @@ public class NotificationFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void Mapping() {
+        lvNoti = rootView.findViewById(R.id.lvNotification);
+        img = rootView.findViewById(R.id.img);
+
+        ConstraintLayout notificationFragment = rootView.findViewById(R.id.notificationFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+        int screenWidth = displayMetrics.widthPixels;
+        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = notificationFragment.getLayoutParams();
+        layoutParams.height = newHeight;
+        notificationFragment.setLayoutParams(layoutParams);
+
+        // img
+        int imgWidth = (int) (screenWidth * 0.3);
+        int imgHeight = (int) (newHeight * 0.07);
+        img.getLayoutParams().width = imgWidth;
+        img.getLayoutParams().height = imgHeight;
+
+        // lv
+        lvNoti.getLayoutParams().height = (int) (newHeight * 0.864);
     }
 }

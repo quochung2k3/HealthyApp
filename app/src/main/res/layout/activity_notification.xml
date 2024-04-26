@@ -6,44 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".fragments.NotificationFragment"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="5dp">
+    tools:layout_editor_absoluteY="5dp"
+    android:id="@+id/notificationFragment">
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/img"
         android:layout_width="120dp"
         android:layout_height="55dp"
-        android:layout_marginEnd="260dp"
-        android:layout_marginBottom="685dp"
         android:background="@drawable/background_app"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <EditText
-        android:id="@+id/edtNotification"
-        android:layout_width="380dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginBottom="625dp"
-        android:background="@drawable/edit_text"
-        android:drawableStart="@drawable/baseline_search_24"
-        android:drawablePadding="12dp"
-        android:ems="10"
-        android:hint="Search"
-        android:inputType="text"
-        android:paddingLeft="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05" />
 
     <ListView
         android:id="@+id/lvNotification"
-        android:layout_width="wrap_content"
-        android:layout_height="610dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

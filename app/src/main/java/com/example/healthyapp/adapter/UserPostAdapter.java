@@ -232,38 +232,39 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     private void insertNotification(PostModel postModel) {
         String id = firebaseUser.getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference userRef = db.collection("users").document(id);
+        if(!postModel.getUser_id().equals(id)) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference userRef = db.collection("users").document(id);
 
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    String firstName = documentSnapshot.getString("first_name");
-                    String lastName = documentSnapshot.getString("last_name");
-                    String img = documentSnapshot.getString("imgAvatar");
-                    DatabaseReference notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
-                    String notificationId = notificationRef.push().getKey();
-                    NotiModel notificationModel = new NotiModel();
-                    notificationModel.setPostId(postModel.getId());
-                    notificationModel.setUserLikeId(id);
-                    notificationModel.setUserPostId(postModel.getUser_id());
-                    notificationModel.setImgAvatar(img);
-                    notificationModel.setContent(firstName + " " + lastName + " đã thích bài viết: " + postModel.getContent());
-                    notificationModel.setIs_active(true);
-                    notificationModel.setIs_seen(false);
-                    notificationModel.setIs_click(false);
-                    assert notificationId != null;
-                    notificationRef.child(notificationId).setValue(notificationModel);
+            userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        String firstName = documentSnapshot.getString("first_name");
+                        String lastName = documentSnapshot.getString("last_name");
+                        String img = documentSnapshot.getString("imgAvatar");
+                        DatabaseReference notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+                        String notificationId = notificationRef.push().getKey();
+                        NotiModel notificationModel = new NotiModel();
+                        notificationModel.setPostId(postModel.getId());
+                        notificationModel.setUserLikeId(id);
+                        notificationModel.setUserPostId(postModel.getUser_id());
+                        notificationModel.setImgAvatar(img);
+                        notificationModel.setContent(firstName + " " + lastName + " đã thích bài viết: " + postModel.getContent());
+                        notificationModel.setIs_active(true);
+                        notificationModel.setIs_seen(false);
+                        notificationModel.setIs_click(false);
+                        assert notificationId != null;
+                        notificationRef.child(notificationId).setValue(notificationModel);
+                    }
                 }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // Xử lý lỗi nếu có
-            }
-        });
-
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // Xử lý lỗi nếu có
+                }
+            });
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

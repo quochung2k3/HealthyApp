@@ -46,7 +46,7 @@ public class ListNotificationAdapter extends ArrayAdapter<ListNotiModel> {
             }
 
             if (!currentNotification.isIs_click()) {
-                notificaionFrame.setBackgroundColor(getContext().getColor(R.color.grey));
+                notificaionFrame.setBackgroundColor(getContext().getColor(R.color.notification));
             }
             //is_click:true mau tran
         }
@@ -54,4 +54,3 @@ public class ListNotificationAdapter extends ArrayAdapter<ListNotiModel> {
         return listItemView;
     }
 }
-

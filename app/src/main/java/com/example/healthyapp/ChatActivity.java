@@ -27,6 +27,7 @@ import com.example.healthyapp.fragments.MessFragment;
 import com.example.healthyapp.fragments.NotificationFragment;
 import com.example.healthyapp.fragments.UserHomeFragment;
 import com.example.healthyapp.models.MessageModel;
+import com.example.healthyapp.models.NotiModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
         binding.countMess.setVisibility(View.GONE);
         binding.countNotification.setVisibility(View.GONE);
         updateCount();
+        reloadCountNotification();
         Mapping();
         intent = getIntent();
         if (intent != null) {
@@ -152,6 +154,35 @@ public class ChatActivity extends AppCompatActivity {
             }
             else {
                 Toast.makeText(ChatActivity.this, "Cannot send messages with empty content", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void reloadCountNotification() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        DatabaseReference databaseReferenceNotification = database.getReference().child("Notification");
+        databaseReferenceNotification.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int count = 0;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    NotiModel notiModel = dataSnapshot.getValue(NotiModel.class);
+                    assert notiModel != null;
+                    if(notiModel.getUserPostId().equals(firebaseUser.getUid()) && notiModel.isIs_active()
+                            && !notiModel.isIs_seen()) {
+                        count ++;
+                        binding.countNotification.setVisibility(View.VISIBLE);
+                        binding.countNotification.setText(String.valueOf(count));
+                    }
+                }
+                if(count == 0) {
+                    binding.countNotification.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
