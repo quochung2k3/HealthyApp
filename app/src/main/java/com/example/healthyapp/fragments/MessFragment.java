@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.healthyapp.ChatActivity;
@@ -58,7 +59,7 @@ public class MessFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.activity_list_mess, container, false);
+        rootView = inflater.inflate(R.layout.fragment_list_mess, container, false);
         ft = FirebaseFirestore.getInstance();
         Mapping();
         reloadDataFromFirebase();
@@ -86,13 +87,15 @@ public class MessFragment extends Fragment {
         lvMess.setOnItemLongClickListener((parent, view, position, id) -> {
             ListMessModel selectedMess = listMess.get(position);
             LayoutInflater inflater1 = LayoutInflater.from(getContext());
-            @SuppressLint("InflateParams") View bottomSheetView = inflater1.inflate(R.layout.bottom_sheet_logout, null);
+            @SuppressLint("InflateParams") View bottomSheetView = inflater1.inflate(R.layout.bottom_sheet, null);
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
             bottomSheetDialog.setContentView(bottomSheetView);
             Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
             btnConfirm.setText("Delete All Mess");
             Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
             btnCancel.setText("Cancel");
+            TextView txtTitle = bottomSheetView.findViewById(R.id.txtTitle);
+            txtTitle.setText("You want to delete this entire message?");
             bottomSheetDialog.show();
             btnConfirm.setOnClickListener(v -> {
                 showAnnouncementDialog(selectedMess.getId());

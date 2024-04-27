@@ -41,11 +41,11 @@ public class MenuFragment extends Fragment {
     ListView lvMenu;
     TextView txtUsername, txtMenu;
     ImageView imgAvatar;
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "SetTextI18n"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.activity_menu, container, false);
+        rootView = inflater.inflate(R.layout.fragment_menu, container, false);
         Mapping();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -128,9 +128,11 @@ public class MenuFragment extends Fragment {
             }
         });
         btnLogout.setOnClickListener(v -> {
-            @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_logout, null);
+            @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet, null);
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
             bottomSheetDialog.setContentView(bottomSheetView);
+            TextView txtTitle = bottomSheetView.findViewById(R.id.txtTitle);
+            txtTitle.setText("Are you sure you want to logout?");
 
             Button btnConfirmLogout = bottomSheetView.findViewById(R.id.btnConfirm);
             btnConfirmLogout.setOnClickListener(v1 -> {

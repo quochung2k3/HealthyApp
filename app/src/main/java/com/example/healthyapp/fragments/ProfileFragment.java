@@ -22,7 +22,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.activity_profile, container, false);
+        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         Mapping();
         return rootView;
     }

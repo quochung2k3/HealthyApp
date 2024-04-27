@@ -287,7 +287,7 @@ public class UserHomeFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void solve() {
-        @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_logout, null);
+        @SuppressLint("InflateParams") View bottomSheetView = getLayoutInflater().inflate(R.layout.bottom_sheet, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
         bottomSheetDialog.setContentView(bottomSheetView);
         Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);

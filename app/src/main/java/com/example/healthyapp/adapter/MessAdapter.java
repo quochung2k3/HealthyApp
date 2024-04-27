@@ -98,13 +98,15 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
         }
         holder.itemView.setOnLongClickListener(view -> {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            @SuppressLint("InflateParams") View bottomSheetView = inflater.inflate(R.layout.bottom_sheet_logout, null);
+            @SuppressLint("InflateParams") View bottomSheetView = inflater.inflate(R.layout.bottom_sheet, null);
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext);
             bottomSheetDialog.setContentView(bottomSheetView);
             Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
             btnConfirm.setText("Delete This Mess");
             Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
             btnCancel.setText("Cancel");
+            TextView txtTitle = bottomSheetView.findViewById(R.id.txtTitle);
+            txtTitle.setText("You want to delete this message?");
             bottomSheetDialog.show();
             btnConfirm.setOnClickListener(v -> {
                 showAnnouncementDialog(message.getId(), message.getSender_id());

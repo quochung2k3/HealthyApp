@@ -302,7 +302,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 if (post.isAnonymous()) {
                     txtUserName.setText("Posted anonymously");
-                    imgAvatar.setImageResource(R.drawable.background_app);
+                    imgAvatar.setImageResource(R.drawable.anonymous);
                 }
                 else {
                     // get user
@@ -314,7 +314,7 @@ public class PostDetailActivity extends AppCompatActivity {
                             String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
                             txtUserName.setText(userName);
                             if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
-                                imgAvatar.setImageResource(R.drawable.background_app);
+                                imgAvatar.setImageResource(R.drawable.baseline_account_circle_24);
                             }
                             else {
 //                            Picasso.get().load(userModel.getImgAvatar()).into(imgAvatar);
