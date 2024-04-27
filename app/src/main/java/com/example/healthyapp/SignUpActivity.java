@@ -123,7 +123,6 @@ public class SignUpActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Announcement");
         builder.setMessage("Sign Up Success");
-        FirebaseAuth.getInstance().signOut();
         builder.setPositiveButton("Go to the login page", (dialog, id) -> {
             Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
             startActivity(intent);

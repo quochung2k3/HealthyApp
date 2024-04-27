@@ -49,6 +49,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Objects;
 
 public class UserHomeFragment extends Fragment {
@@ -199,6 +200,7 @@ public class UserHomeFragment extends Fragment {
                     post.setId(postSnapshot.getKey());
                     postList.add(post);
                 }
+                Collections.reverse(postList);
                 userPostAdapter.notifyDataSetChanged();
             }
 
@@ -213,7 +215,7 @@ public class UserHomeFragment extends Fragment {
     private void pickImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT); // To open gallery
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         //intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE); // To open camera
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
     }

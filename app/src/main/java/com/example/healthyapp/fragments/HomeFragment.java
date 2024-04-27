@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeFragment extends Fragment {
     RecyclerView rvUserPost;
@@ -57,7 +58,6 @@ public class HomeFragment extends Fragment {
 
     private void getPosts() {
         DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
-        // get where is_deleted = false
         postRef.orderByChild("is_deleted").equalTo(false).addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -70,6 +70,7 @@ public class HomeFragment extends Fragment {
                     postList.add(post);
                     Log.d("Post", post.getTitle());
                 }
+                Collections.reverse(postList);
                 userPostAdapter.notifyDataSetChanged();
             }
 

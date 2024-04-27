@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -32,9 +34,11 @@ import java.util.Collections;
 
 public class NotificationFragment extends Fragment {
     View rootView;
+    TextView txtBookMark;
     ImageView img;
     ListView lvNoti;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    DatabaseReference mDatabase;
     DatabaseReference notificationRef;
     ListNotificationAdapter listNotificationAdapter = null;
     ArrayList<ListNotiModel> listNoti = new ArrayList<>();
@@ -103,11 +107,44 @@ public class NotificationFragment extends Fragment {
             startActivity(intent);
         });
 
+        txtBookMark.setOnClickListener(v -> showAnnouncementDialog());
+
         return rootView;
+    }
+
+    private void showAnnouncementDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Announcement");
+        builder.setMessage("Would you like to mark all as read?");
+        builder.setPositiveButton("Yes", (dialog, id) -> {
+            mDatabase = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot notificationSnapshot : dataSnapshot.getChildren()) {
+                        NotiModel notification = notificationSnapshot.getValue(NotiModel.class);
+                        if (notification != null && notification.getUserPostId().equals(firebaseUser.getUid())
+                                && !notification.isIs_click()) {
+                            notificationSnapshot.getRef().child("is_click").setValue(true);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        });
+        builder.setNegativeButton("Cancel", (dialog, id) -> {
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void Mapping() {
         lvNoti = rootView.findViewById(R.id.lvNotification);
+        txtBookMark = rootView.findViewById(R.id.txtBookMark);
         img = rootView.findViewById(R.id.img);
 
         ConstraintLayout notificationFragment = rootView.findViewById(R.id.notificationFragment);
@@ -127,6 +164,6 @@ public class NotificationFragment extends Fragment {
         img.getLayoutParams().height = imgHeight;
 
         // lv
-        lvNoti.getLayoutParams().height = (int) (newHeight * 0.864);
+        lvNoti.getLayoutParams().height = (int) (newHeight * 0.84);
     }
 }
