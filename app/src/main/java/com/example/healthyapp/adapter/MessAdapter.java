@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.R;
 import com.example.healthyapp.models.MessageModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -61,7 +62,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         MessageModel message = listMessage.get(position);
         holder.message.setText(message.getContent());
-        DatabaseReference messageRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message").child(message.getId());
+        DatabaseReference messageRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.MESSAGE).child(message.getId());
         Map<String, Object> updateData = new HashMap<>();
         if(message.getReceiver_id().equals(firebaseUser.getUid())) {
             updateData.put("is_seen", true);
@@ -73,7 +74,6 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
                 .addOnFailureListener(e -> {
 
                 });
-        Log.d("TEST LINK DB", FirebaseDatabase.getInstance().toString());
         if (getItemViewType(position) == MSG_TYPE_LEFT) {
             ft = FirebaseFirestore.getInstance();
             DocumentReference document = ft.collection("users").document(message.getSender_id());
@@ -110,7 +110,6 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
             bottomSheetDialog.show();
             btnConfirm.setOnClickListener(v -> {
                 showAnnouncementDialog(message.getId(), message.getSender_id());
-                Log.d("TEST UID MESS", message.getId());
                 bottomSheetDialog.dismiss();
             });
             btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
@@ -123,8 +122,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
         builder.setTitle("Announcement");
         builder.setMessage("Once deleted, messages cannot be recovered, are you sure you want to delete them?");
         builder.setPositiveButton("Xoá", (dialog, which) -> {
-            DatabaseReference messageRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message").child(id);
-            Log.d("TEST LINK DB", FirebaseDatabase.getInstance().toString());
+            DatabaseReference messageRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.MESSAGE).child(id);
             Map<String, Object> updateData = new HashMap<>();
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             assert firebaseUser != null;

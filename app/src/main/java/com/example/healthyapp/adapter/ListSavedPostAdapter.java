@@ -37,7 +37,6 @@ public class ListSavedPostAdapter extends ArrayAdapter<PostModel> {
         TextView txtTitle = listItemView.findViewById(R.id.txtTitle);
         TextView txtContent = listItemView.findViewById(R.id.txtContent);
         assert currentPost != null;
-        Log.d("TEST TITLE", currentPost.getTitle());
         txtTitle.setText(currentPost.getTitle());
         txtContent.setText(currentPost.getContent());
         if (currentPost.getPostImg() != null) {

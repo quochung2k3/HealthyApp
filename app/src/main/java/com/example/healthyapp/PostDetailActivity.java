@@ -29,8 +29,6 @@ import com.example.healthyapp.models.NotiModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.utils.TimestampUtil;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
@@ -135,7 +133,7 @@ public class PostDetailActivity extends AppCompatActivity {
         btnLike.setOnClickListener(v -> {
             FirebaseDatabase fb = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
             // like post
-            DatabaseReference postRef = fb.getReference("Post").child(post.getId());
+            DatabaseReference postRef = fb.getReference(FirebaseDBConnection.POST).child(post.getId());
             // get newest user likes
             postRef.child("user_likes").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -170,7 +168,7 @@ public class PostDetailActivity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             FirebaseDatabase fb = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
             // save post
-            DatabaseReference postRef = fb.getReference("Post").child(post.getId());
+            DatabaseReference postRef = fb.getReference(FirebaseDBConnection.POST).child(post.getId());
             // get newest user likes
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -245,7 +243,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     .getReference(FirebaseDBConnection.COMMENT)
                     .child(post.getId())
                     .push();
-            DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference("Post");
+            DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
             postRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -260,7 +258,7 @@ public class PostDetailActivity extends AppCompatActivity {
                                     String firstName = documentSnapshot.getString("first_name");
                                     String lastName = documentSnapshot.getString("last_name");
                                     String img = documentSnapshot.getString("imgAvatar");
-                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child("Notification");
+                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
                                     String notificationId = notificationRef.push().getKey();
                                     NotiModel notificationModel = new NotiModel();
                                     notificationModel.setPostId(post.getId());
@@ -294,7 +292,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     .child(post.getId()).child(replyTo).child("replies")
                     .push();
 
-            DatabaseReference commentRefNew = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference("Comment")
+            DatabaseReference commentRefNew = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.COMMENT)
                     .child(post.getId())
                     .child(replyTo);
             commentRefNew.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -312,7 +310,7 @@ public class PostDetailActivity extends AppCompatActivity {
                                     String firstName = documentSnapshot.getString("first_name");
                                     String lastName = documentSnapshot.getString("last_name");
                                     String img = documentSnapshot.getString("imgAvatar");
-                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child("Notification");
+                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
                                     String notificationId = notificationRef.push().getKey();
                                     NotiModel notificationModel = new NotiModel();
                                     notificationModel.setPostId(post.getId());

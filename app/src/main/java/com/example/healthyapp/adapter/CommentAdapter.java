@@ -3,7 +3,6 @@ package com.example.healthyapp.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +90,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             // like comment
             if (comment.getLikes() == null) {
                 comment.setLikes(new HashMap<>());
-                //likepost
+                //like post
             }
             if (comment.getLikes().containsKey(currentUser)) {
                 comment.getLikes().remove(currentUser);
@@ -100,9 +99,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             else {
                 comment.getLikes().put(currentUser, true);
                 likeIcon.setTint(context.getResources().getColor(R.color.blue));
-                Log.d("TEST 1", "TEST 1");
                 if(!comment.getUser_id().equals(currentUser)) {
-                    Log.d("TEST 2", "TEST 2");
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     DocumentReference userRef = db.collection("users").document(currentUser);
                     userRef.get().addOnSuccessListener(documentSnapshot -> {

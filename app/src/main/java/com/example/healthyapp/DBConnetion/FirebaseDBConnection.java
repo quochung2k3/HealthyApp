@@ -11,6 +11,7 @@ public class FirebaseDBConnection {
 
 
     public static final String MESSAGE = "Message";
+    public static final String NOTIFICATION = "Notification";
     public static final String FLAIR = "Flair";
     public static final String COMMENT = "Comment";
     public static final String POST = "Post";

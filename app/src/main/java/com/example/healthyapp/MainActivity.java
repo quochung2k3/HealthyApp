@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
 import com.example.healthyapp.fragments.MenuFragment;
@@ -71,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadCountNotification() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceNotification = database.getReference().child("Notification");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferenceNotification = database.getReference().child(FirebaseDBConnection.NOTIFICATION);
         databaseReferenceNotification.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -99,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadCountMess() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceMess = database.getReference().child("Message");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferenceMess = database.getReference().child(FirebaseDBConnection.MESSAGE);
         databaseReferenceMess.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

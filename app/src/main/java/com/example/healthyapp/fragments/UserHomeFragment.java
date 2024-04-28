@@ -186,7 +186,7 @@ public class UserHomeFragment extends Fragment {
 
     private void loadPost(String id) {
         // get post by user id
-        Query query = db.getReference("Post").orderByChild("user_id").equalTo(id);
+        Query query = db.getReference(FirebaseDBConnection.POST).orderByChild("user_id").equalTo(id);
         query.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -294,6 +294,8 @@ public class UserHomeFragment extends Fragment {
         btnConfirm.setText("Upload Image");
         Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
         btnCancel.setText("Remove Image");
+        TextView txtTitle = bottomSheetView.findViewById(R.id.txtTitle);
+        txtTitle.setText("Do you want to upload new image?");
         btnConfirm.setOnClickListener(v1 -> {
             // check permission for camera
             if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

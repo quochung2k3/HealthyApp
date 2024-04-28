@@ -89,7 +89,7 @@ public class SavedPostFragment extends Fragment {
         builder.setTitle("Warning");
         builder.setMessage("Are you sure you want to un save this post?");
         builder.setPositiveButton("Yes", (dialog, id) -> {
-            DatabaseReference postRef = db.getReference("Post").child(selectedPost.getId());
+            DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(selectedPost.getId());
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     selectedPost.getList_user_save().remove(currentUser);
@@ -107,8 +107,8 @@ public class SavedPostFragment extends Fragment {
     }
     private void reloadDataFromFirebase() {
         postModels.clear();
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferencePost = database.getReference().child("Post");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferencePost = database.getReference().child(FirebaseDBConnection.POST);
         databaseReferencePost.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -117,7 +117,6 @@ public class SavedPostFragment extends Fragment {
                     if (postModel != null && postModel.getList_user_save().containsKey(currentUser) && !postModel.isIs_deleted()) {
                         postModel.setId(dataSnapshot.getKey());
                         postModels.add(postModel);
-                        Log.d("TEST POST", "SUCCESS");
                     }
                 }
                 listSavedPostAdapter.notifyDataSetChanged();

@@ -32,7 +32,7 @@ public class ListNotificationAdapter extends ArrayAdapter<ListNotiModel> {
         ListNotiModel currentNotification = getItem(position);
         ImageView imageButton = listItemView.findViewById(R.id.imgAvatar);
         TextView notification = listItemView.findViewById(R.id.txtNoti);
-        FrameLayout notificaionFrame = listItemView.findViewById(R.id.frameNotification);
+        FrameLayout notificationFrame = listItemView.findViewById(R.id.frameNotification);
 
         if (currentNotification != null) {
             if(currentNotification.getImg().isEmpty()){
@@ -46,9 +46,8 @@ public class ListNotificationAdapter extends ArrayAdapter<ListNotiModel> {
             }
 
             if (!currentNotification.isIs_click()) {
-                notificaionFrame.setBackgroundColor(getContext().getColor(R.color.notification));
+                notificationFrame.setBackgroundColor(getContext().getColor(R.color.notification));
             }
-            //is_click:true mau tran
         }
 
         return listItemView;

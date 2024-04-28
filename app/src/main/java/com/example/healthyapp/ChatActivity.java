@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.adapter.MessAdapter;
 import com.example.healthyapp.databinding.ActivityMainBinding;
 import com.example.healthyapp.fragments.HomeFragment;
@@ -47,7 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     List<MessageModel> listMessage;
     RecyclerView recyclerView;
     Intent intent;
-    FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
+    FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
     DatabaseReference databaseReference;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -159,8 +160,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void reloadCountNotification() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceNotification = database.getReference().child("Notification");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferenceNotification = database.getReference().child(FirebaseDBConnection.NOTIFICATION);
         databaseReferenceNotification.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -188,8 +189,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void updateCount() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceMess = database.getReference().child("Message");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferenceMess = database.getReference().child(FirebaseDBConnection.MESSAGE);
         databaseReferenceMess.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -262,7 +263,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public void readMess(String myId, String userId) {
         listMessage = new ArrayList<>();
-        databaseReference = database.getReference("Message");
+        databaseReference = database.getReference(FirebaseDBConnection.MESSAGE);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

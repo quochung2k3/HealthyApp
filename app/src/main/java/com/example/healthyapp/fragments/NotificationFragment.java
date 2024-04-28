@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.ListNotificationAdapter;
@@ -40,22 +41,22 @@ public class NotificationFragment extends Fragment {
     View rootView;
     TextView txtBookMark;
     ImageView img;
-    ListView lvNoti;
+    ListView lvNotification;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     DatabaseReference mDatabase;
     DatabaseReference notificationRef;
     ListNotificationAdapter listNotificationAdapter = null;
-    ArrayList<ListNotiModel> listNoti = new ArrayList<>();
+    ArrayList<ListNotiModel> listNotification = new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_notification, container, false);
         Mapping();
-        notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+        notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
         notificationRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listNoti.clear();
+                listNotification.clear();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     NotiModel notification = dataSnapshot.getValue(NotiModel.class);
                     assert notification != null;
@@ -73,15 +74,15 @@ public class NotificationFragment extends Fragment {
         notificationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listNoti.clear();
+                listNotification.clear();
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     NotiModel notification = dataSnapshot.getValue(NotiModel.class);
                     assert notification != null;
                     if (notification.getUserPostId().equals(firebaseUser.getUid()) && notification.isIs_active()) {
-                        listNoti.add(new ListNotiModel(notification.getImgAvatar(), notification.getContent(), notification.getPostId(), notification.isIs_click(), dataSnapshot.getKey()));
+                        listNotification.add(new ListNotiModel(notification.getImgAvatar(), notification.getContent(), notification.getPostId(), notification.isIs_click(), dataSnapshot.getKey()));
                     }
                 }
-                Collections.reverse(listNoti);
+                Collections.reverse(listNotification);
                 listNotificationAdapter.notifyDataSetChanged();
             }
 
@@ -91,14 +92,14 @@ public class NotificationFragment extends Fragment {
             }
         });
 
-        listNotificationAdapter = new ListNotificationAdapter(requireContext(), listNoti);
-        lvNoti.setAdapter(listNotificationAdapter);
+        listNotificationAdapter = new ListNotificationAdapter(requireContext(), listNotification);
+        lvNotification.setAdapter(listNotificationAdapter);
 
-        lvNoti.setOnItemClickListener((parent, view, position, id) -> {
-            ListNotiModel notiModel = listNoti.get(position);
-            String notificationId = notiModel.getId();
+        lvNotification.setOnItemClickListener((parent, view, position, id) -> {
+            ListNotiModel notificationModel = listNotification.get(position);
+            String notificationId = notificationModel.getId();
 
-            notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification").child(notificationId);
+            notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION).child(notificationId);
             notificationRef.child("is_click").setValue(true)
                     .addOnSuccessListener(aVoid -> {
 
@@ -107,15 +108,15 @@ public class NotificationFragment extends Fragment {
 
                     });
             Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-            intent.putExtra("post_id", notiModel.getPostId());
+            intent.putExtra("post_id", notificationModel.getPostId());
             startActivity(intent);
         });
 
-        lvNoti.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        lvNotification.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                ListNotiModel selectedNotification = listNoti.get(position);
+                ListNotiModel selectedNotification = listNotification.get(position);
                 LayoutInflater inflater1 = LayoutInflater.from(getContext());
                 @SuppressLint("InflateParams") View bottomSheetView = inflater1.inflate(R.layout.bottom_sheet, null);
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(requireContext());
@@ -146,8 +147,8 @@ public class NotificationFragment extends Fragment {
         builder.setTitle("Announcement");
         builder.setMessage("Once deleted, notification cannot be recovered, are you sure you want to delete?");
         builder.setPositiveButton("Yes", (dialog, which) -> {
-            DatabaseReference notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                    .getReference("Notification").child(id);
+            DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
+                    .getReference(FirebaseDBConnection.NOTIFICATION).child(id);
             notificationRef.child("is_active").setValue(false)
                     .addOnSuccessListener(aVoid -> {
 
@@ -165,7 +166,7 @@ public class NotificationFragment extends Fragment {
         builder.setTitle("Announcement");
         builder.setMessage("Would you like to mark all as read?");
         builder.setPositiveButton("Yes", (dialog, id) -> {
-            mDatabase = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+            mDatabase = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
             mDatabase.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -183,15 +184,13 @@ public class NotificationFragment extends Fragment {
                 }
             });
         });
-        builder.setNegativeButton("Cancel", (dialog, id) -> {
-            dialog.dismiss();
-        });
+        builder.setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
     private void Mapping() {
-        lvNoti = rootView.findViewById(R.id.lvNotification);
+        lvNotification = rootView.findViewById(R.id.lvNotification);
         txtBookMark = rootView.findViewById(R.id.txtBookMark);
         img = rootView.findViewById(R.id.img);
 
@@ -212,6 +211,6 @@ public class NotificationFragment extends Fragment {
         img.getLayoutParams().height = imgHeight;
 
         // lv
-        lvNoti.getLayoutParams().height = (int) (newHeight * 0.84);
+        lvNotification.getLayoutParams().height = (int) (newHeight * 0.84);
     }
 }

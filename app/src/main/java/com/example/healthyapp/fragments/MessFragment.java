@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.healthyapp.ChatActivity;
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.R;
 import com.example.healthyapp.adapter.ListMessAdapter;
 import com.example.healthyapp.models.ListMessModel;
@@ -99,7 +98,6 @@ public class MessFragment extends Fragment {
             bottomSheetDialog.show();
             btnConfirm.setOnClickListener(v -> {
                 showAnnouncementDialog(selectedMess.getId());
-                Log.d("TEST UID MESS", selectedMess.getId());
                 bottomSheetDialog.dismiss();
             });
             btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
@@ -150,7 +148,7 @@ public class MessFragment extends Fragment {
     }
 
     private void updateMessageIsDeleted(String id, String myId) {
-        DatabaseReference messagesRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Message");
+        DatabaseReference messagesRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.MESSAGE);
         messagesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -182,9 +180,8 @@ public class MessFragment extends Fragment {
         listMess.clear();
         ArrayList<String> testList = new ArrayList<>();
         HashSet<String> seen = new HashSet<>();
-        Log.d("TEST LIST", testList.toString());
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceMess = database.getReference().child("Message");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferenceMess = database.getReference().child(FirebaseDBConnection.MESSAGE);
         databaseReferenceMess.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -218,7 +215,6 @@ public class MessFragment extends Fragment {
                         seen.add(item);
                     }
                 }
-                Log.d("TEST LIST", testList.toString());
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 CollectionReference usersRef = db.collection("users");
                 i = 0;
@@ -246,7 +242,7 @@ public class MessFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

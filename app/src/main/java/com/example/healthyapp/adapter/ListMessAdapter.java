@@ -3,7 +3,6 @@ package com.example.healthyapp.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.R;
 import com.example.healthyapp.models.ListMessModel;
 import com.example.healthyapp.models.MessageModel;
@@ -49,8 +49,8 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
         ImageView imgTick = listItemView.findViewById(R.id.imgTick);
         TextView userName = listItemView.findViewById(R.id.txtUsername);
         TextView mess = listItemView.findViewById(R.id.txtMess);
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference databaseReferenceMess = database.getReference().child("Message");
+        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        DatabaseReference databaseReferenceMess = database.getReference().child(FirebaseDBConnection.MESSAGE);
         databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,7 +60,6 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                         if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
                                 (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
                             if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
-                                Log.d("TEST IF", "TEST IF");
                                 isSeen = false;
                                 break;
                             }
@@ -68,7 +67,6 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                     }
                 }
                 if(!isSeen) {
-                    Log.d("TEST SUCCESS", "TEST SUCCESS");
                     imgTick.setImageDrawable(getContext().getResources().getDrawable(R.drawable.baseline_brightness_1_24));
                     mess.setTypeface(null, Typeface.BOLD);
                     isSeen = true;

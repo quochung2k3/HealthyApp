@@ -110,7 +110,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
         // btnLike onClick
         holder.btnLike.setOnClickListener(v -> {
-            DatabaseReference postRef = db.getReference("Post").child(postModel.getId());
+            DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(postModel.getId());
             // get newest user likes
             postRef.child("user_likes").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -154,7 +154,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         }
         // btnSave onClick
         holder.btnSave.setOnClickListener(v -> {
-            DatabaseReference postRef = db.getReference("Post").child(postModel.getId());
+            DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(postModel.getId());
             // get newest user save
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -237,7 +237,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                     String firstName = documentSnapshot.getString("first_name");
                     String lastName = documentSnapshot.getString("last_name");
                     String img = documentSnapshot.getString("imgAvatar");
-                    DatabaseReference notificationRef = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference().child("Notification");
+                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
                     String notificationId = notificationRef.push().getKey();
                     NotiModel notificationModel = new NotiModel();
                     notificationModel.setPostId(postModel.getId());
@@ -269,7 +269,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             int id = item.getItemId();
             if (id == R.id.post_delete) {
                 // set post is_deleted = true
-                DatabaseReference postRef = db.getReference("Post").child(postModel.getId());
+                DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(postModel.getId());
                 postRef.child("is_deleted").setValue(true);
                 postList.remove(postModel);
                 notifyDataSetChanged();
