@@ -232,7 +232,6 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         if(!postModel.getUser_id().equals(id)) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference userRef = db.collection("users").document(id);
-
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     String firstName = documentSnapshot.getString("first_name");

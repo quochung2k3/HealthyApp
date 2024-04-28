@@ -3,6 +3,7 @@ package com.example.healthyapp.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,13 @@ import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.PostDetailActivity;
 import com.example.healthyapp.R;
 import com.example.healthyapp.models.CommentModel;
+import com.example.healthyapp.models.NotiModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.utils.TimestampUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -80,7 +83,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Drawable likeIcon = holder.btnLike.getCompoundDrawables()[0];
         if (comment.getLikes().containsKey(currentUser)) {
             likeIcon.setTint(context.getResources().getColor(R.color.blue));
-        } else {
+        }
+        else {
             likeIcon.setTint(context.getResources().getColor(R.color.black));
         }
         holder.btnLike.setOnClickListener(v -> {
@@ -92,9 +96,38 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             if (comment.getLikes().containsKey(currentUser)) {
                 comment.getLikes().remove(currentUser);
                 likeIcon.setTint(context.getResources().getColor(R.color.black));
-            } else {
+            }
+            else {
                 comment.getLikes().put(currentUser, true);
                 likeIcon.setTint(context.getResources().getColor(R.color.blue));
+                Log.d("TEST 1", "TEST 1");
+                if(!comment.getUser_id().equals(currentUser)) {
+                    Log.d("TEST 2", "TEST 2");
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference userRef = db.collection("users").document(currentUser);
+                    userRef.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String firstName = documentSnapshot.getString("first_name");
+                            String lastName = documentSnapshot.getString("last_name");
+                            String img = documentSnapshot.getString("imgAvatar");
+                            DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child("Notification");
+                            String notificationId = notificationRef.push().getKey();
+                            NotiModel notificationModel = new NotiModel();
+                            notificationModel.setPostId(comment.getPost_id());
+                            notificationModel.setUserLikeId(currentUser);
+                            notificationModel.setUserPostId(comment.getUser_id());
+                            notificationModel.setImgAvatar(img);
+                            notificationModel.setContent(firstName + " " + lastName + " đã thích bình luận: " + comment.getContent());
+                            notificationModel.setIs_active(true);
+                            notificationModel.setIs_seen(false);
+                            notificationModel.setIs_click(false);
+                            assert notificationId != null;
+                            notificationRef.child(notificationId).setValue(notificationModel);
+                        }
+                    }).addOnFailureListener(e -> {
+
+                    });
+                }
             }
             // update likes
             DatabaseReference commentRef;

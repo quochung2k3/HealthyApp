@@ -25,9 +25,12 @@ import com.bumptech.glide.Glide;
 import com.example.healthyapp.DBConnetion.FirebaseDBConnection;
 import com.example.healthyapp.adapter.CommentAdapter;
 import com.example.healthyapp.models.CommentModel;
+import com.example.healthyapp.models.NotiModel;
 import com.example.healthyapp.models.PostModel;
 import com.example.healthyapp.models.UserModel;
 import com.example.healthyapp.utils.TimestampUtil;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -241,12 +245,100 @@ public class PostDetailActivity extends AppCompatActivity {
                     .getReference(FirebaseDBConnection.COMMENT)
                     .child(post.getId())
                     .push();
+            DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference("Post");
+            postRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String userId = dataSnapshot.child("user_id").getValue(String.class);
+                        assert userId != null;
+                        if(!userId.equals(currentUserId)) {
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference userRef = db.collection("users").document(currentUserId);
+                            userRef.get().addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    String firstName = documentSnapshot.getString("first_name");
+                                    String lastName = documentSnapshot.getString("last_name");
+                                    String img = documentSnapshot.getString("imgAvatar");
+                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child("Notification");
+                                    String notificationId = notificationRef.push().getKey();
+                                    NotiModel notificationModel = new NotiModel();
+                                    notificationModel.setPostId(post.getId());
+                                    notificationModel.setUserLikeId(currentUserId);
+                                    notificationModel.setUserPostId(userId);
+                                    notificationModel.setImgAvatar(img);
+                                    notificationModel.setContent(firstName + " " + lastName + " đã bình luận về bài viết: " + post.getTitle());
+                                    notificationModel.setIs_active(true);
+                                    notificationModel.setIs_seen(false);
+                                    notificationModel.setIs_click(false);
+                                    assert notificationId != null;
+                                    notificationRef.child(notificationId).setValue(notificationModel);
+                                }
+                            }).addOnFailureListener(e -> {
+
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
         else {
             commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
                     .getReference(FirebaseDBConnection.COMMENT)
                     .child(post.getId()).child(replyTo).child("replies")
                     .push();
+
+            DatabaseReference commentRefNew = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference("Comment")
+                    .child(post.getId())
+                    .child(replyTo);
+            commentRefNew.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        String userId = dataSnapshot.child("user_id").getValue(String.class);
+                        String content = dataSnapshot.child("content").getValue(String.class);
+                        assert userId != null;
+                        if(!userId.equals(currentUserId)) {
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            DocumentReference userRef = db.collection("users").document(currentUserId);
+                            userRef.get().addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    String firstName = documentSnapshot.getString("first_name");
+                                    String lastName = documentSnapshot.getString("last_name");
+                                    String img = documentSnapshot.getString("imgAvatar");
+                                    DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child("Notification");
+                                    String notificationId = notificationRef.push().getKey();
+                                    NotiModel notificationModel = new NotiModel();
+                                    notificationModel.setPostId(post.getId());
+                                    notificationModel.setUserLikeId(currentUserId);
+                                    notificationModel.setUserPostId(userId);
+                                    notificationModel.setImgAvatar(img);
+                                    notificationModel.setContent(firstName + " " + lastName + " đã phản hồi bình luận: " + content);
+                                    notificationModel.setIs_active(true);
+                                    notificationModel.setIs_seen(false);
+                                    notificationModel.setIs_click(false);
+                                    assert notificationId != null;
+                                    notificationRef.child(notificationId).setValue(notificationModel);
+                                }
+                            }).addOnFailureListener(e -> {
+
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
         }
         CommentModel comment = new CommentModel();
         comment.setContent(commentContent);
