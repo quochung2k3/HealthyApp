@@ -90,7 +90,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // editText
         int edtWidth = (int) (screenWidth * 0.8);
-        int edtHeight = (int) (screenHeight * 0.06);
+        int edtHeight = (int) (screenHeight * 0.0674);
         edtEmail.getLayoutParams().width = edtWidth;
         edtEmail.getLayoutParams().height = edtHeight;
         edtPass.getLayoutParams().width = edtWidth;

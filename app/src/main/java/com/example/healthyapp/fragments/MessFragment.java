@@ -46,7 +46,6 @@ import java.util.HashSet;
 public class MessFragment extends Fragment {
     View rootView;
     ImageView img;
-    EditText edtSearch;
     FirebaseFirestore ft;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     ListMessAdapter listMessAdapter = null;
@@ -108,7 +107,6 @@ public class MessFragment extends Fragment {
 
     private void Mapping() {
         img = rootView.findViewById(R.id.img);
-        edtSearch = rootView.findViewById(R.id.edtUsername);
         lvMess = rootView.findViewById(R.id.lvMess);
 
         ConstraintLayout messFragment = rootView.findViewById(R.id.messFragment);
@@ -127,14 +125,8 @@ public class MessFragment extends Fragment {
         img.getLayoutParams().width = imgWidth;
         img.getLayoutParams().height = imgHeight;
 
-        // edt
-        int edtWidth = (int) (screenWidth * 0.9);
-        int edtHeight = (int) (newHeight * 0.062);
-        edtSearch.getLayoutParams().width = edtWidth;
-        edtSearch.getLayoutParams().height = edtHeight;
-
         // lvMess
-        lvMess.getLayoutParams().height = (int) (newHeight * 0.67);
+        lvMess.getLayoutParams().height = (int) (newHeight * 0.79);
     }
 
     private void showAnnouncementDialog(String id) {

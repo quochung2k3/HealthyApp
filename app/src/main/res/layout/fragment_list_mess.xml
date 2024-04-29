@@ -9,24 +9,6 @@
     tools:layout_editor_absoluteY="15dp"
     android:id="@+id/messFragment">
 
-    <EditText
-        android:id="@+id/edtUsername"
-        android:layout_width="377dp"
-        android:layout_height="50dp"
-        android:background="@drawable/edit_text"
-        android:drawableStart="@drawable/baseline_search_24"
-        android:drawablePadding="12dp"
-        android:ems="10"
-        android:hint="Search"
-        android:inputType="text"
-        android:paddingLeft="12dp"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.25"
-        app:layout_constraintBottom_toBottomOf="@+id/lvMess"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/img"
         android:layout_width="214dp"
@@ -42,7 +24,7 @@
     <ListView
         android:id="@+id/lvMess"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="640dp"
         app:layout_constraintVertical_bias="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

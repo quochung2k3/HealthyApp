@@ -10,7 +10,7 @@
     <EditText
         android:id="@+id/edtUsername"
         android:layout_width="333dp"
-        android:layout_height="54dp"
+        android:layout_height="60dp"
         android:background="@drawable/edit_text"
         android:ems="10"
         android:hint="Username"
@@ -21,12 +21,12 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.45" />
+        app:layout_constraintVertical_bias="0.44" />
 
     <EditText
         android:id="@+id/edtPassword"
         android:layout_width="330dp"
-        android:layout_height="54dp"
+        android:layout_height="60dp"
         android:background="@drawable/edit_text"
         android:ems="10"
         android:hint="Password"
@@ -37,7 +37,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.57" />
+        app:layout_constraintVertical_bias="0.56" />
 
     <Button
         android:id="@+id/btnLogin"
