@@ -2,6 +2,7 @@ package com.example.healthyapp.fragments;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,21 +10,52 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.healthyapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ProfileFragment extends Fragment {
     View rootView;
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     ImageView imgAvatar;
-    EditText edtFirstname, edtLastname, edtEmail, edtPassword, edtPasswordConfirm;
+    EditText edtFirstname, edtLastname, edtAddress, edtSDT, edtBirthDay;
     Button btnEdit, btnSave;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
         Mapping();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("users").document(firebaseUser.getUid());
+
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        String firstName = document.getString("first_name");
+                        String lastName = document.getString("last_name");
+                        edtFirstname.setText(firstName);
+                        edtLastname.setText(lastName);
+                    }
+                }
+            }
+        });
         return rootView;
     }
 
@@ -31,9 +63,9 @@ public class ProfileFragment extends Fragment {
         imgAvatar = rootView.findViewById(R.id.imgAvatar);
         edtFirstname = rootView.findViewById(R.id.edtFirstname);
         edtLastname = rootView.findViewById(R.id.edtLastname);
-        edtEmail = rootView.findViewById(R.id.edtEmail);
-        edtPassword = rootView.findViewById(R.id.edtPassword);
-        edtPasswordConfirm = rootView.findViewById(R.id.edtPasswordConfirm);
+        edtAddress = rootView.findViewById(R.id.edtAddress);
+        edtSDT = rootView.findViewById(R.id.edtSDT);
+        edtBirthDay = rootView.findViewById(R.id.edtBirthDay);
         btnEdit = rootView.findViewById(R.id.btnEdit);
         btnSave = rootView.findViewById(R.id.btnSave);
 
@@ -60,12 +92,12 @@ public class ProfileFragment extends Fragment {
         edtFirstname.getLayoutParams().height = edtHeight;
         edtLastname.getLayoutParams().width = edtWidth;
         edtLastname.getLayoutParams().height = edtHeight;
-        edtEmail.getLayoutParams().width = edtWidth;
-        edtEmail.getLayoutParams().height = edtHeight;
-        edtPassword.getLayoutParams().width = edtWidth;
-        edtPassword.getLayoutParams().height = edtHeight;
-        edtPasswordConfirm.getLayoutParams().width = edtWidth;
-        edtPasswordConfirm.getLayoutParams().height = edtHeight;
+        edtAddress.getLayoutParams().width = edtWidth;
+        edtAddress.getLayoutParams().height = edtHeight;
+        edtSDT.getLayoutParams().width = edtWidth;
+        edtSDT.getLayoutParams().height = edtHeight;
+        edtBirthDay.getLayoutParams().width = edtWidth;
+        edtBirthDay.getLayoutParams().height = edtHeight;
 
         // btn
         int btnWidth = (int) (screenWidth * 0.365);

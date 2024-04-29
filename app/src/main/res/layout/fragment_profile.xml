@@ -38,7 +38,6 @@
         android:layout_height="50dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint="FirstName"
         android:inputType="text"
         android:paddingLeft="10dp"
         app:layout_constraintHorizontal_bias="0.5"
@@ -46,7 +45,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
 
     <EditText
         android:id="@+id/edtLastname"
@@ -54,9 +55,10 @@
         android:layout_height="50dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint="LastName"
         android:inputType="text"
         android:paddingLeft="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.52"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,14 +67,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edtEmail"
+        android:id="@+id/edtAddress"
         android:layout_width="333dp"
         android:layout_height="50dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint="Email"
         android:inputType="text"
         android:paddingLeft="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.62"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -81,14 +84,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edtPassword"
+        android:id="@+id/edtSDT"
         android:layout_width="333dp"
         android:layout_height="50dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint="Password"
         android:inputType="text"
         android:paddingLeft="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.72"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,14 +101,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edtPasswordConfirm"
+        android:id="@+id/edtBirthDay"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:background="@drawable/edit_text"
         android:ems="10"
-        android:hint="ConfirmPassword"
         android:inputType="text"
         android:paddingLeft="10dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintVertical_bias="0.82"
         app:layout_constraintBottom_toBottomOf="parent"
