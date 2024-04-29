@@ -109,6 +109,9 @@ public class SignUpActivity extends AppCompatActivity {
                         user.setPassword(password);
                         user.setImgAvatar("");
                         user.setImgBackground("");
+                        user.setAddress("");
+                        user.setSDT("");
+                        user.setBirthDay("");
                         documentReference.set(user)
                                 .addOnSuccessListener(unused -> Toast.makeText(SignUpActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show())
                                 .addOnFailureListener(e -> Toast.makeText(SignUpActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());

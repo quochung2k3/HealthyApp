@@ -2,6 +2,8 @@ package com.example.healthyapp.models;
 
 import com.google.firebase.Timestamp;
 
+import java.util.Date;
+
 public class UserModel {
     private String id;
     private String first_name;
@@ -9,12 +11,15 @@ public class UserModel {
     private String avatar;
     private String email;
     private String password;
+    private String address;
+    private String SDT;
+    private String birthDay;
     private Timestamp created_date;
     private Timestamp modified_date;
     private String imgAvatar;
     private String imgBackground;
 
-    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date, String imgAvatar, String imgBackground) {
+    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date, String imgAvatar, String imgBackground, String address, String SDT, String birthDay) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -24,6 +29,9 @@ public class UserModel {
         this.modified_date = modified_date;
         this.imgAvatar = imgAvatar;
         this.imgBackground = imgBackground;
+        this.address = address;
+        this.SDT = SDT;
+        this.birthDay = birthDay;
     }
 
     public UserModel() {
@@ -108,5 +116,29 @@ public class UserModel {
 
     public void setImgBackground(String imgBackground) {
         this.imgBackground = imgBackground;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getSDT() {
+        return SDT;
+    }
+
+    public void setSDT(String SDT) {
+        this.SDT = SDT;
+    }
+
+    public String getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 }
