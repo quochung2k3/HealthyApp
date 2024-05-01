@@ -2,7 +2,6 @@ package com.example.healthyapp.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,7 +103,12 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
             Button btnConfirm = bottomSheetView.findViewById(R.id.btnConfirm);
             btnConfirm.setText("Delete This Mess");
             Button btnCancel = bottomSheetView.findViewById(R.id.btnCancel);
-            btnCancel.setText("Cancel");
+            if(message.getSender_id().equals(firebaseUser.getUid())) {
+                btnCancel.setText("Retrieve Message");
+            }
+            else {
+                btnCancel.setText("Cancel");
+            }
             TextView txtTitle = bottomSheetView.findViewById(R.id.txtTitle);
             txtTitle.setText("You want to delete this message?");
             bottomSheetDialog.show();
@@ -112,9 +116,36 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
                 showAnnouncementDialog(message.getId(), message.getSender_id());
                 bottomSheetDialog.dismiss();
             });
-            btnCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+            btnCancel.setOnClickListener(v -> {
+                if(message.getSender_id().equals(firebaseUser.getUid())) {
+                    showAnnouncementDialogRetrieve(message.getId());
+                    bottomSheetDialog.dismiss();
+                }
+                else {
+                    bottomSheetDialog.dismiss();
+                }
+            });
             return true;
         });
+    }
+
+    private void showAnnouncementDialogRetrieve(String id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Announcement");
+        builder.setMessage("Once deleted, messages cannot be recovered, are you sure you want to delete them?");
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            DatabaseReference messageRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.MESSAGE).child(id);
+            Map<String, Object> updateData = new HashMap<>();
+            firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+            assert firebaseUser != null;
+            updateData.put("is_deleted_by_me", true);
+            updateData.put("is_deleted_by_other", true);
+            messageRef.updateChildren(updateData)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(mContext, "Message revoked", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(mContext, "Message recall failed", Toast.LENGTH_SHORT).show());
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void showAnnouncementDialog(String id, String sender_id) {
@@ -133,14 +164,8 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
                 updateData.put("is_deleted_by_other", true);
             }
             messageRef.updateChildren(updateData)
-                    .addOnSuccessListener(aVoid -> {
-                        // Xử lý thành công
-                        Toast.makeText(mContext, "Đã xoá tin nhắn", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        // Xử lý khi thất bại
-                        Toast.makeText(mContext, "Xoá tin nhắn thất bại", Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnSuccessListener(aVoid -> Toast.makeText(mContext, "Message deleted", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(mContext, "Message deletion failed", Toast.LENGTH_SHORT).show());
         });
         AlertDialog dialog = builder.create();
         dialog.show();
