@@ -107,9 +107,32 @@ public class NotificationFragment extends Fragment {
                     .addOnFailureListener(e -> {
 
                     });
-            Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-            intent.putExtra("post_id", notificationModel.getPostId());
-            startActivity(intent);
+
+            DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child("Post").child(notificationModel.getPostId());
+            postRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        boolean isDeleted = Boolean.TRUE.equals(dataSnapshot.child("is_deleted").getValue(Boolean.class));
+                        if (isDeleted) {
+                            showAnnouncement("This post has been deleted");
+                        }
+                        else {
+                            Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+                            intent.putExtra("post_id", notificationModel.getPostId());
+                            startActivity(intent);
+                        }
+                    }
+                    else {
+                        showAnnouncement("The article does not exist");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         });
 
         lvNotification.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -212,5 +235,14 @@ public class NotificationFragment extends Fragment {
 
         // lv
         lvNotification.getLayoutParams().height = (int) (newHeight * 0.84);
+    }
+
+    private void showAnnouncement(String note) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Announcement");
+        builder.setMessage(note);
+        builder.setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
