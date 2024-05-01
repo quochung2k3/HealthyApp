@@ -265,7 +265,7 @@ public class ProfileFragment extends Fragment {
             userInfo.put("first_name", edtFirstname.getText().toString());
             userInfo.put("last_name", edtLastname.getText().toString());
             userInfo.put("address", edtAddress.getText().toString());
-            userInfo.put("SDT", edtSDT.getText().toString());
+            userInfo.put("sdt", edtSDT.getText().toString());
             userInfo.put("birthday", edtBirthDay.getText().toString());
 
             userRef.update(userInfo)
@@ -302,7 +302,7 @@ public class ProfileFragment extends Fragment {
                         String firstName = document.getString("first_name");
                         String lastName = document.getString("last_name");
                         String address = document.getString("address");
-                        String SDT = document.getString("SDT");
+                        String SDT = document.getString("sdt");
                         String birthday = document.getString("birthday");
                         linkImg = document.getString("imgAvatar");
                         edtFirstname.setText("");

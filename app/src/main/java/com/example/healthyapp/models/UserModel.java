@@ -13,13 +13,13 @@ public class UserModel {
     private String password;
     private String address;
     private String SDT;
-    private String birthDay;
+    private String birthday;
     private Timestamp created_date;
     private Timestamp modified_date;
     private String imgAvatar;
     private String imgBackground;
 
-    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date, String imgAvatar, String imgBackground, String address, String SDT, String birthDay) {
+    public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date, String imgAvatar, String imgBackground, String address, String SDT, String birthday) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -31,7 +31,7 @@ public class UserModel {
         this.imgBackground = imgBackground;
         this.address = address;
         this.SDT = SDT;
-        this.birthDay = birthDay;
+        this.birthday = birthday;
     }
 
     public UserModel() {
@@ -134,11 +134,11 @@ public class UserModel {
         this.SDT = SDT;
     }
 
-    public String getBirthDay() {
-        return birthDay;
+    public String getBirthday() {
+        return birthday;
     }
 
-    public void setBirthDay(String birthDay) {
-        this.birthDay = birthDay;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

@@ -111,7 +111,7 @@ public class SignUpActivity extends AppCompatActivity {
                         user.setImgBackground("");
                         user.setAddress("");
                         user.setSDT("");
-                        user.setBirthDay("");
+                        user.setBirthday("");
                         documentReference.set(user)
                                 .addOnSuccessListener(unused -> Toast.makeText(SignUpActivity.this, "Data added successfully", Toast.LENGTH_SHORT).show())
                                 .addOnFailureListener(e -> Toast.makeText(SignUpActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -127,6 +127,7 @@ public class SignUpActivity extends AppCompatActivity {
         builder.setTitle("Announcement");
         builder.setMessage("Sign Up Success");
         builder.setPositiveButton("Go to the login page", (dialog, id) -> {
+            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
             startActivity(intent);
             finish();
