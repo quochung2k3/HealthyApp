@@ -39,7 +39,7 @@ import java.util.Collections;
 
 public class NotificationFragment extends Fragment {
     View rootView;
-    TextView txtBookMark;
+    TextView txtBookMark, txtNotNotification;
     ImageView img;
     ListView lvNotification;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -81,6 +81,12 @@ public class NotificationFragment extends Fragment {
                     if (notification.getUserPostId().equals(firebaseUser.getUid()) && notification.isIs_active()) {
                         listNotification.add(new ListNotiModel(notification.getImgAvatar(), notification.getContent(), notification.getPostId(), notification.isIs_click(), dataSnapshot.getKey()));
                     }
+                }
+                if(listNotification.isEmpty()) {
+                    txtNotNotification.setVisibility(View.VISIBLE);
+                }
+                else {
+                    txtNotNotification.setVisibility(View.GONE);
                 }
                 Collections.reverse(listNotification);
                 listNotificationAdapter.notifyDataSetChanged();
@@ -215,6 +221,7 @@ public class NotificationFragment extends Fragment {
     private void Mapping() {
         lvNotification = rootView.findViewById(R.id.lvNotification);
         txtBookMark = rootView.findViewById(R.id.txtBookMark);
+        txtNotNotification = rootView.findViewById(R.id.txtNotNotification);
         img = rootView.findViewById(R.id.img);
 
         ConstraintLayout notificationFragment = rootView.findViewById(R.id.notificationFragment);

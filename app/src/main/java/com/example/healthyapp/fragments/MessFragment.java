@@ -45,6 +45,7 @@ import java.util.HashSet;
 public class MessFragment extends Fragment {
     View rootView;
     ImageView img;
+    TextView txtNotMess;
     FirebaseFirestore ft;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     ListMessAdapter listMessAdapter = null;
@@ -107,6 +108,7 @@ public class MessFragment extends Fragment {
     private void Mapping() {
         img = rootView.findViewById(R.id.img);
         lvMess = rootView.findViewById(R.id.lvMess);
+        txtNotMess = rootView.findViewById(R.id.txtNotMess);
 
         ConstraintLayout messFragment = rootView.findViewById(R.id.messFragment);
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -223,6 +225,12 @@ public class MessFragment extends Fragment {
                                     }
                                 }
                                 i++;
+                            }
+                            if(listMess.isEmpty()) {
+                                txtNotMess.setVisibility(View.VISIBLE);
+                            }
+                            else {
+                                txtNotMess.setVisibility(View.GONE);
                             }
                             listMessAdapter.notifyDataSetChanged();
                         })

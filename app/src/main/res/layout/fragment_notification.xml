@@ -47,4 +47,20 @@
         app:layout_constraintVertical_bias="0.11"
         android:textColor="#5B85CE"/>
 
+    <TextView
+        android:id="@+id/txtNotNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You have no notifications"
+        android:textSize="16sp"
+        android:textStyle="italic|bold"
+        android:textColor="#6A6969"
+        android:visibility="gone"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
