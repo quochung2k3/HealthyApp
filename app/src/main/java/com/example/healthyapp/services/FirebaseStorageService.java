@@ -19,11 +19,10 @@ import java.util.Objects;
 
 public class FirebaseStorageService {
     private static final String TAG = "StorageService";
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
+    private final StorageReference storageRef;
 
     public FirebaseStorageService() {
-        storage = FirebaseStorage.getInstance();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
     }
     public Task<Uri> uploadImage(byte[] image, String imageName) {
