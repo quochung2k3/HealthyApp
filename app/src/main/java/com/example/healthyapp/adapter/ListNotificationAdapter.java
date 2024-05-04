@@ -35,9 +35,11 @@ public class ListNotificationAdapter extends ArrayAdapter<ListNotiModel> {
         FrameLayout notificationFrame = listItemView.findViewById(R.id.frameNotification);
 
         if (currentNotification != null) {
-            if(currentNotification.getImg().isEmpty()){
+            if(currentNotification.getImg().isEmpty()) {
                 imageButton.setImageDrawable(getContext().getDrawable(R.drawable.baseline_account_circle_24));
-            } else {
+                notification.setText(currentNotification.getContent());
+            }
+            else {
                 Glide.with(getContext())
                         .load(currentNotification.getImg())
                         .circleCrop()
