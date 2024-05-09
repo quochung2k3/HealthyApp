@@ -113,7 +113,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
             txtTitle.setText("You want to delete this message?");
             bottomSheetDialog.show();
             btnConfirm.setOnClickListener(v -> {
-                showAnnouncementDialog(message.getId(), message.getSender_id());
+                showAnnouncementDialog(message.getId(), message.getSender_id(), message.getReceiver_id());
                 bottomSheetDialog.dismiss();
             });
             btnCancel.setOnClickListener(v -> {
@@ -140,6 +140,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
             assert firebaseUser != null;
             updateData.put("is_deleted_by_me", true);
             updateData.put("is_deleted_by_other", true);
+            updateData.put("is_seen", true);
             messageRef.updateChildren(updateData)
                     .addOnSuccessListener(aVoid -> Toast.makeText(mContext, "Message revoked", Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(e -> Toast.makeText(mContext, "Message recall failed", Toast.LENGTH_SHORT).show());
@@ -148,7 +149,7 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
         dialog.show();
     }
 
-    private void showAnnouncementDialog(String id, String sender_id) {
+    private void showAnnouncementDialog(String id, String sender_id, String receiver_id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Announcement");
         builder.setMessage("Once deleted, messages cannot be recovered, are you sure you want to delete them?");
@@ -157,7 +158,11 @@ public class MessAdapter extends RecyclerView.Adapter<MessAdapter.ViewHolder> {
             Map<String, Object> updateData = new HashMap<>();
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
             assert firebaseUser != null;
-            if(sender_id.equals(firebaseUser.getUid())) {
+            if(sender_id.equals(firebaseUser.getUid()) && receiver_id.equals(firebaseUser.getUid())) {
+                updateData.put("is_deleted_by_me", true);
+                updateData.put("is_deleted_by_other", true);
+            }
+            else if(sender_id.equals(firebaseUser.getUid())) {
                 updateData.put("is_deleted_by_me", true);
             }
             else {
