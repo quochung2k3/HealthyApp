@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ListSavedPostAdapter extends ArrayAdapter<PostModel> {
-    FirebaseAuth auth = FirebaseAuth.getInstance();
+    FirebaseAuth auth  = FirebaseAuth.getInstance();
     String currentUser = null;
     public ListSavedPostAdapter(@NonNull Context context, ArrayList<PostModel> listPostSavedView) {
         super(context, 0, listPostSavedView);
@@ -30,14 +30,17 @@ public class ListSavedPostAdapter extends ArrayAdapter<PostModel> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         @SuppressLint("ViewHolder") View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.saved_post_custom, parent, false);
-        currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+
+        currentUser           = Objects.requireNonNull(auth.getCurrentUser()).getUid();
         PostModel currentPost = getItem(position);
-        ImageView imgPost = listItemView.findViewById(R.id.imgPost);
-        TextView txtTitle = listItemView.findViewById(R.id.txtTitle);
-        TextView txtContent = listItemView.findViewById(R.id.txtContent);
-        assert currentPost != null;
+        ImageView imgPost     = listItemView.findViewById(R.id.imgPost);
+        TextView txtTitle     = listItemView.findViewById(R.id.txtTitle);
+        TextView txtContent   = listItemView.findViewById(R.id.txtContent);
+        assert currentPost   != null;
+
         txtTitle.setText(currentPost.getTitle());
         txtContent.setText(currentPost.getContent());
+
         if (currentPost.getPostImg() != null) {
             Glide.with(getContext())
                     .load(currentPost.getPostImg())
@@ -46,6 +49,7 @@ public class ListSavedPostAdapter extends ArrayAdapter<PostModel> {
         else {
             imgPost.setImageDrawable(getContext().getResources().getDrawable(R.drawable.no_image));
         }
+
         return listItemView;
     }
 }

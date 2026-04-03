@@ -29,10 +29,11 @@ public class ListNotificationAdapter extends ArrayAdapter<ListNotiModel> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         @SuppressLint("ViewHolder") View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_notification, parent, false);
+
         ListNotiModel currentNotification = getItem(position);
-        ImageView imageButton = listItemView.findViewById(R.id.imgAvatar);
-        TextView notification = listItemView.findViewById(R.id.txtNoti);
-        FrameLayout notificationFrame = listItemView.findViewById(R.id.frameNotification);
+        ImageView imageButton             = listItemView.findViewById(R.id.imgAvatar);
+        TextView notification             = listItemView.findViewById(R.id.txtNoti);
+        FrameLayout notificationFrame     = listItemView.findViewById(R.id.frameNotification);
 
         if (currentNotification != null) {
             if(currentNotification.getImg().isEmpty()) {

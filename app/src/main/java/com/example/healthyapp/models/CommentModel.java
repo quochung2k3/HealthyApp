@@ -15,16 +15,15 @@ public class CommentModel {
     private boolean is_deleted;
     private Long modified_date;
 
-    public CommentModel(String id, String content, String parent_id, String user_id, String post_id,
-                        String image_link, Long created_date, boolean is_deleted, Long modified_date) {
-        this.id = id;
-        this.content = content;
-        this.parent_id = parent_id;
-        this.user_id = user_id;
-        this.post_id = post_id;
-        this.image_link = image_link;
-        this.created_date = created_date;
-        this.is_deleted = is_deleted;
+    public CommentModel(String id, String content, String parent_id, String user_id, String post_id, String image_link, Long created_date, boolean is_deleted, Long modified_date) {
+        this.id            = id;
+        this.content       = content;
+        this.parent_id     = parent_id;
+        this.user_id       = user_id;
+        this.post_id       = post_id;
+        this.image_link    = image_link;
+        this.created_date  = created_date;
+        this.is_deleted    = is_deleted;
         this.modified_date = modified_date;
     }
 

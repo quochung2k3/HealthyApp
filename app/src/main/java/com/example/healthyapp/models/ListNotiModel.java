@@ -8,11 +8,11 @@ public class ListNotiModel {
     private boolean is_click;
 
     public ListNotiModel(String img, String content, String postId, boolean is_click, String id) {
-        this.img = img;
-        this.content = content;
-        this.postId = postId;
+        this.img      = img;
+        this.content  = content;
+        this.postId   = postId;
         this.is_click = is_click;
-        this.id = id;
+        this.id       = id;
     }
 
     public ListNotiModel() {

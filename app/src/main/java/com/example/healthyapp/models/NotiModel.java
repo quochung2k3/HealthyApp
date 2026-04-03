@@ -11,14 +11,15 @@ public class NotiModel {
     private boolean is_click;
 
     public NotiModel(String postId, String userLikeId, String userPostId, String imgAvatar, String content, boolean is_active, boolean is_seen, boolean is_click) {
-        PostId = postId;
+        PostId     = postId;
         UserLikeId = userLikeId;
         UserPostId = userPostId;
-        ImgAvatar = imgAvatar;
-        Content = content;
+        ImgAvatar  = imgAvatar;
+        Content    = content;
+
         this.is_active = is_active;
-        this.is_seen = is_seen;
-        this.is_click = is_click;
+        this.is_seen   = is_seen;
+        this.is_click  = is_click;
     }
 
     public NotiModel() {

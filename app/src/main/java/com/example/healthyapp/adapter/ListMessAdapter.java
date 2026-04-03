@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-    boolean isSeen = true;
+    boolean isSeen            = true;
 
     public ListMessAdapter(@NonNull Context context, ArrayList<ListMessModel> listMessView) {
         super(context, 0, listMessView);
@@ -44,38 +44,46 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         @SuppressLint("ViewHolder") View listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_mess_custom, parent, false);
-        ListMessModel currentMess = getItem(position);
-        ImageView imageButton = listItemView.findViewById(R.id.imgAvatar);
-        ImageView imgTick = listItemView.findViewById(R.id.imgTick);
-        TextView userName = listItemView.findViewById(R.id.txtUsername);
-        TextView mess = listItemView.findViewById(R.id.txtMess);
-        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+
+        ListMessModel currentMess               = getItem(position);
+        ImageView imageButton                   = listItemView.findViewById(R.id.imgAvatar);
+        ImageView imgTick                       = listItemView.findViewById(R.id.imgTick);
+        TextView userName                       = listItemView.findViewById(R.id.txtUsername);
+        TextView mess                           = listItemView.findViewById(R.id.txtMess);
+        FirebaseDatabase database               = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
         DatabaseReference databaseReferenceMess = database.getReference().child(FirebaseDBConnection.MESSAGE);
+
         databaseReferenceMess.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     MessageModel messageModel = dataSnapshot.getValue(MessageModel.class);
+
                     if (messageModel != null) {
-                        if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
-                                (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
+                        if (
+                                (messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
+                                (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))
+                        ) {
                             if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
                                 isSeen = false;
+
                                 break;
                             }
                         }
                     }
                 }
+
                 if(!isSeen) {
                     imgTick.setImageDrawable(getContext().getResources().getDrawable(R.drawable.baseline_brightness_1_24));
                     mess.setTypeface(null, Typeface.BOLD);
+
                     isSeen = true;
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Lỗi", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -83,8 +91,10 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<MessageModel> messageModels = new ArrayList<>();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     MessageModel messageModel = snapshot.getValue(MessageModel.class);
+
                     if (messageModel != null) {
                         messageModels.add(messageModel);
                     }
@@ -93,11 +103,16 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
                 Collections.reverse(messageModels);
 
                 for (MessageModel messageModel : messageModels) {
-                    if ((messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
-                            (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))) {
-                        if((!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
-                                || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())) {
+                    if (
+                            (messageModel.getSender_id().equals(firebaseUser.getUid()) && messageModel.getReceiver_id().equals(Objects.requireNonNull(currentMess).getId())) ||
+                            (messageModel.getSender_id().equals(Objects.requireNonNull(currentMess).getId()) && messageModel.getReceiver_id().equals(firebaseUser.getUid()))
+                    ) {
+                        if(
+                                (!messageModel.isIs_deleted_by_me() && messageModel.getSender_id().equals(firebaseUser.getUid()))
+                                || (messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_deleted_by_other())
+                        ) {
                             mess.setText(messageModel.getContent());
+
                             break;
                         }
                     }
@@ -106,7 +121,7 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Xử lý lỗi
+                // Solve Error
             }
         });
 
@@ -122,6 +137,7 @@ public class ListMessAdapter extends ArrayAdapter<ListMessModel> {
             }
             userName.setText(currentMess.getUserName());
         }
+
         return listItemView;
     }
 }

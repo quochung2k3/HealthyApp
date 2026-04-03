@@ -5,7 +5,7 @@ public class LikeCommentModel {
     private String comment_id;
 
     public LikeCommentModel(String user_id, String comment_id) {
-        this.user_id = user_id;
+        this.user_id    = user_id;
         this.comment_id = comment_id;
     }
 

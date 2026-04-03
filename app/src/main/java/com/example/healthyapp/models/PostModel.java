@@ -19,14 +19,14 @@ public class PostModel {
     private boolean is_deleted;
 
     public PostModel(String id, String title, String content, boolean anonymous, String user_id, String flair_id, Long created_date, boolean is_deleted) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.anonymous = anonymous;
-        this.user_id = user_id;
-        this.flair_id = flair_id;
+        this.id           = id;
+        this.title        = title;
+        this.content      = content;
+        this.anonymous    = anonymous;
+        this.user_id      = user_id;
+        this.flair_id     = flair_id;
         this.created_date = created_date;
-        this.is_deleted = is_deleted;
+        this.is_deleted   = is_deleted;
     }
 
     public PostModel(String title, String content, boolean anonymous, String user_id, String flair_id, Long created_date) {

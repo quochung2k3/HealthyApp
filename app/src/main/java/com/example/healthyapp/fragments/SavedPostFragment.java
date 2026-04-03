@@ -36,28 +36,34 @@ public class SavedPostFragment extends Fragment {
     ListView lvPost = null;
     ImageButton ibBack;
     ListSavedPostAdapter listSavedPostAdapter = null;
-    ArrayList<PostModel> postModels = new ArrayList<>();
-    FirebaseAuth auth = FirebaseAuth.getInstance();
-    FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
-    String currentUser = null;
+    ArrayList<PostModel> postModels           = new ArrayList<>();
+    FirebaseAuth auth                         = FirebaseAuth.getInstance();
+    FirebaseDatabase db                       = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+    String currentUser                        = null;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_saved_post, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView    = inflater.inflate(R.layout.fragment_saved_post, container, false);
         currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+
         Mapping();
         reloadDataFromFirebase();
+
         listSavedPostAdapter = new ListSavedPostAdapter(requireActivity(), postModels);
+
         lvPost.setAdapter(listSavedPostAdapter);
+
         lvPost.setOnItemLongClickListener((parent, view, position, id) -> {
             PostModel selectedPost = postModels.get(position);
+
             showAnnouncementDialog(selectedPost);
+
             return true;
         });
 
         lvPost.setOnItemClickListener((parent, view, position, id) -> {
             PostModel selectedPost = postModels.get(position);
-            Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+            Intent intent          = new Intent(getActivity(), PostDetailActivity.class);
+
             intent.putExtra("post_id", selectedPost.getId());
             startActivity(intent);
         });
@@ -72,12 +78,15 @@ public class SavedPostFragment extends Fragment {
         ibBack = rootView.findViewById(R.id.ibBack);
 
         ConstraintLayout savedPostFragment = rootView.findViewById(R.id.savedPostFragment);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
+        DisplayMetrics displayMetrics      = new DisplayMetrics();
+
         requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenHeight = displayMetrics.heightPixels;
-        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
+
+        int screenHeight                    = displayMetrics.heightPixels;
+        int newHeight                       = (int) ((811.0 / 891.0) * screenHeight);
         ViewGroup.LayoutParams layoutParams = savedPostFragment.getLayoutParams();
-        layoutParams.height = newHeight;
+        layoutParams.height                 = newHeight;
+
         savedPostFragment.setLayoutParams(layoutParams);
 
         // lvPost
@@ -86,10 +95,13 @@ public class SavedPostFragment extends Fragment {
 
     private void showAnnouncementDialog(PostModel selectedPost) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
         builder.setTitle("Warning");
         builder.setMessage("Are you sure you want to un save this post?");
+
         builder.setPositiveButton("Yes", (dialog, id) -> {
             DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(selectedPost.getId());
+
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     selectedPost.getList_user_save().remove(currentUser);
@@ -101,24 +113,31 @@ public class SavedPostFragment extends Fragment {
                 }
             });
         });
+
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
         AlertDialog dialog = builder.create();
+
         dialog.show();
     }
     private void reloadDataFromFirebase() {
         postModels.clear();
-        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+
+        FirebaseDatabase database               = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
         DatabaseReference databaseReferencePost = database.getReference().child(FirebaseDBConnection.POST);
+
         databaseReferencePost.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     PostModel postModel = dataSnapshot.getValue(PostModel.class);
+
                     if (postModel != null && postModel.getList_user_save().containsKey(currentUser) && !postModel.isIs_deleted()) {
                         postModel.setId(dataSnapshot.getKey());
                         postModels.add(postModel);
                     }
                 }
+
                 listSavedPostAdapter.notifyDataSetChanged();
             }
 

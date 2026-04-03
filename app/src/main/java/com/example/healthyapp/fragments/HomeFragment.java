@@ -30,44 +30,54 @@ import java.util.Collections;
 
 public class HomeFragment extends Fragment {
     RecyclerView rvUserPost;
-    ArrayList<PostModel> postList = new ArrayList<>();
+
+    ArrayList<PostModel> postList   = new ArrayList<>();
     UserPostAdapter userPostAdapter = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getPosts();
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        rvUserPost = rootView.findViewById(R.id.rvUserPost);
+
+        View rootView   = inflater.inflate(R.layout.fragment_home, container, false);
+        rvUserPost      = rootView.findViewById(R.id.rvUserPost);
         userPostAdapter = new UserPostAdapter(getActivity(), postList);
+
         rvUserPost.setAdapter(userPostAdapter);
         rvUserPost.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FrameLayout homeFragment = rootView.findViewById(R.id.homeFragment);
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenHeight = displayMetrics.heightPixels;
-        int newHeight = (int) ((811.0 / 891.0) * screenHeight);
-        ViewGroup.LayoutParams layoutParams = homeFragment.getLayoutParams();
-        layoutParams.height = newHeight;
-        homeFragment.setLayoutParams(layoutParams);
-        return rootView;
 
+        FrameLayout homeFragment      = rootView.findViewById(R.id.homeFragment);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+
+        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int screenHeight                    = displayMetrics.heightPixels;
+        int newHeight                       = (int) ((811.0 / 891.0) * screenHeight);
+        ViewGroup.LayoutParams layoutParams = homeFragment.getLayoutParams();
+        layoutParams.height                 = newHeight;
+
+        homeFragment.setLayoutParams(layoutParams);
+
+        return rootView;
     }
 
     private void getPosts() {
         DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
+
         postRef.orderByChild("is_deleted").equalTo(false).addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
+
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PostModel post = postSnapshot.getValue(PostModel.class);
-                    assert post != null;
+                    assert post   != null;
+
                     post.setId(postSnapshot.getKey());
+
                     postList.add(post);
                 }
+
                 Collections.reverse(postList);
                 userPostAdapter.notifyDataSetChanged();
             }

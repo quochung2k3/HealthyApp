@@ -8,11 +8,11 @@ public class UserPostModel {
     int likes;
 
     public UserPostModel(String img, String userName, String postTitle, String postImg, int likes) {
-        this.avatar = img;
-        this.userName = userName;
+        this.avatar    = img;
+        this.userName  = userName;
         this.postTitle = postTitle;
-        this.postImg = postImg;
-        this.likes = likes;
+        this.postImg   = postImg;
+        this.likes     = likes;
     }
 
     public int getLikes() {

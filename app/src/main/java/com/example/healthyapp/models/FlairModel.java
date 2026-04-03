@@ -7,7 +7,7 @@ public class FlairModel {
     private String name;
 
     public FlairModel(String id, String name) {
-        this.id = id;
+        this.id   = id;
         this.name = name;
     }
 

@@ -13,14 +13,14 @@ public class MessageModel {
     private boolean is_seen;
 
     public MessageModel(String id, String sender_id, String receiver_id, String content, Timestamp created_date, boolean is_deleted_by_me, boolean is_deleted_by_other, boolean is_seen) {
-        this.id = id;
-        this.sender_id = sender_id;
-        this.receiver_id = receiver_id;
-        this.content = content;
-        this.created_date = created_date;
-        this.is_deleted_by_me = is_deleted_by_me;
+        this.id                  = id;
+        this.sender_id           = sender_id;
+        this.receiver_id         = receiver_id;
+        this.content             = content;
+        this.created_date        = created_date;
+        this.is_deleted_by_me    = is_deleted_by_me;
         this.is_deleted_by_other = is_deleted_by_other;
-        this.is_seen = is_seen;
+        this.is_seen             = is_seen;
     }
 
     public MessageModel() {

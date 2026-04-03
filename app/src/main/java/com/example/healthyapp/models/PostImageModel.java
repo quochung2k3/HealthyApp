@@ -6,8 +6,8 @@ public class PostImageModel {
     private String image_link;
 
     public PostImageModel(String id, String post_id, String image_link) {
-        this.id = id;
-        this.post_id = post_id;
+        this.id         = id;
+        this.post_id    = post_id;
         this.image_link = image_link;
     }
 

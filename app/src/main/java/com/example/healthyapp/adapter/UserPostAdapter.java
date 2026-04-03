@@ -46,20 +46,23 @@ import java.util.Objects;
 public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPostViewHolder> {
     private final Context context;
     ArrayList<PostModel> postList;
-    FirebaseDatabase db = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
-    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-    FirebaseAuth auth = FirebaseAuth.getInstance();
     String currentUser;
+
+    FirebaseDatabase db       = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseAuth auth         = FirebaseAuth.getInstance();
+
     public UserPostAdapter(Context context, ArrayList<PostModel> postList) {
-        this.context = context;
+        this.context  = context;
         this.postList = postList;
-        currentUser = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+        currentUser   = Objects.requireNonNull(auth.getCurrentUser()).getUid();
     }
 
     @NonNull
     @Override
     public UserPostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_user_post, parent, false);
+
         return new UserPostViewHolder(view);
     }
 
@@ -68,6 +71,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     public void onBindViewHolder(@NonNull UserPostViewHolder holder, int position) {
         // load post
         PostModel postModel = postList.get(position);
+
         holder.txtPostTitle.setText(postModel.getTitle());
 
         if (postModel.isAnonymous()) {
@@ -78,10 +82,11 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             FirebaseFirestore.getInstance().collection("users").document(postList.get(position).getUser_id()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     UserModel userModel = task.getResult().toObject(UserModel.class);
-                    assert userModel != null;
-                    String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
+                    assert userModel   != null;
+                    String userName     = userModel.getFirst_name() + " " + userModel.getLast_name();
 
                     holder.txtUserName.setText(userName);
+
                     if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
                         holder.imgUserPost.setImageResource(R.drawable.baseline_account_circle_24);
                     } else {
@@ -92,15 +97,16 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             });
         }
 
-
-
         // get likes
         int likes = postModel.getUser_likes().size();
+
         holder.btnLike.setText(String.valueOf(likes));
+
         // check if user liked post
         // get button drawable
         Drawable drawable = holder.btnLike.getCompoundDrawables()[0];
-        boolean liked = postModel.getUser_likes().containsKey(currentUser);
+        boolean liked     = postModel.getUser_likes().containsKey(currentUser);
+
         if (liked) {
             drawable.setTint(context.getResources().getColor(R.color.blue));
         }
@@ -120,7 +126,9 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                     else {
                         postModel.setUser_likes((Map<String, Integer>) task.getResult().getValue());
                     }
+
                     Log.d("UserPostAdapter", "user likes: " + postModel.getUser_likes());
+
                     if (postModel.getUser_likes().containsKey(currentUser)) {
                         // unlike post
                         postModel.getUser_likes().remove(currentUser);
@@ -135,6 +143,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                         insertNotification(postModel);
 
                     }
+
                     postRef.child("user_likes").setValue(postModel.getUser_likes());
                     holder.btnLike.setText(String.valueOf(postModel.getUser_likes().size()));
                 }
@@ -146,15 +155,18 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         });
 
         boolean saved = postModel.getList_user_save().containsKey(currentUser);
+
         if (saved) {
             holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.yellow));
         }
         else {
             holder.btnSave.setBackgroundTintList(ContextCompat.getColorStateList(context, R.color.button));
         }
+
         // btnSave onClick
         holder.btnSave.setOnClickListener(v -> {
             DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(postModel.getId());
+
             // get newest user save
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -177,7 +189,9 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         });
 
         String date = TimestampUtil.convertTimestampToDateString(postModel.getCreated_date());
+
         holder.txtDate.setText(date);
+
         if (postModel.getPostImg() == null || postModel.getPostImg().isEmpty()) {
             holder.imgPost.setVisibility(View.GONE);
         }
@@ -190,14 +204,20 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
             if (postModel.isAnonymous()) {
                 return;
             }
+
             String userName = holder.txtUserName.getText().toString();
-            String id = postModel.getUser_id();
-            Bundle bundle = new Bundle();
+            String id       = postModel.getUser_id();
+            Bundle bundle   = new Bundle();
+
             bundle.putString("userName", userName);
             bundle.putString("id", id);
+
             UserHomeFragment userHomeFragment = new UserHomeFragment();
+
             userHomeFragment.setArguments(bundle);
+
             FragmentTransaction fragmentTransaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+
             fragmentTransaction.replace(R.id.frame_layout, userHomeFragment);
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
@@ -207,6 +227,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         holder.itemView.setOnClickListener(v -> {
             // go to post detail
             Intent intent = new Intent(context, PostDetailActivity.class);
+
             intent.putExtra("post_id", postModel.getId());
             context.startActivity(intent);
         });
@@ -215,6 +236,7 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
         holder.btnComment.setOnClickListener(v -> {
             // go to post detail
             Intent intent = new Intent(context, PostDetailActivity.class);
+
             intent.putExtra("post_id", postModel.getId());
             intent.putExtra("isComment", true);
             context.startActivity(intent);
@@ -229,17 +251,20 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
     private void insertNotification(PostModel postModel) {
         String id = firebaseUser.getUid();
+
         if(!postModel.getUser_id().equals(id)) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            FirebaseFirestore db      = FirebaseFirestore.getInstance();
             DocumentReference userRef = db.collection("users").document(id);
+
             userRef.get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
-                    String firstName = documentSnapshot.getString("first_name");
-                    String lastName = documentSnapshot.getString("last_name");
-                    String img = documentSnapshot.getString("imgAvatar");
+                    String firstName                  = documentSnapshot.getString("first_name");
+                    String lastName                   = documentSnapshot.getString("last_name");
+                    String img                        = documentSnapshot.getString("imgAvatar");
                     DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
-                    String notificationId = notificationRef.push().getKey();
-                    NotiModel notificationModel = new NotiModel();
+                    String notificationId             = notificationRef.push().getKey();
+                    NotiModel notificationModel       = new NotiModel();
+
                     notificationModel.setPostId(postModel.getId());
                     notificationModel.setUserLikeId(id);
                     notificationModel.setUserPostId(postModel.getUser_id());
@@ -248,7 +273,9 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
                     notificationModel.setIs_active(true);
                     notificationModel.setIs_seen(false);
                     notificationModel.setIs_click(false);
+
                     assert notificationId != null;
+
                     notificationRef.child(notificationId).setValue(notificationModel);
                 }
             }).addOnFailureListener(e -> {
@@ -260,23 +287,31 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
     @SuppressLint("NotifyDataSetChanged")
     private void showPopupMenu(View v, PostModel postModel) {
         PopupMenu popupMenu = new androidx.appcompat.widget.PopupMenu(context, v);
+
         popupMenu.inflate(R.menu.post_menu);
+
         // hide delete option if post is not created by current user
         if (!postModel.getUser_id().equals(currentUser)) {
             popupMenu.getMenu().findItem(R.id.post_delete).setVisible(false);
         }
+
         popupMenu.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
+
             if (id == R.id.post_delete) {
                 // set post is_deleted = true
                 DatabaseReference postRef = db.getReference(FirebaseDBConnection.POST).child(postModel.getId());
+
                 postRef.child("is_deleted").setValue(true);
                 postList.remove(postModel);
                 notifyDataSetChanged();
+
                 return true;
             }
+
             return false;
         });
+
         popupMenu.show();
     }
 
@@ -293,15 +328,16 @@ public class UserPostAdapter extends RecyclerView.Adapter<UserPostAdapter.UserPo
 
         public UserPostViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgUserPost = itemView.findViewById(R.id.ivAvatar);
-            imgPost = itemView.findViewById(R.id.ivPostImage);
-            txtUserName = itemView.findViewById(R.id.txtUsername);
+
+            imgUserPost  = itemView.findViewById(R.id.ivAvatar);
+            imgPost      = itemView.findViewById(R.id.ivPostImage);
+            txtUserName  = itemView.findViewById(R.id.txtUsername);
             txtPostTitle = itemView.findViewById(R.id.txtPostTitle);
-            txtDate = itemView.findViewById(R.id.txtDate);
-            btnLike = itemView.findViewById(R.id.btnLike);
-            btnComment = itemView.findViewById(R.id.btnComment);
-            btnSave = itemView.findViewById(R.id.btnSave);
-            ibMore = itemView.findViewById(R.id.ibMore);
+            txtDate      = itemView.findViewById(R.id.txtDate);
+            btnLike      = itemView.findViewById(R.id.btnLike);
+            btnComment   = itemView.findViewById(R.id.btnComment);
+            btnSave      = itemView.findViewById(R.id.btnSave);
+            ibMore       = itemView.findViewById(R.id.ibMore);
         }
     }
 }

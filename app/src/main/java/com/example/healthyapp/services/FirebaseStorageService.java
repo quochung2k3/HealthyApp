@@ -23,15 +23,18 @@ public class FirebaseStorageService {
 
     public FirebaseStorageService() {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
+        storageRef              = storage.getReference();
     }
+
     public Task<Uri> uploadImage(byte[] image, String imageName) {
         StorageReference imageRef = storageRef.child("images/" + imageName);
+
         return imageRef.putBytes(image)
                 .continueWithTask(task -> {
                     if (!task.isSuccessful()) {
                         throw Objects.requireNonNull(task.getException());
                     }
+
                     return imageRef.getDownloadUrl();
                 });
     }
@@ -39,10 +42,10 @@ public class FirebaseStorageService {
     // Upload image to Firebase Storage
     public Task<Uri> uploadImage(String imagePath, String imageName) {
         StorageReference imageRef = storageRef.child("images/" + imageName);
-        File file = new File(imagePath);
+        File file                 = new File(imagePath);
 
         try {
-            InputStream stream = new FileInputStream(file);
+            InputStream stream    = new FileInputStream(file);
             UploadTask uploadTask = imageRef.putStream(stream);
 
             // Register observers to listen for when the download is done or if it fails
@@ -52,6 +55,7 @@ public class FirebaseStorageService {
                     if (!task.isSuccessful()) {
                         throw Objects.requireNonNull(task.getException());
                     }
+
                     Log.d("Image", imageRef.getDownloadUrl().toString());
 
                     // Continue with the task to get the download URL
@@ -60,6 +64,7 @@ public class FirebaseStorageService {
             });
         } catch (FileNotFoundException e) {
             Log.e(TAG, "File not found: " + e.getMessage());
+
             return null;
         }
     }
@@ -67,6 +72,7 @@ public class FirebaseStorageService {
     // Download image from Firebase Storage
     public Task<Uri> downloadImage(String imageName) {
         StorageReference imageRef = storageRef.child("images/" + imageName);
+
         return imageRef.getDownloadUrl();
     }
 }

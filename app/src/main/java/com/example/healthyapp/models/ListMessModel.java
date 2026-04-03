@@ -11,10 +11,10 @@ public class ListMessModel {
     }
 
     public ListMessModel(String img, String userName, String mess, String id) {
-        this.img = img;
+        this.img      = img;
         this.userName = userName;
-        this.mess = mess;
-        this.id = id;
+        this.mess     = mess;
+        this.id       = id;
     }
 
     public String getImg() {

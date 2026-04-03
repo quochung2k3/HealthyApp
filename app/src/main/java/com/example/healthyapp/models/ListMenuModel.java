@@ -5,7 +5,7 @@ public class ListMenuModel {
     private String title;
 
     public ListMenuModel(int img, String title) {
-        this.img = img;
+        this.img   = img;
         this.title = title;
     }
 

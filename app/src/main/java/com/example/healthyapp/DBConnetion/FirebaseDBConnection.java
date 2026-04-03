@@ -9,13 +9,12 @@ public class FirebaseDBConnection {
     private static DatabaseReference databaseReference;
     private static FirebaseDBConnection instance;
 
-
-    public static final String MESSAGE = "Message";
+    public static final String MESSAGE      = "Message";
     public static final String NOTIFICATION = "Notification";
-    public static final String FLAIR = "Flair";
-    public static final String COMMENT = "Comment";
-    public static final String POST = "Post";
-    public static final String DB_URL = "https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app";
+    public static final String FLAIR        = "Flair";
+    public static final String COMMENT      = "Comment";
+    public static final String POST         = "Post";
+    public static final String DB_URL       = "https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     // singleton
     private FirebaseDBConnection() {
@@ -26,6 +25,7 @@ public class FirebaseDBConnection {
         if (instance == null) {
             instance = new FirebaseDBConnection();
         }
+
         return instance;
     }
     // Hàm này sử dụng để khởi tạo kết nối với Firebase Database
@@ -34,6 +34,7 @@ public class FirebaseDBConnection {
         if (database == null) {
             // Khởi tạo Firebase
             database = FirebaseDatabase.getInstance("https://healthyapp-bfba9-default-rtdb.asia-southeast1.firebasedatabase.app");
+
             // Lấy tham chiếu đến "root" của cơ sở dữ liệu
             databaseReference = database.getReference();
         }
@@ -53,6 +54,7 @@ public class FirebaseDBConnection {
     public void setData(String childName, Object data) {
         // Tạo một tham chiếu đến nút con có tên là childName
         DatabaseReference childReference = databaseReference.child(childName);
+
         // Thêm dữ liệu mới vào nút con
         childReference.push().setValue(data);
     }
@@ -64,6 +66,7 @@ public class FirebaseDBConnection {
     public void readData(String childName, ValueEventListener listener) {
         // Tạo một tham chiếu đến nút con có tên là childName
         DatabaseReference childReference = databaseReference.child(childName);
+
         // Đọc dữ liệu từ nút con và gán một ValueEventListener để xử lý dữ liệu
         childReference.addListenerForSingleValueEvent(listener);
     }

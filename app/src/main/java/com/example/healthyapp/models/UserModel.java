@@ -20,18 +20,18 @@ public class UserModel {
     private String imgBackground;
 
     public UserModel(String id, String first_name, String last_name, String email, String password, Timestamp created_date, Timestamp modified_date, String imgAvatar, String imgBackground, String address, String SDT, String birthday) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.password = password;
-        this.created_date = created_date;
+        this.id            = id;
+        this.first_name    = first_name;
+        this.last_name     = last_name;
+        this.email         = email;
+        this.password      = password;
+        this.created_date  = created_date;
         this.modified_date = modified_date;
-        this.imgAvatar = imgAvatar;
+        this.imgAvatar     = imgAvatar;
         this.imgBackground = imgBackground;
-        this.address = address;
-        this.SDT = SDT;
-        this.birthday = birthday;
+        this.address       = address;
+        this.SDT           = SDT;
+        this.birthday      = birthday;
     }
 
     public UserModel() {
