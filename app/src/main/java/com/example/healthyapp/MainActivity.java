@@ -35,16 +35,20 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     TextView txtCountMess, txtCountNotification;
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
         setContentView(binding.getRoot());
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setBackground(null);
 
-        txtCountMess = findViewById(R.id.countMess);
+        txtCountMess         = findViewById(R.id.countMess);
         txtCountNotification = findViewById(R.id.countNotification);
+
         txtCountMess.setVisibility(View.GONE);
         txtCountNotification.setVisibility(View.GONE);
         reloadCountMess();
@@ -54,39 +58,49 @@ public class MainActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.home) {
                 replaceFragment(new HomeFragment());
             }
+
             if (item.getItemId() == R.id.message) {
                 replaceFragment(new MessFragment());
             }
+
             if (item.getItemId() == R.id.fab) {
                 Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
+
                 startActivityForResult(intent, 1);
             }
+
             if (item.getItemId() == R.id.notification) {
                 replaceFragment(new NotificationFragment());
             }
+
             if (item.getItemId() == R.id.menu) {
                 replaceFragment(new MenuFragment());
             }
+
             return true;
         });
     }
 
     private void reloadCountNotification() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        FirebaseDatabase database                       = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
         DatabaseReference databaseReferenceNotification = database.getReference().child(FirebaseDBConnection.NOTIFICATION);
+
         databaseReferenceNotification.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int count = 0;
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     NotiModel notiModel = dataSnapshot.getValue(NotiModel.class);
-                    assert notiModel != null;
+                    assert notiModel   != null;
+
                     if(notiModel.getUserPostId().equals(firebaseUser.getUid()) && notiModel.isIs_active() && !notiModel.isIs_seen()) {
                         count ++;
                         txtCountNotification.setVisibility(View.VISIBLE);
                         txtCountNotification.setText(String.valueOf(count));
                     }
                 }
+
                 if(count == 0) {
                     txtCountNotification.setVisibility(View.GONE);
                 }
@@ -100,14 +114,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadCountMess() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+        FirebaseDatabase database               = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
         DatabaseReference databaseReferenceMess = database.getReference().child(FirebaseDBConnection.MESSAGE);
+
         databaseReferenceMess.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<String> arrayUserId = new ArrayList<>();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     MessageModel messageModel = snapshot.getValue(MessageModel.class);
+
                     if (messageModel != null) {
                         if(messageModel.getReceiver_id().equals(firebaseUser.getUid()) && !messageModel.isIs_seen()) {
                             if(!arrayUserId.contains(messageModel.getSender_id())) {
@@ -115,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
+
                     if(arrayUserId.isEmpty()) {
                         txtCountMess.setVisibility(View.GONE);
                     }
@@ -124,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -132,8 +151,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager         = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
@@ -141,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 1) {
             binding.bottomNavigationView.setSelectedItemId(R.id.home);
         }

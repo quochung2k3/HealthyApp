@@ -57,54 +57,68 @@ public class PostDetailActivity extends AppCompatActivity {
     String postId;
     PostModel post;
     LinearLayout llReply;
-    FirebaseAuth auth = FirebaseAuth.getInstance();
-    String currentUserId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+    FirebaseAuth auth                   = FirebaseAuth.getInstance();
+    String currentUserId                = Objects.requireNonNull(auth.getCurrentUser()).getUid();
     ArrayList<CommentModel> commentList = new ArrayList<>();
     CommentAdapter commentAdapter;
     public String replyTo = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
 
-        edtComment = findViewById(R.id.edtComment);
-        ibSendComment = findViewById(R.id.ibSendComment);
-        rvComment = findViewById(R.id.rvComment);
-        txtPostTitle = findViewById(R.id.txtPostTitle);
+        edtComment     = findViewById(R.id.edtComment);
+        ibSendComment  = findViewById(R.id.ibSendComment);
+        rvComment      = findViewById(R.id.rvComment);
+        txtPostTitle   = findViewById(R.id.txtPostTitle);
         txtPostContent = findViewById(R.id.txtPostContent);
-        txtPostDate = findViewById(R.id.txtDate);
-        txtUserName = findViewById(R.id.txtUsername);
-        txtFlair = findViewById(R.id.txtFlair);
-        imgPost = findViewById(R.id.ivPostImage);
-        imgAvatar = findViewById(R.id.ivAvatar);
-        ibBack = findViewById(R.id.ibBack);
+        txtPostDate    = findViewById(R.id.txtDate);
+        txtUserName    = findViewById(R.id.txtUsername);
+        txtFlair       = findViewById(R.id.txtFlair);
+        imgPost        = findViewById(R.id.ivPostImage);
+        imgAvatar      = findViewById(R.id.ivAvatar);
+        ibBack         = findViewById(R.id.ibBack);
+
         ibBack.setOnClickListener(v -> finish());
-        btnLike = findViewById(R.id.btnLike);
+
+        btnLike    = findViewById(R.id.btnLike);
         btnComment = findViewById(R.id.btnComment);
-        btnSave = findViewById(R.id.btnSave);
+        btnSave    = findViewById(R.id.btnSave);
+
         btnComment.setOnClickListener(v -> {
             edtComment.requestFocus();
+
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
             imm.showSoftInput(edtComment, InputMethodManager.SHOW_IMPLICIT);
         });
+
         commentAdapter = new CommentAdapter(this, commentList);
+
         rvComment.setAdapter(commentAdapter);
         rvComment.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));
-        llReply = findViewById(R.id.llReply);
-        txtReplyTo = findViewById(R.id.txtReplyingTo);
+
+        llReply        = findViewById(R.id.llReply);
+        txtReplyTo     = findViewById(R.id.txtReplyingTo);
         txtCancelReply = findViewById(R.id.txtCancelReply);
+
         txtCancelReply.setOnClickListener(v -> {
             llReply.setVisibility(View.GONE);
+
             replyTo = null;
         });
 
-        postId = getIntent().getStringExtra("post_id");
+        postId            = getIntent().getStringExtra("post_id");
         boolean isComment = getIntent().getBooleanExtra("isComment", false);
+
         if (isComment) {
             btnComment.performClick();
         }
+
         getPost(postId).addOnCompleteListener(task -> {
             post = task.getResult();
+
             loadPost();
         });
 
@@ -131,10 +145,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // btn like
         btnLike.setOnClickListener(v -> {
-            FirebaseDatabase fb = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+            FirebaseDatabase fb       = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
             // like post
             DatabaseReference postRef = fb.getReference(FirebaseDBConnection.POST).child(post.getId());
             // get newest user likes
+
             postRef.child("user_likes").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (task.getResult().getValue() == null) {
@@ -143,8 +158,11 @@ public class PostDetailActivity extends AppCompatActivity {
                     else {
                         post.setUser_likes((Map<String, Integer>) task.getResult().getValue());
                     }
+
                     Log.d("UserPostAdapter", "user likes: " + post.getUser_likes());
+
                     Drawable likeIcon = btnLike.getCompoundDrawables()[0];
+
                     if (post.getUser_likes().containsKey(currentUserId)) {
                         // unlike post
                         post.getUser_likes().remove(currentUserId);
@@ -155,6 +173,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         post.getUser_likes().put(currentUserId, 1);
                         likeIcon.setTint(getResources().getColor(R.color.blue));
                     }
+
                     postRef.child("user_likes").setValue(post.getUser_likes());
                     btnLike.setText(String.valueOf(post.getUser_likes().size()));
                 }
@@ -166,9 +185,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // btn like save
         btnSave.setOnClickListener(v -> {
-            FirebaseDatabase fb = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
+            FirebaseDatabase fb       = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL);
             // save post
             DatabaseReference postRef = fb.getReference(FirebaseDBConnection.POST).child(post.getId());
+
             // get newest user likes
             postRef.child("list_user_save").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -182,6 +202,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         post.getList_user_save().put(currentUserId, 1);
                         btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.yellow));
                     }
+
                     postRef.child("list_user_save").setValue(post.getList_user_save());
                 }
                 else {
@@ -189,8 +210,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 }
             });
         });
-
-
     }
     @SuppressLint("SetTextI18n")
     public void showReplyTo(String username) {
@@ -199,26 +218,30 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void loadComment() {
-        DatabaseReference commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
-                .getReference(FirebaseDBConnection.COMMENT)
-                .child(postId);
+        DatabaseReference commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.COMMENT).child(postId);
+
         commentRef.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 commentList.clear();
+
                 for (DataSnapshot commentSnapshot : snapshot.getChildren()) {
                     CommentModel comment = commentSnapshot.getValue(CommentModel.class);
-                    assert comment != null;
+                    assert comment      != null;
+
                     comment.setId(commentSnapshot.getKey());
                     commentList.add(comment);
+
                     if (comment.getReplies() != null) {
                         for (Map.Entry<String, CommentModel> entry : comment.getReplies().entrySet()) {
                             CommentModel reply = entry.getValue();
+
                             reply.setId(entry.getKey());
                             commentList.add(reply);
                         }
                     }
+
                     Log.d("Comment", "size: " + commentList.size());
                     commentAdapter.notifyDataSetChanged();
                 }
@@ -234,33 +257,37 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void sendComment() {////gui cmt
         String commentContent = edtComment.getText().toString();
+
         if (commentContent.isEmpty()) {
             return;
         }
+
         DatabaseReference commentRef;
+
         if (replyTo == null) {
-            commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
-                    .getReference(FirebaseDBConnection.COMMENT)
-                    .child(post.getId())
-                    .push();
+            commentRef                = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.COMMENT).child(post.getId()).push();
             DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST);
+
             postRef.child(post.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        String userId = dataSnapshot.child("user_id").getValue(String.class);
+                        String userId  = dataSnapshot.child("user_id").getValue(String.class);
                         assert userId != null;
+
                         if(!userId.equals(currentUserId)) {
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            FirebaseFirestore db      = FirebaseFirestore.getInstance();
                             DocumentReference userRef = db.collection("users").document(currentUserId);
+
                             userRef.get().addOnSuccessListener(documentSnapshot -> {
                                 if (documentSnapshot.exists()) {
-                                    String firstName = documentSnapshot.getString("first_name");
-                                    String lastName = documentSnapshot.getString("last_name");
-                                    String img = documentSnapshot.getString("imgAvatar");
+                                    String firstName                  = documentSnapshot.getString("first_name");
+                                    String lastName                   = documentSnapshot.getString("last_name");
+                                    String img                        = documentSnapshot.getString("imgAvatar");
                                     DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
-                                    String notificationId = notificationRef.push().getKey();
-                                    NotiModel notificationModel = new NotiModel();
+                                    String notificationId             = notificationRef.push().getKey();
+                                    NotiModel notificationModel       = new NotiModel();
+
                                     notificationModel.setPostId(post.getId());
                                     notificationModel.setUserLikeId(currentUserId);
                                     notificationModel.setUserPostId(userId);
@@ -269,7 +296,9 @@ public class PostDetailActivity extends AppCompatActivity {
                                     notificationModel.setIs_active(true);
                                     notificationModel.setIs_seen(false);
                                     notificationModel.setIs_click(false);
+
                                     assert notificationId != null;
+
                                     notificationRef.child(notificationId).setValue(notificationModel);
                                 }
                             }).addOnFailureListener(e -> {
@@ -284,35 +313,32 @@ public class PostDetailActivity extends AppCompatActivity {
 
                 }
             });
-
         }
         else {
-            commentRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
-                    .getReference(FirebaseDBConnection.COMMENT)
-                    .child(post.getId()).child(replyTo).child("replies")
-                    .push();
+            commentRef                      = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.COMMENT).child(post.getId()).child(replyTo).child("replies").push();
+            DatabaseReference commentRefNew = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.COMMENT).child(post.getId()).child(replyTo);
 
-            DatabaseReference commentRefNew = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.COMMENT)
-                    .child(post.getId())
-                    .child(replyTo);
             commentRefNew.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        String userId = dataSnapshot.child("user_id").getValue(String.class);
+                        String userId  = dataSnapshot.child("user_id").getValue(String.class);
                         String content = dataSnapshot.child("content").getValue(String.class);
                         assert userId != null;
+
                         if(!userId.equals(currentUserId)) {
-                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            FirebaseFirestore db      = FirebaseFirestore.getInstance();
                             DocumentReference userRef = db.collection("users").document(currentUserId);
+
                             userRef.get().addOnSuccessListener(documentSnapshot -> {
                                 if (documentSnapshot.exists()) {
-                                    String firstName = documentSnapshot.getString("first_name");
-                                    String lastName = documentSnapshot.getString("last_name");
-                                    String img = documentSnapshot.getString("imgAvatar");
+                                    String firstName                  = documentSnapshot.getString("first_name");
+                                    String lastName                   = documentSnapshot.getString("last_name");
+                                    String img                        = documentSnapshot.getString("imgAvatar");
                                     DatabaseReference notificationRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference().child(FirebaseDBConnection.NOTIFICATION);
-                                    String notificationId = notificationRef.push().getKey();
-                                    NotiModel notificationModel = new NotiModel();
+                                    String notificationId             = notificationRef.push().getKey();
+                                    NotiModel notificationModel       = new NotiModel();
+
                                     notificationModel.setPostId(post.getId());
                                     notificationModel.setUserLikeId(currentUserId);
                                     notificationModel.setUserPostId(userId);
@@ -321,7 +347,9 @@ public class PostDetailActivity extends AppCompatActivity {
                                     notificationModel.setIs_active(true);
                                     notificationModel.setIs_seen(false);
                                     notificationModel.setIs_click(false);
+
                                     assert notificationId != null;
+
                                     notificationRef.child(notificationId).setValue(notificationModel);
                                 }
                             }).addOnFailureListener(e -> {
@@ -338,12 +366,16 @@ public class PostDetailActivity extends AppCompatActivity {
             });
 
         }
+
         CommentModel comment = new CommentModel();
+
         comment.setContent(commentContent);
         comment.setUser_id(currentUserId);
         comment.setPost_id(post.getId());
         comment.setParent_id(replyTo);
+
         Long timestamp = System.currentTimeMillis();
+
         comment.setCreated_date(timestamp);
         commentRef.setValue(comment);
         edtComment.setText("");
@@ -352,22 +384,27 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void loadPost() {
         btnLike.setText(String.valueOf(post.getUser_likes().size()));
+
         Drawable likeIcon = btnLike.getCompoundDrawables()[0];
+
         if (post.getUser_likes().containsKey(currentUserId)) {
             likeIcon.setTint(getResources().getColor(R.color.blue));
         }
         else {
             likeIcon.setTint(getResources().getColor(R.color.primary_color));
         }
+
         if (post.getList_user_save().containsKey(currentUserId)) {
             btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.yellow));
         }
         else {
             btnSave.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.button));
         }
+
         txtPostTitle.setText(post.getTitle());
         txtPostContent.setText(post.getContent());
         txtPostDate.setText(TimestampUtil.convertTimestampToDateString(post.getCreated_date()));
+
         if (post.getPostImg() == null || post.getPostImg().isEmpty()) {
             imgPost.setVisibility(View.GONE);
         }
@@ -377,16 +414,16 @@ public class PostDetailActivity extends AppCompatActivity {
     }
     private Task<PostModel> getPost(String postId) {
         TaskCompletionSource<PostModel> taskCompletionSource = new TaskCompletionSource<>();
-        DatabaseReference postRef = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL)
-                        .getReference(FirebaseDBConnection.POST)
-                                .child(postId);
+        DatabaseReference postRef                            = FirebaseDatabase.getInstance(FirebaseDBConnection.DB_URL).getReference(FirebaseDBConnection.POST).child(postId);
+
         // get post
         postRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 PostModel post = snapshot.getValue(PostModel.class);
-                assert post != null;
+                assert post   != null;
+
                 post.setId(snapshot.getKey());
                 taskCompletionSource.setResult(post);
 
@@ -397,12 +434,15 @@ public class PostDetailActivity extends AppCompatActivity {
                 else {
                     // get user
                     Log.d("User ID", post.getUser_id());
+
                     FirebaseFirestore.getInstance().collection("users").document(post.getUser_id()).get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             UserModel userModel = task.getResult().toObject(UserModel.class);
-                            assert userModel != null;
-                            String userName = userModel.getFirst_name() + " " + userModel.getLast_name();
+                            assert userModel   != null;
+                            String userName     = userModel.getFirst_name() + " " + userModel.getLast_name();
+
                             txtUserName.setText(userName);
+
                             if (userModel.getImgAvatar() == null || userModel.getImgAvatar().isEmpty()) {
                                 imgAvatar.setImageResource(R.drawable.baseline_account_circle_24);
                             }
@@ -414,12 +454,14 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     });
                 }
+
                 // get flair
                 db.readData(FirebaseDBConnection.FLAIR, new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String flairId = post.getFlair_id();
+                        String flairId   = post.getFlair_id();
                         String flairName = snapshot.child(flairId).child("name").getValue(String.class);
+
                         txtFlair.setText(flairName);
                     }
 
@@ -435,6 +477,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
             }
         });
+
         return taskCompletionSource.getTask();
     }
 }
